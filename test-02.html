@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>try</title>
+</head>
+<body>
+<style>
+  * {margin: 0; padding: 0; box-sizing: border-box; color: inherit; font: inherit; 
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -o-user-select: none;
+    user-select: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  ul, li {list-style: none;}
+  a {text-decoration: none;}
+  .fl {float: left;}
+  .fr {float: right;}
+  .wrap {width: 1200px; margin: 0 auto;}
+  .clear:after {content: ''; display: inline-block; clear: both;}
+
+  html,body {height: 100%; overflow: hidden;}
+  body {background: #fff;display: flex;
+  justify-content: center;
+  align-items: center;}
+  canvas {vertical-align: top; border: 1px solid red; position: absolute; left: 200px; top: 20px;}
+  img {width: 100px;}
+</style>
+
+<canvas id="c"></canvas>
+<img src="http://designsoftware.ninja/printdemo/modules/blockadvertising/img/fixtures/advertising.jpg" id="my-image">
+
+<script src='./fabric.js'></script>
+<script>
+// create a wrapper around native canvas element (with id="c")
+var canvas = new fabric.Canvas('c');
+canvas.setWidth(500)
+canvas.setHeight(500)
+
+// 画方形
+/*// create a rectangle object
+var rect = new fabric.Rect({
+    left: 100,
+    top: 100,
+    fill: 'red',
+    width: 20,
+    height: 20
+});
+
+// "add" rectangle onto canvas
+canvas.add(rect);
+
+rect.set('fill', 'red');
+rect.set({ strokeWidth: 5, stroke: 'rgba(100,200,200,0.5)' });
+rect.set('angle', 15).set('flipY', true);*/
+
+// 画一个三角形 和一个 圆形
+// create a wrapper around native canvas element (with id="c")
+/*var canvas = new fabric.Canvas('c');
+
+var circle = new fabric.Circle({
+    radius: 20, fill: 'green', left: 100, top: 100
+});
+var triangle = new fabric.Triangle({
+    width: 20, height: 30, fill: 'blue', left: 50, top: 50
+});
+
+canvas.add(circle, triangle);*/
+
+// 图片
+/*var imgElement = document.getElementById('my-image');
+var imgInstance = new fabric.Image(imgElement, {
+  left: 80,
+  top: 0,
+  angle: 50,
+  opacity: 0.85
+});
+canvas.add(imgInstance);*/
+
+/*fabric.Image.fromURL('http://pic.cnblogs.com/face/359302/20140609162721.png', function(oImg) {
+  // scale image down, and flip it, before adding it onto canvas
+  oImg.scale(0.5).setFlipX(true);
+  oImg.setLeft(100).setTop(100)
+  canvas.add(oImg);
+});*/
+
+
+// 复杂图形
+// var path = new fabric.Path('M 0 0 L 200 100 L 400 160 L 20 80 L 170 200 z');
+
+/*var path = new fabric.Path('M121.32,0 L44.58,0 C36.67,0,29.5,3.22,24.31,8.41  C-5.19,5.19-8.41,12.37-8.41,20.28 c0,15.82,12.87,28.69,28.69,28.69 c0,0,4.4,  0,7.48,0 C36.66,72.78,8.4,101.04,8.4,101.04 C2.98,106.45,0,113.66,0,121.32  c0,7.66,2.98,14.87,8.4,20.29 l0,0 c5.42,5.42,12.62,8.4,20.28,8.4 c7.66,0,14.87 -2.98,20.29-8.4 c0,0,28.26-28.25,43.66-43.66 c0,3.08,0,7.48,0,7.48 c0,15.82,  12.87,28.69,28.69,28.69 c7.66,0,14.87-2.99,20.29-8.4 c5.42-5.42,8.4-12.62,8.4 -20.28 l0-76.74 c0-7.66-2.98-14.87-8.4-20.29 C136.19,2.98,128.98,0,121.32,0z'); 
+canvas.add(path.set({ left: 100, top: 200}));
+
+path.set({ left: 220, top: 120 });
+path.set({ fill: 'red', stroke: 'green', opacity: 0.5 });
+canvas.add(path);*/
+
+/*// clear canvas
+canvas.clear();
+
+// remove currently selected object
+canvas.remove(canvas.getActiveObject());
+
+fabric.loadSVGFromURL('../assets/1.svg', function(objects, options) { 
+    var dollars = fabric.util.groupSVGElements(objects, options);
+    canvas.add(dollars); 
+    canvas.calcOffset();
+    canvas.renderAll();
+});*/
+// 详情去查看(翻译)--> https://stackoverflow.com/questions/21499023/fabric-js-loadsvgfromurl-not-displaying-multiple-imported-svgs
+
+</script>
+
+</body>
+</html>

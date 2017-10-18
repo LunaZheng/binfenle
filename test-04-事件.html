@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>try</title>
+</head>
+<body>
+<style>
+  * {margin: 0; padding: 0; box-sizing: border-box; color: inherit; font: inherit; 
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -o-user-select: none;
+    user-select: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  ul, li {list-style: none;}
+  a {text-decoration: none;}
+  .fl {float: left;}
+  .fr {float: right;}
+  .wrap {width: 1200px; margin: 0 auto;}
+  .clear:after {content: ''; display: inline-block; clear: both;}
+
+  html,body {height: 100%; overflow: hidden;}
+  /*body {background: #fff;display: flex;
+  justify-content: center;
+  align-items: center;}*/
+  canvas {vertical-align: top; border: 1px solid red; position: absolute; left: 200px; top: 20px;}
+  img {width: 100px;}
+</style>
+
+<canvas id="c"></canvas>
+<img src="http://designsoftware.ninja/printdemo/modules/blockadvertising/img/fixtures/advertising.jpg" id="my-image">
+
+<script src='./fabric.js'></script>
+<script>
+/*
+  事件以on off使用 canvas 可以捕捉事件
+
+  mouseevent (鼠标级别事件)
+  "mouse:down", "mouse:move", and "mouse:up".
+
+  renderevent (通用事件)
+  "after:render". --> 表示整个画布被重新绘制
+
+  selectionevent (选择相关的事件)
+  "before:selection:cleared", "selection:created", "selection:cleared".
+
+  objectevent (对象的事件)
+  object ones: "object:modified", "object:selected", "object:moving", "object:scaling", "object:rotating", "object:added", and "object:removed"
+
+  --> 每当一个对象被移动（或缩放）甚至像素时，类似object:moving（或object:scaling）的事件都会被连续地触发
+
+  --> object:modified或selection:created仅在动作结束时触发的事件（对象修改或选择创建）
+*/
+var canvas = new fabric.Canvas('c');
+canvas.setWidth(500)
+canvas.setHeight(500)
+
+var rect = new fabric.Rect({
+    left: 200,
+    top: 200,
+    fill: 'red',
+    width: 100,
+    height: 100
+});
+canvas.add(rect);
+
+//事件监听器添加到画布上
+canvas.on('mouse:down', function(options) {
+  console.log(options.e.clientX, options.e.clientY);
+  if(options.target){ // 是画布上的一个被点击的对象（如果有的话）
+    console.log('一个对象被点击！', options.target.type);
+  }
+});
+
+//侦听器直接附加到画布对象
+/*rect.on('selected', function() {
+  console.log('selected a rectangle');
+});
+
+var circle = new fabric.Circle({ radius: 75, fill: 'blue' });
+canvas.add(circle);
+circle.on('moving', function() {
+  console.log('moving a circle');
+});
+*/
+</script>
+
+</body>
+</html>

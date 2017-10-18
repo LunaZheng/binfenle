@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>try</title>
+</head>
+<body>
+<style>
+  * {margin: 0; padding: 0; box-sizing: border-box; color: inherit; font: inherit; 
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -o-user-select: none;
+    user-select: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  ul, li {list-style: none;}
+  a {text-decoration: none;}
+  .fl {float: left;}
+  .fr {float: right;}
+  .wrap {width: 1200px; margin: 0 auto;}
+  .clear:after {content: ''; display: inline-block; clear: both;}
+
+  html,body {height: 100%; overflow: hidden;}
+  /*body {background: #fff;display: flex;
+  justify-content: center;
+  align-items: center;}*/
+  #box {width: 500px; position: relative;}
+  canvas {border: 1px solid black;}
+  .img-edit {border: 2px solid rgba(255, 0, 0, 0.5); position: absolute; -top: 0; -right: -33px; border-radius: 4px; display: none;}
+  .img-edit .remove,.edit {width: 30px; height: 30px; cursor: pointer;}
+  ul li {display: inline-block;}
+  p {display: inline-block; margin-right: 25px;}
+</style>
+
+<div>
+  <p>
+    <label>重复模式？</label>
+    <input type="checkbox" id="img-repeat" checked>
+  </p>
+  <p>
+    <label>图像缩放</label>
+    <input type="range" min="50" max="1000" value="100" id="img-width">
+  </p>
+  <p>
+    <label>图像左偏移</label>
+    <input type="range" min="0" max="500" value="0" id="img-offset-x">
+  </p>
+  <p>
+    <label>图像顶部偏移</label>
+    <input type="range" min="0" max="500" value="0" id="img-offset-y">
+  </p>
+  <br>
+  <p>
+    <label>图像角度</label>
+    <input type="range" min="-90" max="90" value="0" id="img-angle">
+  </p>
+  <p>
+    <label>图像填充</label>
+    <input type="range" min="-50" max="50" value="0" id="img-padding">
+  </p>
+</div>
+<div id="box">
+  <canvas id="c"></canvas>
+  <div class="img-edit">
+    <div class="addText" title="添加文字">
+      <img class="icon icons8-创建新的" width="30" height="30" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAYAAACM/rhtAAADWklEQVRYR+3YW0hTcRwH8O/ZOZspJrlypN00o8ihKSmpQWWWUyHI0B56mtmDaAVZpBY9FJSaEGUYFEU9aEUK9iBkc1YENrMEdS26oJPSFK/NdLS5s8U5tjHS1S7nbD3sPJ/////Z9/e/nRH4zx/if/BlVqh2CUVktXGOThQJSa3BZCpRlKY+Zmw+B+6pbK8RkmRh9rYNwugIMQbHptHa1a/Tzf6UM0ifAvdeenVbICAKxCGByEuTYomQZAva920STzu1Xc2nkhJ9Bkyv6CgKFBK1p3OkUPaMQDs6i5ydMTbktcbXeFqWQvgEyJSVhODY2bxYrFkexKZ291m/DTk0pvNdgnsrVHKKIm5RAgG5JTLUUpAePV/X38jPIzPQzRqMZpNZ1lKe8oJNUFapsnC5mi2wgAABcbAQ94u32rpWqMdwQzmAnB0xCBBReKjsRXxUKORp0ew7Xyf0uNigBg3zdWXZ9uO2VcwAW0qTuTQu6MseJ1k2X1ad3sgiY9eF0hnx4eTlJg0MRvpO65nUI9YObAnyCVwMZwUwyPutvWbjHC0wWYjitvLkG/a/jnfg33AMZPS7Ho+ea4xG2nTTWlavAZ3BNb18D72Bzm8tT7m32BzjLUFncUV7IiGLkzjc7ngBuoLLiA0DQTjejzkHuopjtxJvAd3BeQ3oLu5QbRceHHV8J+CkxO7imPQyqzrYS4GjU8JjYGPnMOraB9njy3pC2A/G7HPMVsKsVmZB/PnIqlRQlKXyA7zypB9tmnEcTJO6heM1QQb3TDPOXjTdSc6aJC8l7v0yjXONHxAgpJCfnbCgbP8qq30DXoDVzX1YJVkKZe8IKIrC9th1thRdwfFS4hkDjdyrb3DlcCKCRCTa1MNQdI9AnpXAHvwNzzXIjpewi8KZh/ME69qH8G5oBoWyjbbxLzSoMTFtAG22YLd0BUqy1jtjY9/hHJhX8xYR4iCc2LeZHUBvpNGjnUT9ywGXcZwDNYM/cLJew8I2rQpBoIhEt3YK6dIwyOLCELc2xOnkeFnF55s+QvVpiu07KIDCgaRw7E9cieAA23ePb4Hym92IkgQiNykC0tVLXcYs1oDzOciJyq4TP9DTRP0J+hNkEvDGXx+OkvbPQa/NQU8H8qT9Pz+aPOmc77a/AOuLOEch+jf1AAAAAElFTkSuQmCC">
+    </div>
+    <div class="edit" title="edit">
+      <img class="icon icons8-Edit-Image" width="30" height="30" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAETUlEQVRoQ+2Zz2/bZBjHv6+d2E7stuk2VevKWGATE0OaViE0CQnRoiEOIAGXXTgMxIHTDhPlhrhstyJt4sAJafwBaNqE2AYD2guHTUhtpK1QaWKFdeukZlraJm3s2H7R6zSp7djJ68VJM6nvqarf93m/n+f5vj9iEzzjjTzj+rEDsN0V3KnATgXazECghc5P/ZW1LHoewDEA2TbnaHf4AoBZUSRnzoy/zP72tAaAqnh7BiCZdmeOdzwtiKIw6odoAJi8cecyIeT9eCePJxql9MoXb7/ygTtaA8DXv9550nvZr0temDhx5IUWAHM0nnx1JsrEiSOepAdUYAcgcuqHdg9CS6edcStrRTwurITG6LkKMPGD/f0ewQwg/6QQCNFzAIcO7IcoCB6xFdPEP/cfdB8gkUg4k5qmyW2jngEghEBTVUd4sVQCpXyb2Z7BDHZnBrbfQmo6DVEUNytgYX1jnbsKDKJfq8KvFkuh/mfPO7IGkkkJKUX2CN4o66hUDG4I3o6xAxAiQFPTYBZyN2ahYmkdlNq82rj6xQ7gto5fgWlGsxIPQawAsixDlqSm8+qGAV3XG/q4Pc8jvNYnNgBBYNapLrxWje1Ktr1lJVlKIjuyzxm28OAhdKPSKkT9eWwAqqo2HEBhKizLQmm9uisx8Bf3j9THWrbtHFpuwGY0sQDwWMcvomYllnlWAXcr6wb+fbjEVYW2ARIJEelU9eIVtWkpBX1q8NiVYgmPlvOhIaWKjrduXkVm9XEBojj+3OTkLOsc6TrNtkq26zAbRG0pWUKmT2s6bGk57xxk/iaA4s0/f8He5UXnEaW0DhEJQJFlSC12nSCFyYSIPb7rQhiJf1Ez8SNkDaJt4dj0z0iVq4A1CG6Ap7UOq9rQrgwE30EXuuBdi7omXiaW090yqf7q7z/pyYpRvX9TusAFULuo+U9bHhuxzLMKRGlsUT9anMfJxY9xc9852NJwfbhgWfNHf7s2zCAopTkugJSiIJn07hw8ggY0DWml+UEXFCdhFnD81jsYLN12Hv+Y/SEIIj9Q3niPC4BHbFx9ZHvVyfyQ8bcnpBuCguZA1LEPx0cLPQUQJr5GMvX893+sKIe0mvjI22hcWQ6K00r85pjc5cMzTuZrMXqiArziIWOMfALPr/1tB2hHfKCFJm/MFQiB90dqh7zDI96GcFuQ7Tf8mQ+1ULde7vKIB5ALso07n4Gv102TznayCnGJD7QQ+yf7RmCa9gVCCPvAcSBOB8UpPhQgTsHuWPQiMtAxtfnlJ2yalrZpaqFOiXfuXtcTX+E/83PY8L4M3Zo0kvjuV2BamoUNBXeN4QCIyOK7CkCnkIUg33OSbdF5H8RTie8qwNmJ0e9Ovnb/05f2rlUNswVxr9VW2czWXftSf/qz1+/OLWUOfvvRLTgQlOZQti9hyfwm7JDiWY9dAzh1aqzQrxj5ob6N6S/fnTlHxtHwzZdHsL/P/w3YEmyWzv0xAAAAAElFTkSuQmCC">
+    </div>
+    <div class="remove" title="remove">
+      <img class="icon icons8-Remove-Image" width="30" height="30" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAEgklEQVRoQ+2ZQWwbRRSG/9m1vbZ3kzhNCIgSJWmTRpQDrVB7Twlw4EAQ4gIceixcaGjh2AMckCjQgKhAQhXihpAqgtRIUMAcgB5SiaagtiJQ6oDaRjRRk9ZOus56B81u19ldj+3xem2nUuaU7My8+b95b96bXRPc443c4/qxCdBqD256YNMDde4AN4SO/Xipv1CgxwDsAtBf5xr1Ts8AmJFlMj4+8jD729NKAGzx5jmApOpdOdz5dEmWpd1+iBKAo99dmCSEPBPu4uFYo5R+/foTj4y5rZUAvPv9hZsbb/eLkjOHR3cOVAG4SMPZr8ZYOTy607PpHA9sAtS89T1dndCSSWve8u0sFpeWy9rYcB5g4jvb2z2CGcDCzSUuxIYDGOzrhSxJHrFrhoG//73afIBIJGItahiGcBhtGABCCDRVtYRnczlQKpbMujtT6Ep1tD6E1GQSsizf9UABK6srwl5gEO2aDX8rmysb/6y/IWcgGo0hEVc8glfv6FhbywtDiA4MHYAQCZqaBAshd2MhlM2tgFJTVJvQuNAB3KHjV2AYtYWSCEGoAIqiQInFKq6r5/PQdb1kjDvmRYQ7Y0IDkCQWOvbBq9ZYVjLN9VBSYlH0b33Qmpa5eg16fq2aiWJ/aACqqpYUoHIqCoUCcit2VmLg23q3FucWTNMqWm7ASjShAIiEjl+EE0ps55kH3O2OnsfctetCXqgbIBKRkUzYF69am5aIo03lz13O5jB/Y6GqyboAWKpkWYeFQa0tocSQatMqTrt+Y8EqZA0LobiiIFYl6/AWj0ZkdPuuC/5xD5z5Bqk/ZqBcuYQt8/9Y3Qs9vVi8vw9XhnYjM/yY9SywB4KGDvNaz5YUJF+hcwDuO/czBr88jvjifMWdv93RjTOjL+C5V16q/Y3Muaj5q61IGLGdZx7gtaEvPsJD6ZMiZtbHUDqhpc+OOw+EXikT8TiiUW/mEFm1Q9OQjPMLXSDxzqKUfqClzx5k/woBiIitZczA7K946uSH3imqBuSyfDOcPgI8q/4wPdkSgBePH0LbrcV1saqGxHsfw7w8C/3oWx4I5Y0jkLYNYfXQy15AioyWnh5oOsDwbz9hZOpEiXhpcIf1zPj2VBGCiY88+bT13PxrtgSCeaHpACOnPsXw77+U7LIj1IEAIUXx1rPTU9DfedMXYvTzpgM8f+IIuv6z87y7uXfb38cXz0bRGc630YtLhMD7klrLCa0y9sDb+8uO4EGUF2+bafrH3ZoBXGeCR879vG4YdKZRXggUQuUgKM6X/YHDMMwJQgj7gaMvxAiC0CE+PWUt6T/Y/hQLcA5xmGJ5trL79uwHIZ8V+1gNeP8TSNuH7DTqyjaeNHr5T6y+dsBTC7hptNEAzH52394MiMuzdyGsQuZLlVYh276jRDwo5rT0dH9LfmbNPb53jAJfeTYrrKtEMzxge2HPBAh5NdB6lS5zgQwGnBQIwiWeWwcCagk8zQonignPmeBZo5gjBAfZDdTd3ZIzwNNnnws6Bkp2geBRawzFeRB2XSCTfuGOjf8BP4L6Ix124FEAAAAASUVORK5CYII=">
+    </div>
+  </div>
+</div>
+<input type="file" name="" id="fileEL" multiple="">
+<ul id="ul1"></ul>
+
+<script src='./fabric.js'></script>
+<script src='./jq.js'></script>
+<!-- <script src="./lodash.js"></script> -->
+<script>
+var imgEdit = $('.img-edit')
+var isOut = true
+console.log($('body'))
+$('body').on('click', '#box', function() {
+  isOut = false
+})
+
+var canvas = new fabric.Canvas('c');
+canvas.setWidth(500)
+canvas.setHeight(500)
+/*fabric.Object.prototype.transparentCorners = false;
+
+var radius = 300;
+
+fabric.Image.fromURL('http://fabricjs.com/assets/pug_small.jpg', function(img) {
+  img.scale(0.5).set({
+    left: 100,
+    top: 100,
+    angle: -15,
+    clipTo: function(ctx) {
+      // ctx.arc(0, 0, radius, 0, Math.PI * 2, true);
+      ctx.rect(-100, -100, radius, radius)
+    }
+  });
+  canvas.add(img).setActiveObject(img);
+});
+
+(function animate() {
+    fabric.util.animate({
+      startValue: Math.round(radius) === 50 ? 50 : 300,
+      endValue: Math.round(radius) === 50 ? 300 : 50,
+      duration: 1000,
+      onChange: function(value) {
+        radius = value;
+        canvas.renderAll();
+      },
+      onComplete: animate
+    });
+  })();*/
+
+  /*var path = new fabric.Path('M 272.70141,238.71731 \
+      C 206.46141,238.71731 152.70146,292.4773 152.70146,358.71731  \
+      C 152.70146,493.47282 288.63461,528.80461 381.26391,662.02535 \
+      C 468.83815,529.62199 609.82641,489.17075 609.82641,358.71731 \
+      C 609.82641,292.47731 556.06651,238.7173 489.82641,238.71731  \
+      C 441.77851,238.71731 400.42481,267.08774 381.26391,307.90481 \
+      C 362.10311,267.08773 320.74941,238.7173 272.70141,238.71731  \
+      z ');
+  var scale = 100 / path.width;
+  path.set({left: 20, top: 0, scaleX: scale, scaleY: scale, fill: 'rgba(225,225,225,0.0)', stroke: 'black', storkeWidth: 2});
+  canvas.add(path);
+  addPattern(path);
+  canvas.renderAll();
+
+  function addPattern(obj) {
+    fabric.util.loadImage('http://fabricjs.com/assets/pug_small.jpg', function(img) {
+      obj.fill = new fabric.Pattern({
+        source: img,
+        repeat: 'no-repeat'
+      });
+      canvas.renderAll();
+    });
+  }*/
+
+  fileEL.onchange = function() {
+    [].slice.call(this.files).forEach(function(oFile, idx) {
+      var src = URL.createObjectURL(oFile)
+      var li = document.createElement('li')
+      li.innerHTML = '<img width="50" src="' + src + '" alt="" clsaa="img' + idx + '" draggable="true" ondragstart="drag(event)"/>'
+      li.onload = function() {
+        window.URL.revokeObjectURL(src)
+      }
+      ul1.appendChild(li)
+    })
+    this.value = ''
+  }
+
+  fabric.Object.prototype.transparentCorners = false; // 选择框角的是否透明
+  var padding = 0;
+  
+
+function drag(ev) {
+  var imgElement = ev.target
+  fabric.Image.fromURL(imgElement.src, function(oImg) {
+    // scale image down, and flip it, before adding it onto canvas
+    canvas.add(oImg.set({
+      originX: 'center',
+      originY: 'center',
+      left: canvas.width / 2, 
+      top: canvas.height / 2
+    }))
+    canvas.discardActiveObject(); // 不选中
+    canvas.setActiveObject(oImg);
+
+    
+  });
+
+
+  canvas.on('after:render', function(options) {
+    var gobj = canvas.getActiveObject(); //获取当前选中对象
+    if(gobj) {
+      var l = gobj.aCoords.br.x
+      var close = $('.remove')
+      var edit = $('.edit')
+
+      imgEdit.css({
+        'display': 'block',
+        'left': l > 500 ? 500 : l,
+        'top': gobj.top - 40
+      })
+
+
+    } else {
+      imgEdit.css('display', 'none')
+    }
+  })
+
+  imgEdit.on('click', function(e) {
+    if((e.target.className).toLowerCase().indexOf('创建新的') > -1) {
+      var text = new fabric.Text('hello world', { 
+        left: 100, 
+        top: 100 ,
+        fontFamily: 'Comic Sans',
+        fontSize: 30,
+        // fontWeight: 'bold',
+        // textDecoration: 'line-through', // underline , line-through , overline
+        // shadow: 'green -5px -5px 3px', 
+        // fontStyle: 'italic',
+        // fontFamily: 'Hoefler Text',
+        stroke: '#ff1318',
+        strokeWidth: 1,
+      });
+      canvas.add(text);
+      canvas.discardActiveObject();
+      // canvas.moveTo(text, 100);
+      // canvas.bringToFront(text) // bringForward（1级），bringToFront（一路向上），sendBackwards（1级向下）和sendToBack（一直向下）
+      // canvas.insertAt(text, 10, false)
+    }
+    if((e.target.className).toLowerCase().indexOf('remove') > -1) {
+      canvas.remove(canvas.getActiveObject()) // 删除当前选中对象
+    }
+    if((e.target.className).toLowerCase().indexOf('edit') > -1) {
+
+      canvas.remove(canvas.getActiveObject())
+      
+      fabric.Image.fromURL(imgElement.src, function(img) {
+        // scale image down, and flip it, before adding it onto canvas
+        img.scaleToWidth(canvas.width);
+            var patternSourceCanvas = new fabric.StaticCanvas();
+            patternSourceCanvas.add(img);
+            patternSourceCanvas.renderAll();
+            var pattern = new fabric.Pattern({
+              source: function() {
+                patternSourceCanvas.setDimensions({
+                  width: img.getScaledWidth() + padding,
+                  height: img.getScaledHeight() + padding
+                });
+                patternSourceCanvas.renderAll();
+                return patternSourceCanvas.getElement();
+              },
+              repeat: 'repeat'
+            });
+
+            var clipBox = new fabric.Polygon([
+              {x: 0, y: canvas.height}, // tl 左上
+              {x: canvas.width, y: canvas.height}, // tr 右上
+              {x: canvas.width, y: 0}, // br 右下
+              {x: 0, y: 0} ], { // bl 左下
+                originX: 'center',
+                originY: 'center',
+                left: canvas.width / 2,
+                top: canvas.height / 2,
+                angle: 0,
+                fill: pattern,
+                centeredScaling: true, // 中心缩放
+                centeredRotation: true, // 中心旋转
+                cornerStyle: 'circle', // 边角原型,默认方形
+                objectCaching: false
+              })
+
+            canvas.add(clipBox);
+            canvas.setActiveObject(clipBox);
+
+            document.getElementById('img-width').oninput = function() {
+              console.log(img)
+              img.scaleToWidth(parseInt(this.value, 10));
+              canvas.requestRenderAll();
+            };
+            document.getElementById('img-angle').oninput = function() {
+              img.set({
+                'angle': this.value
+              });
+              canvas.requestRenderAll();
+            };
+            document.getElementById('img-padding').oninput = function() {
+              padding = parseInt(this.value, 10);
+              canvas.requestRenderAll();
+            };
+            document.getElementById('img-offset-x').oninput = function() {
+              pattern.offsetX = parseInt(this.value, 10);
+              canvas.requestRenderAll();
+            };
+            document.getElementById('img-offset-y').oninput = function() {
+              pattern.offsetY = parseInt(this.value, 10);
+              canvas.requestRenderAll();
+            };
+            /*document.getElementById('img-offset-y').oninput = function() {
+              pattern.offsetY = parseInt(this.value, 10);
+              canvas.requestRenderAll();
+            };*/
+            document.getElementById('img-repeat').onclick = function() {
+              pattern.repeat = this.checked ? 'repeat' : 'no-repeat';
+              canvas.requestRenderAll();
+            };
+      });
+
+
+      /*canvas.getActiveObject().scale(1).set({
+        clipTo: function(ctx) {
+          // ctx.arc(0, 0, radius, 0, Math.PI * 2, true);
+          ctx.rect(-200, -100, 300, 300)
+        }
+      });
+      canvas.add(canvas.getActiveObject()).setActiveObject(canvas.getActiveObject());*/
+      /*var ctx = canvas.getContext("2d");
+      ctx.beginPath();
+      ctx.rect(180,10,200,200);
+      ctx.closePath();
+      ctx.stroke();
+      ctx.clip();*/
+
+      
+  
+
+    }
+  })
+}
+
+
+</script>
+
+</body>
+</html>

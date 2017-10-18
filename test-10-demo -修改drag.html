@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>try</title>
+</head>
+<body>
+<style>
+  * {margin: 0; padding: 0; box-sizing: border-box; color: inherit; font: inherit; 
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -o-user-select: none;
+    user-select: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  ul, li {list-style: none;}
+  a {text-decoration: none;}
+  .fl {float: left;}
+  .fr {float: right;}
+  .wrap {width: 1200px; margin: 0 auto;}
+  .clear:after {content: ''; display: inline-block; clear: both;}
+
+  html,body {height: 100%; overflow: hidden;}
+  /*body {background: #fff;display: flex;
+  justify-content: center;
+  align-items: center;}*/
+  #box {width: 500px; position: relative; display: inline-block;}
+  canvas {border: 1px solid black;}
+  .img-edit {border: 2px solid rgba(255, 0, 0, 0.5); position: absolute; -top: 0; -right: -33px; border-radius: 4px; display: none;}
+  .img-edit .remove,.edit {width: 30px; height: 30px; cursor: pointer;}
+  ul li {display: inline-block;}
+  p {display: inline-block; margin-right: 25px;}
+</style>
+
+
+<div id="box">
+  <canvas id="c"></canvas>
+</div>
+<div class="img-box">
+  <input type="file" name="" id="fileEL" multiple="">
+  <ul id="ul1"></ul>
+</div>
+
+<script src='./fabric.js'></script>
+<script src='./jq.js'></script>
+<!-- <script src="./lodash.js"></script> -->
+<script>
+
+var imgEdit = $('.img-edit')
+var isOut = true
+
+$('body').on('click', '#box', function() {
+  isOut = false
+})
+
+var canvas = new fabric.Canvas('c');
+canvas.setWidth(500)
+canvas.setHeight(500)
+
+fileEL.onchange = function() {
+  [].slice.call(this.files).forEach(function(oFile, idx) {
+    var src = URL.createObjectURL(oFile)
+    var li = document.createElement('li')
+    li.innerHTML = '<img width="50" src="' + src + '" alt="" clsaa="img' + idx + '" draggable="true" ondragstart="imgDrag(event)"/>'
+    li.onload = function() {
+      window.URL.revokeObjectURL(src)
+    }
+    ul1.appendChild(li)
+  })
+  this.value = ''
+
+  ;[].slice.call(ul.children).forEach(function(li, idx) {
+    li.getElementsByTagName('img').ondragstart = function(e) {
+      
+    }
+  })
+}
+
+var box = document.getElementById('box')
+var ul = document.getElementById('ul1')
+var liInDrag
+
+box.ondragover = function(e) {
+  e.preventDefault()
+}
+
+box.ondrop = function(e) {
+  e.preventDefault()
+  if (liInDrag) {
+    var imgElement = liInDrag
+    fabric.Image.fromURL(imgElement.src, function(oImg) {
+      // scale image down, and flip it, before adding it onto canvas
+      canvas.add(oImg.set({
+        originX: 'center',
+        originY: 'center',
+        left: canvas.width / 2, 
+        top: canvas.height / 2
+      }))
+      canvas.discardActiveObject(); // 不选中
+      canvas.setActiveObject(oImg);
+    });
+  }
+}
+
+function imgDrag(ev) {
+  liInDrag = ev.target
+}
+
+/*function drag(ev) {
+  
+}*/
+
+
+</script>
+
+</body>
+</html>

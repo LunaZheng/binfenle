@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>缤纷乐</title>
+  <link rel="stylesheet" href="bootstrap.css">
+</head>
+<body>
+<style>
+  * {margin: 0; padding: 0; box-sizing: border-box; color: inherit; font: inherit; 
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -o-user-select: none;
+    user-select: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  ul, li {list-style: none;}
+  a {text-decoration: none;}
+  .fl {float: left;}
+  .fr {float: right;}
+  .c {overflow: hidden;}
+  .wrap {width: 1200px; margin: 0 auto;}
+  .clear:after {content: ''; display: inline-block; clear: both;}
+
+  .col-xs-1, .col-sm-1, .col-md-1, .col-lg-1, .col-xs-2, .col-sm-2, .col-md-2, .col-lg-2, .col-xs-3, .col-sm-3, .col-md-3, .col-lg-3, .col-xs-4, .col-sm-4, .col-md-4, .col-lg-4, .col-xs-5, .col-sm-5, .col-md-5, .col-lg-5, .col-xs-6, .col-sm-6, .col-md-6, .col-lg-6, .col-xs-7, .col-sm-7, .col-md-7, .col-lg-7, .col-xs-8, .col-sm-8, .col-md-8, .col-lg-8, .col-xs-9, .col-sm-9, .col-md-9, .col-lg-9, .col-xs-10, .col-sm-10, .col-md-10, .col-lg-10, .col-xs-11, .col-sm-11, .col-md-11, .col-lg-11, .col-xs-12, .col-sm-12, .col-md-12, .col-lg-12 {
+    padding: 0; margin: 0;
+  }
+
+  header {width: 100%; height: 50px; background: #eee; border-bottom: 1px solid #ccc;}
+
+  .login-box>li {display: inline-block; height: 50px; line-height: 50px;}
+  .login-box>li:after {content: ''; border-left: 1px solid black; font-size: 12px; margin: 0 15px;}
+  .login-box>li:last-child:after {content: ''; border-left: 1px solid transparent;}
+
+  .main {margin-top: 20px; overflow-y: hidden;}
+  .edit-list {height: 650px; border: 1px solid #ccc; border-radius: 4px; background: #eee; position: relative;}
+  .edit-list>li {height: 40px; line-height: 40px; text-align: center; border: 1px solid #eee; border-radius: 0 4px 4px 0; border-top: 1px solid transparent; border-left: 1px solid transparent; background: #fff; cursor: pointer; position: relative;}
+  .edit-list>li>span {margin-right: 5px;}
+  .edit-list>li.on, .edit-list>li:active {background: rgb(58, 170, 146); color: #fff;}
+
+  .edit-list>li > ul {height: 600px; position: absolute; top: 44px; left: 0; z-index: 10; background: #fff; overflow-y: scroll; border: 2px solid transparent; display: none;}
+  .edit-list>li.on > ul {display: block;}
+  /* .edit-template-list>li {display: flex; justify-content: center; align-items: center;}
+  .edit-template-list>li img {width: 100%; border: 1.5px solid #ddd; padding: 18px 35px;} */
+  .edit-list>li>ul>li {display: flex; justify-content: center; align-items: center; margin-bottom: 10px;}
+  .edit-template-list>li:nth-child(2n) {margin: -10px 0 0 0;}
+  .edit-list>li>ul>li img {width: 100%; border: 1.5px solid #ddd; padding: 18px 35px;}
+  .edit-list>li>ul>li.on img {border: 1.5px solid rgb(58, 170, 146);}
+  .edit-template-list>li {color: #111;}
+
+  .edit-list>li.edit-bg>ul>li img {padding: 0;}
+
+  .file {width: 86px; height: 36px; position: relative; top: 100px; left: 50%; margin-left: -43px; display: inline-block; background: rgb(58, 170, 146); border-radius: 4px; overflow: hidden; color: #fff; text-decoration: none; text-indent: 0; line-height: 20px; padding: 8px 15px;}
+  .file input {position: absolute; font-size: 100px; right: 0; top: 0; opacity: 0;}
+  .file:hover {background: rgb(43, 155, 131); color: #fff; text-decoration: none;}
+
+  .edit-content {padding-left: 20px;}
+  .edit-content .edit-top {background: #ddd; height: 40px; padding: 0 10px; border-radius: 4px;}
+  .edit-content .edit-top li {display: inline-block; line-height: 40px; padding-left: 20px;}
+  .canvas-box { height: 450px; margin-top: 20px; display: flex; justify-content: center; align-items: center; position: relative;}
+  .canvas-box canvas {-width: 700px; -height: 400px; border: 8px solid #eee; position: absolute;}
+
+  /*.canvas-box>.canvas-container>canvas.upper-canvas {cursor: default !important;}*/
+
+  .canvas-item-box {position: absolute; left: 22.5%; top: 36%; }
+  .canvas-item-box canvas {border: 8px solid #fff;}
+
+  .img-edit {width: 500px; background: rgb(250, 250, 250); position: absolute; top: -100px; left: 160px; padding: 20px 10px; border: 1px solid rgb(170, 170, 170); padding-top: 5px; display: none;}
+  .img-edit > li {border-bottom: 1px solid rgb(200, 200, 200); padding: 15px 0;}
+  .img-edit > li:last-child {border-bottom: 1px solid transparent; padding-bottom: 0;}
+  .img-edit > li > span {margin-left: 25px;}
+  .img-edit > li > span > label, .img-edit > li > span > input {display: inline-block; vertical-align: middle; color: #333; font-weight: 200;}
+  .img-edit > li > span > img {color: rgb(112, 112, 112); width: 20px; }
+  .img-edit > li > .img-style > li {display: inline-block; padding-left: 30px; margin-top: 10px;}
+  .img-edit > li > .img-style > li img {width: 80px;}
+  .img-edit > li > .img-style > li > p {text-align: center; padding-top: 2px; color: #aaa; font-size: 12px;}
+
+  input[type=range] {width: 150px; border-radius: 10px; /*这个属性设置使填充进度条时的图形为圆角*/ background-size: 75% 100%;/*设置左右宽度比例*/ height: 3px;/*横条的高度*/  }
+  input[type=range]::-webkit-slider-thumb {-webkit-appearance: none; height: 35px; width: 25px; margin-top: -3px; /*使滑块超出轨道部分的偏移量相等*/ background: #ffffff;  border-radius: 50%; /*外观设置为圆形*/ border: 0.125em solid rgba(205, 224, 230, 0.5); /*设置边框*/ box-shadow: 0 .125em .125em #3b4547; /*添加底部阴影*/}
+
+  .img-controls span {cursor: pointer;}
+  .img-controls span:hover {color: rgb(58, 170, 146);}
+
+  .edit-bottom {background: #eee; border-radius: 4px;}
+  .edit-bottom .btn-box {margin-left: 50px;}
+  .edit-bottom .btn-box .pic-btn, .edit-bottom .btn-box .page-btn {width: 60px; height: 25px; line-height: 25px; border: none; background: #eee;}
+  .edit-bottom .pic-btn.on, .edit-bottom .page-btn.on {background: #fff; border: 1px solid #ccc;}
+  .edit-bottom .img-list {width: 810px; height: 110px; margin-top: 10px; overflow-y: hidden; overflow-x: hidden; padding-top: 10px;}
+  .edit-bottom .prev, .edit-bottom .next {width: 50px; line-height: 100px; font-size: 50px; text-align: center; color: #aaa;}
+  .edit-bottom .prev:hover, .edit-bottom .next:hover {color: #333;}
+  .edit-bottom .img-list ul {white-space: nowrap;}
+  .edit-bottom .img-list ul li {display: inline-block;}
+  .edit-bottom .img-list ul li img {vertical-align: middle;}
+  
+  .img-style > li:nth-child(1) {position: relative;}
+  .img-style > li:nth-child(1) .Saturation {width: 80px; position: absolute; display: none;}
+
+  .addtext-box {position: absolute; -padding: 20px 15px; border: 1px solid #3385ff; display: none;}
+  .addtext-box .addtext {background: transparent; border: 1px dashed #aaa; padding: 5px;}
+  .addtext-box > a {width: 20px; height: 20px; line-height: 19px; border-radius: 50%; background: #3385ff; position: absolute; top: -10px; right: -10px; bottom: auto; text-align: center;}
+  .addtext-box > a.reset-btn {top: 20px;}
+  .addtext-box > a.replace-btn {left: -10px; display: none;}
+</style>
+<header>
+  <div class="wrap">
+    <div class="logo fl">
+      <img height="50" src="./img/logo.png" alt="">
+    </div>
+    <ul class="login-box fr">
+      <li>您好! 世界那么大</li>
+      <li>退出</li>
+      <li>帮助中心</li>
+    </ul>
+  </div>
+</header>
+
+<div class="main">
+  <ul class="edit-list col-lg-2 col-md-2 col-sm-2">
+    <li class="edit-item edit-template">模板 <span class="fr">></span>
+      <ul class="edit-template-list col-lg-12 col-md-12 col-sm-12">
+        <li class="on">
+          <img src="img/temp01.png" alt="">
+        </li>
+        <li>封面</li>
+        <li>
+          <img src="img/temp02.png" alt="">
+        </li>
+        <li>1页</li>
+        <li>
+          <img src="img/temp03.png" alt="">
+        </li>
+        <li>2页</li>
+        <li>
+          <img src="img/temp02.png" alt="">
+        </li>
+        <li>3页</li>
+        <li>
+          <img src="img/temp03.png" alt="">
+        </li>
+        <li>4页</li>
+      </ul>
+    </li>
+    <li class="edit-item edit-font">文字 <span class="fr">></span>
+      <ul class="edit-font-list col-lg-12 col-md-12 col-sm-12">
+        <li class="on">
+          <img src="img/font01.png" alt="">
+        </li>
+        <li>
+          <img src="img/font02.png" alt="">
+        </li>
+        <li>
+          <img src="img/font03.png" alt="">
+        </li>
+        <li>
+          <img src="img/font01.png" alt="">
+        </li>
+        <li>
+          <img src="img/font02.png" alt="">
+        </li>
+        <li>
+          <img src="img/font03.png" alt="">
+        </li>
+        <li>
+          <img src="img/font01.png" alt="">
+        </li>
+        <li>
+          <img src="img/font02.png" alt="">
+        </li>
+        <li>
+          <img src="img/font03.png" alt="">
+        </li>
+      </ul>
+    </li>
+    <li class="edit-item edit-bg">背景 <span class="fr">></span>
+      <ul class="edit-bg-list col-lg-12 col-md-12 col-sm-12">
+        <li class="on">
+          <img src="img/bg01.png" alt="">
+        </li>
+        <li>
+          <img src="img/bg02.png" alt="">
+        </li>
+        <li>
+          <img src="img/bg03.png" alt="">
+        </li>
+        <li>
+          <img src="img/bg01.png" alt="">
+        </li>
+        <li>
+          <img src="img/bg02.png" alt="">
+        </li>
+      </ul>
+    </li>
+    <li class="edit-item edit-pic">图片 <span class="fr">></span>
+      <ul class="edit-pic-list col-lg-12 col-md-12 col-sm-12">
+        <li class="on">
+          <img src="img/bg01.png" alt="">
+        </li>
+        <li>
+          <img src="img/bg02.png" alt="">
+        </li>
+        <li>
+          <img src="img/bg03.png" alt="">
+        </li>
+        <li>
+          <img src="img/bg01.png" alt="">
+        </li>
+        <li>
+          <img src="img/bg02.png" alt="">
+        </li>
+      </ul>
+    </li>
+    <li class="edit-item edit-decorate">装饰 <span class="fr">></span>
+      <ul class="edit-decorate-list col-lg-12 col-md-12 col-sm-12">
+        <li class="on">
+          <img src="img/decorate01.png" alt="">
+        </li>
+        <li>
+          <img src="img/decorate02.png" alt="">
+        </li>
+        <li>
+          <img src="img/decorate03.png" alt="">
+        </li>
+        <li>
+          <img src="img/decorate04.png" alt="">
+        </li>
+        <li>
+          <img src="img/decorate02.png" alt="">
+        </li>
+      </ul>
+    </li>
+    <li class="edit-item edit-layout">布局 <span class="fr">></span>
+      <ul class="edit-layout-list col-lg-12 col-md-12 col-sm-12">
+        <li class="on">
+          <img src="img/layout01.png" alt="">
+        </li>
+        <li>
+          <img src="img/layout02.png" alt="">
+        </li>
+        <li>
+          <img src="img/layout03.png" alt="">
+        </li>
+        <li>
+          <img src="img/layout04.png" alt="">
+        </li>
+        <li>
+          <img src="img/layout05.png" alt="">
+        </li>
+        <li>
+          <img src="img/layout06.png" alt="">
+        </li>
+        <li>
+          <img src="img/layout01.png" alt="">
+        </li>
+        <li>
+          <img src="img/layout02.png" alt="">
+        </li>
+        <li>
+          <img src="img/layout03.png" alt="">
+        </li>
+      </ul>
+    </li>
+    <a href="javascript:;" class="file">添加照片
+      <input type="file" name="" id="fileEL" multiple="">
+    </a>
+  </ul>
+  <div class="edit-content col-lg-10 col-md-10 col-sm-10">
+    <div class="edit-top">
+      <ul class="edit-left fl">
+        <li>
+          <a href="javascript:">撤销</a>
+        </li>
+        <li>
+          <a href="javascript:">恢复</a>
+        </li>
+        <li>
+          <a href="javascript:">预览</a>
+        </li>
+      </ul>
+      <ul class="edit-right fr">
+        <li>
+          <a href="javascript:">了解价格</a>
+        </li>
+        <li>
+          <a href="javascript:">保存</a>
+        </li>
+        <li>
+          <a href="javascript:">加入购物车</a>
+        </li>
+      </ul>
+    </div>
+    <div class="canvas-box">
+      <canvas id="c"></canvas>
+      <div class="canvas-item-box">
+        <canvas id="c1"></canvas>
+        <ul class="img-edit">
+          <span class="close fr">x</span>
+          <li>
+            <span class="img-edit-scale">
+              <label>大小</label>
+              <input type="range" min="50" max="1000" value="227" class="img-scale" oninput="scaleChange(event)">
+            </span>
+            <span class="img-edit-opacity">
+              <label>透明</label>
+              <input type="range" min="50" max="1000" value="1000" class="img-opacity" oninput="opacityChange(event)">
+            </span>
+          </li>
+          <li class="img-controls">
+            <span class="moveup"><img src="./img/up.svg" alt="">上移</span>
+            <span class="movedown"><img src="./img/down.svg" alt="">下移</span>
+            <span class="cutImg"><img src="./img/cut.svg" alt="">裁剪</span>
+            <span class="rotateImg"><img src="./img/rotate.svg" alt="">旋转</span>
+            <span class="removeImg"><img src="./img/remove.svg" alt="">删除</span>
+          </li>
+          <li>
+            <span>图片调整</span>
+            <ul class="img-style">
+              <li>
+                <img src="./img/色彩优化.png" alt="">
+                <p>基本调整</p>
+                <input type="range" min="-1" max="1" step="0.003921" class="Saturation">
+                <!-- <input type="range" min="50" max="1000" value="227" class="Saturation" oninput="saturationChange(event)"> -->
+              </li>
+              <li>
+                <img src="./img/黑白.png" alt="">
+                <p>黑白</p>
+              </li>
+              <li>
+                <img src="./img/旧照片.png" alt="">
+                <p>旧照片</p>
+              </li>
+              <li>
+                <img src="./img/素描.png" alt="">
+                <p>素描</p>
+              </li>
+              <li>
+                <img src="./img/柔化.png" alt="">
+                <p>柔化</p>
+              </li>
+              <li>
+                <img src="./img/锐化.png" alt="">
+                <p>锐化</p>
+              </li>
+              <li>
+                <img src="./img/色彩叠加.png" alt="">
+                <p>色彩叠加</p>
+              </li>
+              <li>
+                <img src="./img/基本调整.png" alt="">
+                <p>色彩优化</p>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+      <div class="addtext-box">
+        <input type="text" class="addtext" placeholder="点击输入文字">
+        <a href="javascript:" class="write-btn">
+          <img class="icon icons8-边框颜色" width="14" height="14" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAADXUlEQVRoQ81Z7XFUMQyUKoAS0gGUkFRAqABSQUIFkAoIFRAqIKmApAJIBUAFhAqW2cO+8en8Ib/n9y6ayZ+cT96VJXmtU3lCBuC5iJyr6qUXlnoXLr0ugP8mIi9F5EZEzlT1sbXvkyBgwEfMP0TkpEXi4AQAMOKMPNPHWpPEQQk0wLtO4mAEKuD/isgzcxTFkzgIAQBvReRjJm3Yfa5E5E5EXnhIrE4ggP+cyXd2nWv+PxS1i8SqBDzgIzEvidUIAGDKXJjIM98vYuTtqXhIrEIAAFOGeZ8awR+rKgu0aBUSN6r6enECc8CbdPqZK/rFCITIMfKnUyKffgfABxF5b/w8bE6wpTWmfF6QBnT1f1OHxkmiz9SzXes3NRP9DCewAvid2hlKINyujBb1TWpTIk8f31vpN4xARRrcsgN1pk1J4FGd8oLb2hACFfBfVNW2z2pZVXxtb+qhBAAci8jXTIubAp6SmmlzZFhmwXPNrBOoSINPqmpv3VbkCT6+yNK1l6rKNpq1yQR6dE2rFVc6V/MUJxEAcB5kr8V2p6onLcD2cwBMQXvhNcFPSqGCNEgxXavqmZdEwd+DqtpWPD+FKrqGre1VsoOLRAl8z23tTqGWKAPAx8gbLwkALHJK7FkXXpNAQxqcquqviMBLotAAXPLa5lGVwBRd0yIxEnyziAvdgd+r5niJRLhlm/rG2wCqBEL0/1Sc9ZLguJC3th1gFW9ZD5FiCgWJwJuxZr0krK9Z4D0pBEcUppJ4p6qcAc2y2glQUPEd6rEsiTkSwbNpqwYYHUoGr+2QWAN8iwALODcxdtUEANYPiza1W1W1mscboOy6bApVlKZns814MDMH6n5WejYrEWDLS7WNx1dtzSLgsykEoKd4PcQoEY563sQep3HN3gkUhkg9PtO1k/RNz2Y5Amyd9k3a4zOuXRz8XgoBYIfg62iE7Y1ARji1PnZOAMCI4mXkOQeir8VtS2BC8RIoWyb/+Hsun4CPdvC0NIOUQG4CnNv/Psjp2O+Xxlj1nxKoFS+nwUyJq/QFdlDkYfOUQE55cq5JjbOXz+FxwjcwR4e9kmMY95QAH9lxmrbJbRvtINB4Q3Oda+wxDGnBUfNRz+8BIGi22K5B7dLgs1Iibhq6UkyRERfbInz+AbwowbrPap++AAAAAElFTkSuQmCC">
+        </a>
+        <a href="javascript:" class="reset-btn">
+          <img class="icon icons8-定期约会-Filled" width="14" height="14" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAADU0lEQVRoQ+1ZgVFUMRDdV4FSgVKBUoFQgVqBWoFQgViBWIFSgVCBUIFQgXQgVvCcd5Pv5OL/ySaX+yDzd+bmOC7Jz8u+t9ndgz0QwwPBYQuQ++bJxSOLRxwnQPKtmX0KQ98BOCtN60otko/N7KWZvTIz/a3X87CJKzO7NbMbM7sws3MA+vyPkfwV5uq7WwA7swAhqY2/N7P90gOT7wXoIwC9/zWSjD8DKB54cUBuYyS18Q8NANJl5S0BWlFoViAkxeHDSg+Uhp8AOJoFSNDBt4wXrs3sq5mtNAFA7zplaUWakRdFxWcTqDR+0NVqSHdqBRDf0weFDZ2a2TEAibloJJ+a2UkIDtnx2wAiEKmg5YHDVLBFJGFA0Jk8+GRqTlcgJHV6ikyxXYomU2G0Aowop8g1SrduQMKpyRtrIADUhltpRZedIp2o5bKeQFJKiU77LZ4g+bMGRDexh8tOUSq2gw00oWAwqYcxF3XxCEldUko7BjsFIHo0WaDWcQ2YjYGEcKu8J7Zdb4htQto4KZuihNP7Eq19DWDtsmp8bvdpJSAprY4AKAzfOysBUWx/Ee26WeTbRl4C8iNJR/aG3GnbG9P6SYElNigDGLUSkOq6oCfA5M65AbD7vwJxH2TJI0qp4/xnNmqFtF/UHiwbMUtA7kzsI/ndZS63KwG5s/BLUre/ksvB1KxQQdYkdqUi8YV4BWCvp6Cn1iKZRky1hZqjluqE2VOUUD0qS45tJ5dtF7soJFOdbJQ0erxJUif/xksrjfMAES+7pfElIBNF3OtSt7EIJNywqVcUlpWujHYKS5vN6EJUljbi6jEbrYa1vEBU0qal7gWAg9ZNj80jOdbccOV3LiDBK2PNB3lKbt/IM5le2WcAriagG8gExfRv0UwJ3Vr/1uupoAmF+LQZkb030vVrgeTaNoo06t/WNOh04Y2VzdXNjSogwSsCoxs/rlPiA5KH9L089DtpmT6KWqZTlea5wNXStRrIsOOJhp2XUVPj3JrYiFrp5MBv5URT3vECU8dSfeMmnbkuRM9OQu9LXI/bRp6popF+SmgGUHWPeHYU6UeZQPzT21DPSMAK03pJQ2e1Osjto1kjXnBzjVuAzHXS3ucsHvGe1FzjFo/MddLe5/wBfxJUQu74mr4AAAAASUVORK5CYII=">
+        </a>
+        <a href="javascript:" class="replace-btn">
+          <img class="icon icons8-工作流程" width="14" height="14" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAADg0lEQVR4Xu2a/3HWMAyGpQlgA2AC2g1gAmAC6ATQSWgnoJ2AdgLYgHYC2g1gAnHiHM64tvUrX+pckrv+Zafx+1iSJetD2PiDG9cPO4DdAjZOYJUuQERHAHCEiBfR/VsdgCT+GwA8BYCTKIRVASjET5sfguAGQERvAOAtm2L64wXdAcB3/kPEy6h55u83xIchmAEQEYv+DADPBYEM4xQRr6IgBPEhCCYARMTCPxkFnSHiqfGdf9OV4t0Q1ACI6AwAPjqFnCOiFRx0xJ+kdXyprMcUE1QAktl/rXzsHAAuEPGGx9KCPzRAvbO4Q0/8FPmJiL8VgqAF8LPw+d8A8GoSXoJJi+dg+CQbu0PEFxoL0oif/k8UggigsfvHLfHZwvh0+FEIFs3TIn4OCBoAnG29z4So/bkSNy4Rkc22+njERyFoAPAu8m5Oj7j7ghVovCCfI1pNBIIGAOWrQUTxnXw+Ef33vlG9WrwXgiimFLAggF8A8FqKNY0APNUK+XDV/TQAOKN79kguYILQiSHN2KMBMGcQvEZETqVbQbB2rqsgeMTzIjQAaosSA2FakOcYNEPwilcB4ElEVLpBd1caC7pHRKmA+msZjeSm+s2IeAsANttaKsz1AftXngpzzlDL+62psGgJUfFqAGlXIsVQNwHyxIT0jjrat74hxoDiTPdAcIkXznV2B374Wkw86nq5hwlAsgR2BwaRH421b9yzK1gqQKMllNNdoM0Aip1hGHw1lj/XAHAVvaws1XWqPp7qEm+KAZ3dCaXKPfNUQnCLXx2A5IKzAne7QOYKsy5IsohobVL+/x2ARFwan3tHlv7ebgEScWl8t4Dixsd6YSIBrhyFswZd0QWCV1oP9HkBEREXWZx4lfcJ3HrjxMvVixwewKF7kUMDWKIXOSyApXqRZgBWH/acEkv2IkcFsFgvcjgAjbL3YJewIwKY8xpeLJVHBFCav7j7WWVadqRvEPE4dCXmCWL5B63vW+dHM8URLSCU6loBjgiAewwvs52NuMAtIuat/YepuVSMWIlGTZKINh8Ea10o0QoavUixGzWcC6SLz8V6kaMCWKwXaQYgxQxpXFtLDFsMSQKlcS2A5AqeXqT6V2yqxshj3wilyvBgvchhXaBynE7XYXyuT3nCLQBw3sBXYq5fpYsAJJNe+/gOYO07GF3/bgFRgmt/f7eAte9gdP2bt4A/JA2xX8EZkLIAAAAASUVORK5CYII=">
+        </a>
+      </div>
+    </div>
+    <div class="edit-bottom">
+      <div class="btn-box fl col-lg-12 col-md-12 col-sm-12">
+        <button class="pic-btn on">照片</button>
+        <button class="page-btn">页面</button>
+        <span class="totalPage">共计11张图片</span>
+      </div>
+      <div class="btn-list fr">
+        
+      </div>
+      <div class="pic-box">
+        <div class="prev fl">&lt;</div>
+        <div class="next fr">&gt;</div>
+        <div class="img-list">
+          <ul id="ul1">
+            <!-- <li>
+              <img width="90" height="90" src="blob:http://localhost:3000/4d594e9c-e1a0-4e2b-a180-022d1c924b70" alt="" clsaa="img0" draggable="true" ondragstart="drag(event)">
+            </li> -->
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer></footer>
+<script src="fabric.js"></script>
+<script src="jq.js"></script>
+<script>
+var editList = $('.edit-list')
+// var editListUl = $('.edit-list')
+var imgEdit = $('.img-edit')
+var imgControls = $('.img-controls')
+var imgStyle = $('.img-style')
+var editFontList = $('.edit-font-list')
+var editBgList = $('.edit-bg-list')
+var editLayoutList = $('.edit-layout-list')
+var addtext = $('.addtext')
+var isAddtext = false
+var addtextBox = $('.addtext-box')
+var canvasItemBox = $('.canvas-item-box')
+
+var fontFamilys = ['STXingkai', 'STXinwei', 'STLiti', 'STHupo', 'STCaiyun', 'Comic Sans', 'Delicious', 'Hoefler Text']
+
+var canvas = new fabric.Canvas('c')
+var canvas2 = new fabric.Canvas('c1')
+canvas.setWidth(720)
+canvas.setHeight(420)
+// console.log(canvas.upperCanvasEl)
+// canvas.upperCanvasEl.style.cursor = "default"
+// $(canvas.upperCanvasEl).css('cursor', 'default !important')
+canvas2.setWidth(145)
+canvas2.setHeight(183)
+
+var bgImg = './img/bg.png'
+
+changeBg(bgImg)
+function changeBg(bgImg) {
+  fabric.Image.fromURL(bgImg, function(img) {
+    canvas.backgroundImage = img;
+    canvas.backgroundImage.width = canvas.get('width');
+    // canvas.backgroundImage.height = canvas.get('height');
+    canvas.add(img).renderAll();
+    img.selectable = false
+  });
+}
+
+fabric.Object.prototype.transparentCorners = false; // 选择框角的是否透明
+var padding = 0;
+
+function drag(ev) {
+  var imgElement = ev.target
+  fabric.Image.fromURL(imgElement.src, function(oImg) {
+    // scale image down, and flip it, before adding it onto canvas
+    canvas2.add(oImg.set({
+      originX: 'center',
+      originY: 'center',
+      left: canvas2.width / 2,
+      top: canvas2.height / 2
+    }))
+    oImg.scaleToWidth(145)
+    canvas2.discardActiveObject(); // 不选中
+    canvas2.setActiveObject(oImg);
+    oImg.centeredScaling = true
+  });
+
+}
+
+
+canvas2.on('after:render', function(options) {
+  var gobj = canvas2.getActiveObject(); //获取当前选中对象
+  if(gobj) {
+    imgEdit.css('display', 'block')
+  } else {
+    imgEdit.css('display', 'none')
+  }
+})
+
+editList.on('click', function(e) {
+  // e.stopPropagation()
+  var reg = /\s+on/g
+  var editListName = e.target.className.slice(15).replace(reg, '')
+  // var reg = /^(edit-item) edit-(\w+)\s+/
+  // var offsetParentName = e.target.offsetParent.className.match(reg)
+  // var offsetParentName = reg.exec(e.target.className)
+  // var editListName = RegExp.$2
+// console.log(offsetParentName)
+
+  // if(e.target.className.toLowerCase().indexOf('edit-item')>-1) {
+  if(e.target.className.slice(0, 9) == 'edit-item') {
+    $(e.target).siblings().removeClass('on')
+    $(e.target).toggleClass('on')
+    var childUl = $(e.target.lastElementChild)
+    var idx = $(e.target).index()
+    var ulHeight = $(e.currentTarget).height() - 35
+    childUl.css('height', ulHeight - 50 * idx)
+  }
+  switch (editListName) {
+    case 'template': // 模板
+
+      break
+    case 'font': // 文字
+      isAddtext = !isAddtext
+      !isAddtext && addtextBox.css('display', 'none')
+      break
+    case 'bg': // 背景
+      editBgList.on('click', 'img', function(e) {
+        bgImg = e.target.src.replace('http://localhost:3000', '.')
+        changeBg(bgImg)
+      })
+      break
+    case 'pic': // 图片
+
+      break
+    case 'decorate': // 装饰
+
+      break
+    case 'layout': // 布局
+      editLayoutList.on('click', 'li', function(e) {
+        var idx = $(e.currentTarget).index()
+        switch (idx) {
+          case 0:
+            var cTemp1 = $('<canvas id="cTemp1"></canvas>')
+            var cTemp2 = $('<canvas id="cTemp2"></canvas>')
+            var cTemp3 = $('<canvas id="cTemp3"></canvas>')
+            var cTemp4 = $('<canvas id="cTemp4"></canvas>')
+            cTemp1.css({
+              width: '145px',
+              height: '180px'
+            })
+            cTemp2.css({
+              width: '100px',
+              height: '65px',
+              position: 'absolute',
+              left: '140px'
+            })
+            cTemp3.css({
+              width: '100px',
+              height: '65px',
+              position: 'absolute',
+              left: '140px',
+              top: '58px'
+            })
+            cTemp4.css({
+              width: '100px',
+              height: '65px',
+              position: 'absolute',
+              left: '140px',
+              top: '115px'
+            })
+            canvasItemBox.empty().append(cTemp1)
+            canvasItemBox.append(cTemp2)
+            canvasItemBox.append(cTemp3)
+            canvasItemBox.append(cTemp4)
+            break
+          case 1:
+            var cTemp1 = $('<canvas id="cTemp1"></canvas>')
+            cTemp1.css({
+              width: '145px',
+              height: '180px'
+            })
+            canvasItemBox.empty().append(cTemp1)
+            break
+          case 2:
+            var cTemp1 = $('<canvas id="cTemp1"></canvas>')
+            var cTemp2 = $('<canvas id="cTemp2"></canvas>')
+            var cTemp3 = $('<canvas id="cTemp3"></canvas>')
+            cTemp1.css({
+              width: '145px',
+              height: '180px'
+            })
+            cTemp2.css({
+              width: '145px',
+              height: '180px',
+              position: 'absolute',
+              left: '140px'
+            })
+            cTemp3.css({
+              width: '145px',
+              height: '180px',
+              position: 'absolute',
+              left: '280px'
+            })
+            canvasItemBox.empty().append(cTemp1)
+            canvasItemBox.append(cTemp2)
+            canvasItemBox.append(cTemp3)
+            break
+          case 3:
+            var cTemp1 = $('<canvas id="cTemp1"></canvas>')
+            var cTemp2 = $('<canvas id="cTemp2"></canvas>')
+            var cTemp3 = $('<canvas id="cTemp3"></canvas>')
+            var cTemp4 = $('<canvas id="cTemp4"></canvas>')
+            cTemp1.css({
+              width: '145px',
+              height: '180px'
+            })
+            cTemp2.css({
+              width: '145px',
+              height: '86px',
+              position: 'absolute',
+              left: '140px'
+            })
+            cTemp3.css({
+              width: '75px',
+              height: '100px',
+              position: 'absolute',
+              left: '140px',
+              top: '80px'
+            })
+            cTemp4.css({
+              width: '75px',
+              height: '100px',
+              position: 'absolute',
+              left: '210px',
+              top: '80px'
+            })
+            canvasItemBox.empty().append(cTemp1)
+            canvasItemBox.append(cTemp2)
+            canvasItemBox.append(cTemp3)
+            canvasItemBox.append(cTemp4)
+            break
+          case 4:
+            var cTemp1 = $('<canvas id="cTemp1"></canvas>')
+            var cTemp2 = $('<canvas id="cTemp2"></canvas>')
+            var cTemp3 = $('<canvas id="cTemp3"></canvas>')
+            var cTemp4 = $('<canvas id="cTemp4"></canvas>')
+            cTemp1.css({
+              width: '100px',
+              height: '150px'
+            })
+            cTemp2.css({
+              width: '100px',
+              height: '150px',
+              position: 'absolute',
+              left: '95px'
+            })
+            cTemp3.css({
+              width: '100px',
+              height: '150px',
+              position: 'absolute',
+              left: '190px'
+            })
+            cTemp4.css({
+              width: '100px',
+              height: '150px',
+              position: 'absolute',
+              left: '285px'
+            })
+            canvasItemBox.empty().append(cTemp1)
+            canvasItemBox.append(cTemp2)
+            canvasItemBox.append(cTemp3)
+            canvasItemBox.append(cTemp4)
+            break
+          case 5:
+            var cTemp1 = $('<canvas id="cTemp1"></canvas>')
+            var cTemp2 = $('<canvas id="cTemp2"></canvas>')
+            cTemp1.css({
+              width: '145px',
+              height: '180px'
+            })
+            cTemp2.css({
+              width: '245px',
+              height: '180px',
+              position: 'absolute',
+              left: '140px'
+            })
+            canvasItemBox.empty().append(cTemp1)
+            canvasItemBox.append(cTemp2)
+            break
+        }
+      })
+      break
+  }
+
+})
+
+var fontFamily = 'Hoefler Text'
+
+editFontList.on('click', 'li', function(e) {
+  e.stopPropagation()
+  var idx = $(e.currentTarget).index()
+  fontFamily = fontFamilys[idx]
+})
+
+$('.canvas-box').on('click', function(e) {
+  e.stopPropagation()
+  e.preventDefault()
+  var target = $(e.target)
+  var obj = canvas2.getActiveObject() || canvas.getActiveObject()
+
+  if (e.target.tagName === 'CANVAS') {
+    var isOut = target[0].previousSibling.id === 'c' ? true : false
+    var x = e.offsetX
+    var y = e.offsetY
+
+    if (isAddtext) {
+      addtextBox.css('display', 'block')
+      $(addtextBox[0].children[0]).focus()
+
+      !obj && addtextBox.css({
+        left: e.clientX - 220,
+        top: e.clientY - 150
+      })
+    } else {
+      addtextBox.css('display', 'none')
+    }
+        // console.log(x, y)
+
+
+/* **********************
+   bug----->点击一次canvas页面正常, 点击多次,就会执行多次 
+
+   ********************** */
+    addtext.keydown(function(ev) {
+      // ev.stopPropagation()
+      // ev.preventDefault()
+      if(ev.keyCode === 13) {
+        console.log('21')
+        var world =  ev.target.value
+        addtext[0].value = ''
+        // console.log(world)
+        var text = new fabric.Text(world, { 
+          left: x, 
+          top: y,
+          fontFamily: fontFamily,
+          fontSize: 30,
+          stroke: '#333',
+          strokeWidth: 1,
+          padding: 50
+        });
+        isOut ? canvas.add(text) : canvas2.add(text)
+        // text.set('left', x)
+        // text.set('top', y)
+        console.log(text)
+      }
+    })
+  }
+})  
+
+fileEL.onchange = function() {
+  [].slice.call(this.files).forEach(function(oFile, idx) {
+    var src = URL.createObjectURL(oFile)
+    var li = document.createElement('li')
+    li.innerHTML = '<img width="90" height="90" src="' + src + '" alt="" clsaa="img' + idx + '" draggable="true" ondragstart="drag(event)"/>'
+    li.onload = function() {
+      window.URL.revokeObjectURL(src)
+    }
+    ul1.appendChild(li)
+  })
+  this.value = ''
+}
+
+function scaleChange(e) {
+  canvas2.getActiveObject().scale(e.target.value*0.001)
+  canvas2.renderAll()
+}
+
+function opacityChange(e) {
+  canvas2.getActiveObject().set('opacity', e.target.value*0.001)
+  canvas2.renderAll()
+}
+
+$('.img-edit span.close').on('click', function(e) {
+  canvas2.discardActiveObject(); // 不选中
+  canvas2.renderAll()
+  imgEdit.css('display', 'none')
+})
+
+imgControls.on('click', "span", function(e) {
+  var gobj = canvas2.getActiveObject(); //获取当前选中对象
+  switch (e.target.className) {
+    case 'moveup':
+      var t = gobj.get('top')
+      t -= 5
+      gobj.set('top', t)
+      break
+    case 'movedown':
+      var t = gobj.get('top')
+      t += 5
+      gobj.set('top', t)
+      break
+    case 'cutImg':
+      gobj.scaleToWidth(canvas2.width);
+      var patternSourceCanvas = new fabric.StaticCanvas();
+      patternSourceCanvas.add(gobj);
+      patternSourceCanvas.renderAll();
+      var pattern = new fabric.Pattern({
+        source: function() {
+          patternSourceCanvas.setDimensions({
+            width: gobj.getScaledWidth() + padding,
+            height: gobj.getScaledHeight() + padding
+          });
+          patternSourceCanvas.renderAll();
+          return patternSourceCanvas.getElement();
+        },
+        repeat: 'repeat'
+      });
+      var clipBox = new fabric.Polygon([
+        {x: 0, y: canvas2.height}, // tl 左上
+        {x: canvas2.width, y: canvas2.height}, // tr 右上
+        {x: canvas2.width, y: 0}, // br 右下
+        {x: 0, y: 0} ], { // bl 左下
+          originX: 'center',
+          originY: 'center',
+          left: canvas2.width / 2,
+          top: canvas2.height / 2,
+          fill: pattern,
+          centeredScaling: true, // 中心缩放
+          centeredRotation: true, // 中心旋转
+          // cornerStyle: 'circle', // 边角原型,默认方形
+          objectCaching: false,
+          stroke: 'black',
+          strokeDashArray: [6, 20]
+        })
+
+      canvas2.add(clipBox);
+      canvas2.selectionBorderColor ='red'
+      canvas2.setActiveObject(clipBox);
+      break
+    case 'rotateImg':
+      var t = gobj.get('angle')
+      t += 45
+      gobj.set('angle', t)
+      break
+    case 'removeImg':
+      canvas2.remove(gobj)
+      break
+  }
+  canvas2.renderAll()
+})
+
+var filters = ['Saturation', 'Grayscale', 'Vintage', 'Brownie', 'Kodachrome', 'Sharpen', 'Technicolor',
+  'Polaroid',
+  'Blackwhite',
+  'Sepia', 'Invert', 'Emboss'
+];
+imgStyle.on('click','li',function(e) {
+  var gobj = canvas2.getActiveObject(); //获取当前选中对象
+  // console.log($(e.currentTarget).index())
+  var idx = $(e.currentTarget).index()
+  $('.Saturation').css('display', 'none')
+  switch (filters[idx]) {
+    case 'Saturation': // 饱和度
+      var saturation = $('.Saturation')
+      saturation.css('display', 'block')
+      saturation.on('input', function() {
+        gobj.filters.push(new fabric.Image.filters.Saturation({saturation: saturation[0].value}))
+        gobj.filters = gobj.filters.slice(-1)
+        gobj.applyFilters()
+        // canvas2.add(gobj)
+        canvas2.renderAll()
+      })
+      break
+    case 'Grayscale': // 黑白
+      gobj.filters.push(new fabric.Image.filters.Grayscale())
+      break
+    case 'Vintage': // 旧照片/棕褐色
+      gobj.filters.push(new fabric.Image.filters.Vintage())
+      break
+    case 'Brownie': // 布朗尼
+      gobj.filters.push(new fabric.Image.filters.Brownie())
+      break
+    case 'Sharpen': // bug?????????????????????????????????????
+      var filter = new fabric.Image.filters.Convolute({
+        matrix: [0, -1, 0, -1, 5, -1, 0, -1, 0]
+      });
+      gobj.filters.push(filter)
+    // console.log(gobj.filters)
+      // gobj.applyFilters();
+      // canvas2.renderAll();
+      break
+    case 'Kodachrome': // 
+      gobj.filters.push(new fabric.Image.filters.Kodachrome())
+      break
+    case 'Technicolor':
+      gobj.filters.push(new fabric.Image.filters.Technicolor())
+      break
+    case 'Polaroid':
+      gobj.filters.push(new fabric.Image.filters.Polaroid())
+      break
+  }
+  gobj.filters = gobj.filters.slice(-1)
+  gobj.applyFilters()
+  // canvas2.add(gobj)
+  canvas2.renderAll()
+})
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>try</title>
+</head>
+<body>
+<style>
+  * {margin: 0; padding: 0; box-sizing: border-box; color: inherit; font: inherit; 
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -o-user-select: none;
+    user-select: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  ul, li {list-style: none;}
+  a {text-decoration: none;}
+  .fl {float: left;}
+  .fr {float: right;}
+  .wrap {width: 1200px; margin: 0 auto;}
+  .clear:after {content: ''; display: inline-block; clear: both;}
+
+  html,body {height: 100%; overflow: hidden;}
+  body {background: #fff;display: flex;
+  justify-content: center;
+  align-items: center;}
+  canvas {vertical-align: top; border: 1px solid red; position: absolute; left: 200px; top: 20px;}
+  input {}
+</style>
+
+<canvas id="c"></canvas>
+<button id="clone">clone</button>
+<button id="colorchange">change color</button>
+
+<script src='./fabric.js'></script>
+<script src='./jq.js'></script>
+<script>
+
+var canvas = new fabric.Canvas('c');
+canvas.setWidth(500)
+canvas.setHeight(500)
+
+var itext = new fabric.IText( "New text", { left : 50, top : 50} );
+itext.setSelectionStyles({fill: 'red'});
+canvas.add(itext).renderAll();
+// document.getElementById("c").fabric = canvas
+// var oImg = document.getElementById("c").fabric.toDataURL() // ==> 将canvas转为base64
+canvas.setActiveObject(itext);
+
+$('#clone').on('click', function(){ 
+  var gobj = canvas.getActiveObject(); //获取当前选中对象
+  if(gobj == null) return; // 如果没有当前没有选中对象return
+  // var obj1 = gobj.clone(); // 报错???????????
+  var obj1 = fabric.util.object.clone(gobj); // 成功克隆,但是原对象也跟着改变
+
+  // canvas.fxRemove(gobj); // 过度删除原对象
+  
+  canvas.discardActiveObject(); // 不选中
+  canvas.setActiveObject(obj1); // 选中克隆后对象
+
+// obj1 实现了toJSON接口 可以被序列化
+  // console.log(JSON.stringify(obj1))
+  // console.log(obj1.toObject())
+
+//canvas 可以随时被修改 json数据会被修改
+  // obj1 可以随时被修改 json数据会被修改
+  // obj1.backgroundColor = 'red';
+  // console.log(JSON.stringify(obj1))
+
+// 添加新对象 也会改变json数据
+  // canvas.add(new fabric.Rect({
+  //   left: 50,
+  //   top: 50,
+  //   height: 20,
+  //   width: 20,
+  //   fill: 'green'
+  // }));
+  // console.log(JSON.stringify(canvas));
+
+  // canvas.add(new fabric.Circle({
+  //   left: 100,
+  //   top: 100,
+  //   radius: 50,
+  //   fill: 'red'
+  // }));
+  // console.log(JSON.stringify(canvas));
+
+// 每个fabric对象有toObject方法
+  // console.log(JSON.stringify(canvas));
+  // var rect = new fabric.Rect();
+  // rect.toObject = function() {
+  //   return { name: 'trololo' };
+  // };
+  // canvas.add(rect);
+  // console.log(JSON.stringify(canvas));
+
+// 保留原有的数据 新增数据
+  // var rect = new fabric.Rect();
+  // rect.toObject = (function(toObject) {
+  //   return function() {
+  //     return fabric.util.object.extend(toObject.call(this), {
+  //       name: this.name
+  //     });
+  //   };
+  // })(rect.toObject);
+  // canvas.add(rect);
+  // rect.name = 'trololo';
+  // console.log(JSON.stringify(canvas))
+
+
+// 支持转成svg
+  canvas.add(new fabric.Rect({
+    left: 50,
+    top: 50,
+    height: 20,
+    width: 20,
+    fill: 'green'
+  }));
+  console.log(canvas.toSVG());
+
+  var vobj = obj1;
+  vobj.title = vobj.title + '_copy';
+  vobj.id = (vobj.id * 2);
+  vobj.set({
+     left: gobj.get('left') + 50,
+     top: gobj.get('top') + 50,
+     fill: 'blue'
+  });
+  canvas.renderAll().add(vobj);
+});
+
+$("#colorchange").on('click',function(){
+  var obj = canvas.getActiveObject();
+  if(obj == null) return;
+  if(obj.setSelectionStyles && obj.isEditing)
+    obj.setSelectionStyles({fill: 'red'});
+  else   
+  obj.set({fill: 'red'});
+  canvas.renderAll();
+});
+
+</script>
+
+</body>
+</html>

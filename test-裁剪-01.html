@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>try</title>
+</head>
+<body>
+<style>
+  * {margin: 0; padding: 0; box-sizing: border-box; color: inherit; font: inherit; 
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -o-user-select: none;
+    user-select: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  ul, li {list-style: none;}
+  a {text-decoration: none;}
+  .fl {float: left;}
+  .fr {float: right;}
+  .wrap {width: 1200px; margin: 0 auto;}
+  .clear:after {content: ''; display: inline-block; clear: both;}
+
+  .box {width: 200px; height: 150px; position: absolute; box-shadow: 0 0 0 1800px rgba(0,0,0,0.5);}
+  .clip-box {width: 100%; height: 100%; cursor: move; background: linear-gradient(rgba(255,255,255,0.3) 0px, rgba(255,255,255,0.3) 1px, transparent 1px, transparent 30%) 0 0 / 34% 34%, linear-gradient(90deg, rgba(255,255,255,0.3) 0px, rgba(255,255,255,0.3) 1px, transparent 1px, transparent 34%) 0 0 / 34% 34%; border: none; border-right: 1px solid rgba(255,255,255,0.3); border-bottom: 1px solid rgba(255,255,255,0.3);}
+
+  .box .resize > div > div {position: absolute; left: -1px; top: -1px;}
+  .box .resize .line > div {width: 1px; height: 1px; -background: red;}
+  .box .resize .line .l {height: 100%;}
+  .box .resize .line .t {width: 100%;}
+  .box .resize .line .r {height: 100%; left: auto; right: 0px;}
+  .box .resize .line .b {width: 100%; top: auto; bottom: -1px;}
+  .box .resize .line .l:after {content: ''; position: absolute; top: 50%; margin-top: -6px; width: 3px; height: 12px; background: #fff;}
+  .box .resize .line .t:after {content: ''; position: absolute; left: 50%; margin-left: -6px; width: 12px; height: 3px; background: #fff;}
+  .box .resize .line .r:after {content: ''; position: absolute; top: 50%; left: auto; right: -1px; margin-top: -6px; width: 3px; height: 12px; background: #fff;}
+  .box .resize .line .b:after {content: ''; position: absolute; top: auto; bottom: -0.5px; left: 50%; margin-left: -6px; width: 12px; height: 3px; background: #fff;}
+
+  .box .resize .drag .l {width: 6px; cursor: w-resize;}
+  .box .resize .drag .t {height: 6px; cursor: n-resize;}
+  .box .resize .drag .r {width: 6px; cursor: e-resize;}
+  .box .resize .drag .b {height: 6px; cursor: s-resize;}
+  .box .resize .corner > div {width: 12px; height: 3px; background: #fff;}
+  .box .resize .corner .lt {cursor: nw-resize;}
+  .box .resize .corner .rt {left: auto; right: 0.5px; cursor: ne-resize;}
+  .box .resize .corner .rb {left: auto; right: 0.5px; top: auto; bottom: -1px; cursor: se-resize;}
+  .box .resize .corner .lb {top: auto; bottom: -1px; cursor: sw-resize;}
+  .box .resize .corner .lt:after {content: ''; position: absolute; width: 3px; height: 12px; background: #fff;}
+  .box .resize .corner .rt:after {content: ''; position: absolute; left: auto; right: -1px; width: 3px; height: 12px; background: #fff;}
+  .box .resize .corner .rb:after {content: ''; position: absolute; left: auto; right: 0px; top: auto; bottom: 0; right: -1px; width: 3px; height: 12px; background: #fff;}
+  .box .resize .corner .lb:after {content: ''; position: absolute; top: auto; bottom: 0px; width: 3px; height: 12px; background: #fff;}
+
+
+  html,body {height: 100%; overflow: hidden;}
+  body {background: #fff;}
+  .canvas-box {width: 100%; height: 100%; display: flex;
+  justify-content: center;
+  align-items: center; overflow: hidden;}
+  canvas {vertical-align: top; border: 1px solid red; position: absolute; left: 200px; top: 20px;}
+
+</style>
+
+<div class="canvas-box">
+  <canvas id="c"></canvas>
+  <button class="clipStart-btn">裁剪</button>
+  <button class="clipEnd-btn">确认裁剪</button>
+  <div class="box">
+    <div class="clip-box"></div>
+    <div class="resize">
+      <div class="line drag">
+        <div class="l"></div>
+        <div class="t"></div>
+        <div class="r"></div>
+        <div class="b"></div>
+      </div>
+      <div class="corner">
+        <div class="lt"></div>
+        <div class="rt"></div>
+        <div class="rb"></div>
+        <div class="lb"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src='./fabric.js'></script>
+<script>
+
+
+// create a wrapper around native canvas element (with id="c")
+var canvas = new fabric.Canvas('c');
+canvas.setWidth(500)
+canvas.setHeight(500)
+
+// 图片
+fabric.Image.fromURL('http://fabricjs.com/assets/pug_small.jpg', function(oImg) {
+  // scale image down, and flip it, before adding it onto canvas
+  oImg.scale(1).set({
+    left: 0,
+    top: 0,
+    /*clipTo: function (ctx) {
+      ctx.rect(-180, -270, 360, 540)
+    }*/
+  })
+  canvas.add(oImg);
+  // canvas.setActiveObject(oImg);
+
+
+  document.onmousedown = function(e) {
+    var x1 = e.clientX
+    var y1 = e.clientY
+    var target = e.target
+    // closest() 方法获得匹配选择器的第一个祖先元素，从当前元素开始沿 DOM 树向上。
+    var box = target.closest('.box')
+    var clipBox = target.closest('.clip-box')
+    var resize = target.closest('.resize')
+    var sClass = target.className
+
+    // 开始裁剪
+    if(target.className === 'clipStart-btn') {
+
+
+    }
+    
+    // 确认裁剪
+    if(target.className === 'clipEnd-btn') {
+      var pointBox = document.getElementsByClassName('box')[0]
+      var clip2X = pointBox.offsetLeft
+      var clip2Y = pointBox.offsetTop
+      var clip2W = pointBox.offsetWidth
+      var clip2H = pointBox.offsetHeight
+      var canvasX = canvas.wrapperEl.offsetLeft
+      var canvasY = canvas.wrapperEl.offsetTop
+      var rectX = clip2X - canvasX
+      var rectY = clip2Y - canvasY
+      var oX = oImg.width / 2
+      var oY = oImg.height / 2
+      oImg.set('clipTo', function(ctx) {
+        ctx.rect(-oX+rectX, -oY + rectY, clip2W, clip2H)
+      })
+      canvas.renderAll()
+    }
+
+    if (!box) {
+      return
+    }
+
+    e.preventDefault && e.preventDefault()
+    //当捕捉到事件(event)时，判断为false，则阻止当前事件继续运行
+    e.returnValue = false
+
+    var originX = box.offsetLeft
+    var originY = box.offsetTop
+    var originW = box.offsetWidth
+    var originH = box.offsetHeight
+
+    if (clipBox) {
+      // 拖拽，改变位置
+      document.onmousemove = function(e) {
+        var x2 = e.clientX
+        var y2 = e.clientY
+        var x = x2 - x1 + originX
+        var y = y2 - y1 + originY
+        box.style.left = x + 'px'
+        box.style.top = y + 'px'
+      }
+      document.onmouseup = function() {
+        this.onmousemove = this.onmouseup = null
+        clip2X = box.offsetLeft
+        clip2Y = box.offsetTop
+        clip2W = box.offsetWidth
+        clip2H = box.offsetHeight
+      }
+    }
+
+    if (resize) {
+      // 拖拽，改变尺寸
+      document.onmousemove = function(e) {
+        var x2 = e.clientX
+        var y2 = e.clientY
+        var l, t, w, h
+        var isL = sClass.indexOf('l') > -1
+        var isT = sClass.indexOf('t') > -1
+        var o = {}
+        if (isL) {
+          o.left = x2 - x1 + originX
+        }
+        if (isT) {
+          o.top = y2 - y1 + originY
+        }
+        o.width = (isL ? x1 - x2 : x2 - x1) + originW
+        o.height = (isT ? y1 - y2 : y2 - y1) + originH
+
+        var iMin = 80
+        if (o.width < iMin) {
+          o.width = iMin
+          if (isL) {
+            o.left = originX + originW - iMin
+          }
+        }
+        if (o.height < iMin) {
+          o.height = iMin
+          if (isT) {
+            o.top = originY + originH - iMin
+          }
+        }
+
+
+        var json = {
+          'l': ['left', 'width'],
+          't': ['top', 'height'],
+          'r': ['width'],
+          'b': ['height'],
+          'lt': ['left', 'width', 'top', 'height'],
+          'rt': ['top', 'width', 'height'],
+          'rb': ['width', 'height'],
+          'lb': ['left', 'width', 'height'],
+        }
+        json[sClass].forEach(function(attr, idx) {
+          box.style[attr] = o[attr] + 'px'
+        })
+      }
+      document.onmouseup = function() {
+        this.onmousemove = this.onmouseup = null
+        clip2X = box.offsetLeft
+        clip2Y = box.offsetTop
+        clip2W = box.offsetWidth
+        clip2H = box.offsetHeight
+      }
+    }
+  }
+});
+
+</script>
+
+</body>
+</html

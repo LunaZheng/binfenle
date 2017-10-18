@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>try</title>
+</head>
+<body>
+<style>
+  * {margin: 0; padding: 0; box-sizing: border-box; color: inherit; font: inherit; 
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -o-user-select: none;
+    user-select: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  ul, li {list-style: none;}
+  a {text-decoration: none;}
+  .fl {float: left;}
+  .fr {float: right;}
+  .wrap {width: 1200px; margin: 0 auto;}
+  .clear:after {content: ''; display: inline-block; clear: both;}
+
+  html,body {height: 100%; overflow: hidden;}
+  body {background: #fff;display: flex;
+  justify-content: center;
+  align-items: center;}
+  canvas {vertical-align: top; border: 1px solid red; position: absolute; left: 200px; top: 20px;}
+  img {width: 100px;}
+</style>
+
+<canvas id="c"></canvas>
+<img src="http://designsoftware.ninja/printdemo/modules/blockadvertising/img/fixtures/advertising.jpg" id="my-image">
+
+<script src='./fabric.js'></script>
+<script>
+// 画两个方形
+// create a wrapper around native canvas element (with id="c")
+var canvas = new fabric.Canvas('c');
+canvas.setWidth(500)
+canvas.setHeight(500)
+
+/*var rect01 = new fabric.Rect({
+    left: 100,
+    top: 100,
+    fill: 'red',
+    width: 20,
+    height: 20
+});
+var rect02 = new fabric.Rect({
+    left: 200,
+    top: 100,
+    fill: 'pink',
+    width: 20,
+    height: 20
+});
+canvas.add(rect01, rect02); // add object*/
+
+/*console.log(canvas.item(0)); // fabric.Rect（第一个对象）
+console.log(canvas.item(1)); // fabric.Rect（第二个对象）
+console.log(canvas.getObjects()); // 获取画布上的所有对象（数组）
+
+canvas.remove(rect01); // 只能删除一个
+canvas.remove(rect02); */
+
+// 0到45有一个动画过度
+/*
+  第一个参数是动画的属性
+  第二个参数是动画的结束值
+  第三个参数是一个可选的对象，指定动画的细节细节 - 持续时间，回调，缓和等
+*/
+/*rect01.animate('angle', 45, {
+  onChange: canvas.renderAll.bind(canvas),
+  duration: 2000,
+  easing: fabric.util.ease.easeOutBounce
+  //其他著名的选项包括easeInCubic，easeOutCubic，easeInElastic，easeOutElastic，easeInBounce，和easeOutExpo。
+});*/
+/*
+  from 允许您指定动画属性的起始值（如果不想使用当前值）。
+  duration 默认为500 ms。此选项可用于更改动画的持续时间。
+  onComplete 在动画结束时调用的回调。
+  easing 按照特定算法。
+*/
+
+// 左到右进行变动 
+/*rect01.animate('left', '+100', {
+    onChange: canvas.renderAll.bind(canvas),
+    duration: 3000,
+    easing: fabric.util.ease.easeOutBounce
+});*/
+
+// 逆时针转5度 
+// rect01.animate('angle', '-15', { onChange: canvas.renderAll.bind(canvas) });
+
+
+// 图像滤镜
+// url 有跨域问题
+fabric.Image.fromURL('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAADIElEQVRoQ+2Yy28SURTGvzNYoiFqTUxMo1HsonRXjNCVCdi4NAo7E2JKN8bE0JalK+EvwEJc2mJM1zZitxW3BVNWBuxCXOhWmvhIBzrX3KlDeM0DBbmTcBMSwlxmvt/5zp177iHYfJDN9WMMMGoHxw6MHeiIQPDlryBJygb/mSnSUv7+qbxRkIRLoYXNH1UAV1QAoPo24rpqG4DUruzN7df3WgXvRFyGQRbCgdQec1NdfgIg+nq/0RZwoQFahWuqbQHAU4XAVnjEO/NbaIDUrhwlKIsABfUWpnAAx9HGIpgSApHbbN8YOQDPa6khzzFGQauiW6EGCnAjlAs6IG2AYBo5LiL8+JZZgE2vDxQgEN5ubiqmTxYNYOZ6JjR1efqVFeHaHGEcmPVnsgAWL1ya7ke/GCnEIy9JUCMvAsCX1PMagOxh4yhZLcX597bRVUrM+tJ5EAVEAfj6dF0VzIC1SiG2ag7gzzBtkggONAEYq1WKy+dsDICDSjE2aQ5g9xQSbxGvH4CQPaw3EpYWMbfI1q9RLcdsvZFpEIHwNn/vnrW6mwmzE2uCeTFHCnsjORwuKxDCAXDRrYtaD+LhswfHm82E87iDIMteAPwTIsKcFXhtzkCrUe2mHl+mRqSfSk0A0FJ83snrqObg5wM0DkNQsEpEarvEaAwFQHsr6T04kryH0+fPgPUAaIMp1PkhJ6qe0HTGUADM0ujOym1MzVxci887u2qVXjpVV+pyohfIUAD+7A3NGqlbFFsqF5bbUscsVfj1XiBDA/D40ltEdFdH2ItyIdbVIrEC0QkyNIBZfzoKkNp07eFAtVxYNuxhWoHhjuQ+/PzUOndgnTm3NzV5cuLENz0hR5Cu7RcelawINZqzsPm9BpC2eX7eibgMGwp99UaHmUYaFG+vS5KiridFkaIDba8bp5F6bLpZLsYM+/n/6lDn//tywCyNwJAsF2OJQYs0ul9fAPxGHn+mROhdHigKwh/fx7bEBvCleUmQahPJ2DuAEv87fbiGvh1QXeAQoEkQq6J+lC+X4ryDN5LxVwAjUarz0DHAqN0YOzBqB34DNoh4QKawo7QAAAAASUVORK5CYII=', function(img) {
+  img.set('left', 100).set('top', 100)
+  // add filter 添加过滤器
+  // img.filters.push(new fabric.Image.filters.Grayscale()); // --> 应用灰色滤镜
+  // img.filters.push(new fabric.Image.filters.Sepia()); // --> 应用Sepia图像滤镜
+
+  // filters属性是一个简单的数组，所以你可以按常规方式执行任何你想要的操作 - 删除一个过滤器（通过pop，splice或shift），添加一个过滤器（通过push，splice，unshift），甚至组合多个过滤器 当您打电话时，过滤器阵列中的任何过滤器将逐个应用applyFilters
+  /*img.filters.push( // 组合一个棕褐色和一个明亮的图像过滤器
+    new fabric.Image.filters.Sepia(),
+    new fabric.Image.filters.Brightness({ brightness: 100 })
+  );*/
+
+  // apply filters and re-render canvas when done 应用过滤器并在完成后重新绘制画布
+  img.applyFilters(canvas.renderAll.bind(canvas));
+  // add image onto canvas 将图像添加到画布上
+  canvas.add(img);
+});
+
+//应用自定义图像过滤器 (没看懂)
+/*fabric.Image.filters.Redify = fabric.util.createClass({
+  type: 'Redify',
+  // 片段来源的重新编程程序
+  fragmentSource: 'precision highp float;\n' +
+    'uniform sampler2D uTexture;\n' +
+    'varying vec2 vTexCoord;\n' +
+    'void main() {\n' +
+      'vec4 color = texture2D(uTexture, vTexCoord);\n' +
+      'color.g = 0;\n' +
+      'color.b = 0;\n' +
+      'gl_FragColor = color;\n' +
+    '}',
+
+  applyTo2d: function(options) {
+    var imageData = options.imageData,
+        data = imageData.data, i, len = data.length;
+
+    for (i = 0; i < len; i += 4) {
+      data[i + 1] = 0;
+      data[i + 2] = 0;
+    }
+
+  }
+});
+
+fabric.Image.filters.Brightness.fromObject = fabric.Image.filters.BaseFilter.fromObject;*/
+
+
+//可以使用渐变色
+/*var circle = new fabric.Circle({
+  left: 100,
+  top: 100,
+  radius: 50
+});*/
+
+//将渐变填充应用于对象
+/*circle.setGradient('fill', {
+  x1: 0,
+  y1: 0,
+  x2: 0,
+  y2: circle.height,
+  colorStops: {
+    0: '#000',
+    1: '#fff'
+  }
+});*/
+
+//使用颜色停止创建的渐变
+/*circle.setGradient('fill', {
+  x1: 0,
+  y1: 0,
+  x2: circle.width,
+  y2: 0,
+  colorStops: {
+    0: "red",
+    1: "blue"
+  }
+});*/
+
+//彩虹渐变
+/*circle.setGradient('fill', {
+  x1: 0,
+  y1: circle.height / 2,
+  x2: circle.width,
+  y2: circle.height / 2,
+  colorStops: {
+    0: "red",
+    0.2: "orange",
+    0.4: "yellow",
+    0.6: "green",
+    0.8: "blue",
+    1: "purple"
+  }
+});*/
+
+/*canvas.add(circle);*/
+
+// 文本
+/*var text = new fabric.Text('hello world', { 
+  left: 100, 
+  top: 100 ,
+  fontFamily: 'Comic Sans',
+  fontSize: 30,
+  // fontWeight: 'bold',
+  // textDecoration: 'line-through', // underline , line-through , overline
+  // shadow: 'green -5px -5px 3px', 
+  // fontStyle: 'italic',
+  // fontFamily: 'Hoefler Text',
+  stroke: '#ff1318',
+  strokeWidth: 1,
+});
+canvas.add(text);*/
+
+/*var text = 'this is\na multiline\ntext\nwith\ncustom lineheight\n&background';
+var textWithBackground = new fabric.Text(text, {
+  textBackgroundColor: 'rgb(0,200,0)'
+});
+canvas.add(textWithBackground);*/
+
+</script>
+
+</body>
+</html>

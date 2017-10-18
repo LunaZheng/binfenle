@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>try</title>
+</head>
+<body>
+<style>
+  * {margin: 0; padding: 0; box-sizing: border-box; color: inherit; font: inherit; 
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -o-user-select: none;
+    user-select: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  ul, li {list-style: none;}
+  a {text-decoration: none;}
+  .fl {float: left;}
+  .fr {float: right;}
+  .wrap {width: 1200px; margin: 0 auto;}
+  .clear:after {content: ''; display: inline-block; clear: both;}
+
+  .clip-outBox {width: 500px; height: 500px; position: absolute; top: 0px; left: 0; overflow: hidden;
+     display: flex; justify-content: center; align-items: center; overflow: hidden;
+     display: none;
+  }
+  .clip-box {width: 200px; height: 150px; position: absolute; box-shadow: 0 0 0 1000px rgba(0,0,0,0.3); -display: none;
+     /*margin: auto; position: absolute; top: 0; left: 0; right: 0; bottom: 0; */
+    }
+  .clip-content {width: 100%; height: 100%; cursor: move; background: linear-gradient(rgba(255,255,255,0.3) 0px, rgba(255,255,255,0.3) 1px, transparent 1px, transparent 30%) 0 0 / 34% 34%, linear-gradient(90deg, rgba(255,255,255,0.3) 0px, rgba(255,255,255,0.3) 1px, transparent 1px, transparent 34%) 0 0 / 34% 34%; border: none; border-right: 1px solid rgba(255,255,255,0.3); border-bottom: 1px solid rgba(255,255,255,0.3);}
+
+  .clip-box .resize > div > div {position: absolute; left: -1px; top: -1px;}
+  .clip-box .resize .line > div {width: 1px; height: 1px; -background: red;}
+  .clip-box .resize .line .l {height: 100%;}
+  .clip-box .resize .line .t {width: 100%;}
+  .clip-box .resize .line .r {height: 100%; left: auto; right: 0px;}
+  .clip-box .resize .line .b {width: 100%; top: auto; bottom: -1px;}
+  .clip-box .resize .line .l:after {content: ''; position: absolute; top: 50%; margin-top: -6px; width: 3px; height: 12px; background: #fff;}
+  .clip-box .resize .line .t:after {content: ''; position: absolute; left: 50%; margin-left: -6px; width: 12px; height: 3px; background: #fff;}
+  .clip-box .resize .line .r:after {content: ''; position: absolute; top: 50%; left: auto; right: -1px; margin-top: -6px; width: 3px; height: 12px; background: #fff;}
+  .clip-box .resize .line .b:after {content: ''; position: absolute; top: auto; bottom: -0.5px; left: 50%; margin-left: -6px; width: 12px; height: 3px; background: #fff;}
+
+  .clip-box .resize .drag .l {width: 6px; cursor: w-resize;}
+  .clip-box .resize .drag .t {height: 6px; cursor: n-resize;}
+  .clip-box .resize .drag .r {width: 6px; cursor: e-resize;}
+  .clip-box .resize .drag .b {height: 6px; cursor: s-resize;}
+  .clip-box .resize .corner > div {width: 12px; height: 3px; background: #fff;}
+  .clip-box .resize .corner .lt {cursor: nw-resize;}
+  .clip-box .resize .corner .rt {left: auto; right: 0.5px; cursor: ne-resize;}
+  .clip-box .resize .corner .rb {left: auto; right: 0.5px; top: auto; bottom: -1px; cursor: se-resize;}
+  .clip-box .resize .corner .lb {top: auto; bottom: -1px; cursor: sw-resize;}
+  .clip-box .resize .corner .lt:after {content: ''; position: absolute; width: 3px; height: 12px; background: #fff;}
+  .clip-box .resize .corner .rt:after {content: ''; position: absolute; left: auto; right: -1px; width: 3px; height: 12px; background: #fff;}
+  .clip-box .resize .corner .rb:after {content: ''; position: absolute; left: auto; right: 0px; top: auto; bottom: 0; right: -1px; width: 3px; height: 12px; background: #fff;}
+  .clip-box .resize .corner .lb:after {content: ''; position: absolute; top: auto; bottom: 0px; width: 3px; height: 12px; background: #fff;}
+
+
+  html,body {height: 100%; overflow: hidden;}
+  body {background: #fff;}
+  .canvas-box {width: 100%; height: 100%; display: flex;
+  justify-content: center;
+  align-items: center; overflow: hidden;}
+  canvas {vertical-align: top; border: 1px solid red; position: absolute; left: 200px; top: 20px;}
+
+</style>
+
+<div class="canvas-box">
+  <canvas id="c"></canvas>
+  <button class="clipStart-btn">裁剪</button>
+  <button class="clipEnd-btn">确认裁剪</button>
+</div>
+<div class="clip-outBox">
+  <div class="clip-box">
+    <div class="clip-content"></div>
+    <div class="resize">
+      <div class="line drag">
+        <div class="l"></div>
+        <div class="t"></div>
+        <div class="r"></div>
+        <div class="b"></div>
+      </div>
+      <div class="corner">
+        <div class="lt"></div>
+        <div class="rt"></div>
+        <div class="rb"></div>
+        <div class="lb"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src='./fabric.js'></script>
+<!-- <script src='https://cdn.jsdelivr.net/g/lodash@4(lodash.min.js+lodash.fp.min.js)'></script> -->
+<script>
+
+
+// create a wrapper around native canvas element (with id="c")
+var canvas = new fabric.Canvas('c');
+canvas.setWidth(500)
+canvas.setHeight(500)
+
+// 心形裁剪
+var path = new fabric.Path('M 272.70141,238.71731 \
+    C 206.46141,238.71731 152.70146,292.4773 152.70146,358.71731  \
+    C 152.70146,493.47282 288.63461,528.80461 381.26391,662.02535 \
+    C 468.83815,529.62199 609.82641,489.17075 609.82641,358.71731 \
+    C 609.82641,292.47731 556.06651,238.7173 489.82641,238.71731  \
+    C 441.77851,238.71731 400.42481,267.08774 381.26391,307.90481 \
+    C 362.10311,267.08773 320.74941,238.7173 272.70141,238.71731  \
+    z ');
+/*fabric.Image.fromURL('http://img5.imgtn.bdimg.com/it/u=2381054266,733518217&fm=27&gp=0.jpg', function(oImg) {
+  // oImg.selectable = false;
+  oImg.scale(0.5).set({
+    left: 0,
+    top: 0,
+    clipTo: function (ctx) {
+      path._render(ctx)
+      ctx.translate(0, -15)
+      ctx.scale(1.5, 1.5)
+      // ctx.rotate(20)
+    }
+  });
+  // 将对象设置为居中画布
+  console.log(oImg)
+  canvas.centerObject(oImg);
+  canvas.add(oImg);
+  canvas.renderAll();
+});*/
+
+
+/*var clipPoly = new fabric.Polygon([
+        { x: 180, y: 10 },
+        { x: 300, y: 50 },
+        { x: 300, y: 180 },
+        { x: 180, y: 220 }
+  ], {
+    originX: 'left',
+    originY: 'top',
+    left: 100,
+    top: 10,
+    width: 200,
+    height: 200,
+    fill: 'transparent', // use transparent for no fill 
+    stroke: 'red',
+    strokeWidth: 1,
+    // selectable: false
+});*/
+
+// 图片
+fabric.Image.fromURL('http://img5.imgtn.bdimg.com/it/u=2381054266,733518217&fm=27&gp=0.jpg', function(oImg) {
+// fabric.Image.fromURL('http://fabricjs.com/assets/pug_small.jpg', function(oImg) {
+  // scale image down, and flip it, before adding it onto canvas
+  oImg.scale(1).set({
+    left: 0,
+    top: 60,
+    clipTo: function (ctx) {
+      // ctx.rect(-180, -270, 360, 540)
+      path._render(ctx)
+      ctx.translate(0, -15)
+      ctx.scale(1.5, 1.5)
+    }
+  })
+  canvas.add(oImg);
+  // canvas.setActiveObject(oImg);
+
+
+  document.onmousedown = function(e) {
+    var x1 = e.clientX
+    var y1 = e.clientY
+    var target = e.target
+    // closest() 方法获得匹配选择器的第一个祖先元素，从当前元素开始沿 DOM 树向上。
+    var box = target.closest('.clip-box')
+    var clipContent = target.closest('.clip-content')
+    var resize = target.closest('.resize')
+    var sClass = target.className
+    var pointBox = document.getElementsByClassName('clip-box')[0]
+    var pointOutBox = document.getElementsByClassName('clip-outBox')[0]
+
+    // 开始裁剪
+    if(target.className === 'clipStart-btn') {
+      pointOutBox.style.display = 'flex'
+      pointOutBox.style.left = canvas.wrapperEl.offsetLeft + 'px'
+      pointOutBox.style.top = canvas.wrapperEl.offsetTop + 'px'
+    }
+    
+    // 确认裁剪
+    if(target.className === 'clipEnd-btn') {
+      var clip2X = pointBox.offsetLeft
+      var clip2Y = pointBox.offsetTop
+      var clip2W = pointBox.offsetWidth
+      var clip2H = pointBox.offsetHeight
+      var oX = oImg.width / 2
+      var oY = oImg.height / 2
+      var canvasItemL = canvas.item(0).left
+      var canvasItemT = canvas.item(0).top
+      var rectX = clip2X - canvasItemL
+      var rectY = clip2Y - canvasItemT
+      oImg.set('clipTo', function(ctx) {
+        ctx.rect(-oX+rectX, -oY + rectY, clip2W, clip2H)
+      })
+      canvas.renderAll()
+      pointOutBox.style.display = 'none'
+
+    }
+
+    if (!box) {
+      return
+    }
+
+    e.preventDefault && e.preventDefault()
+    //当捕捉到事件(event)时，判断为false，则阻止当前事件继续运行
+    e.returnValue = false
+
+    var originX = box.offsetLeft
+    var originY = box.offsetTop
+    var originW = box.offsetWidth
+    var originH = box.offsetHeight
+
+    if (clipContent) {
+      // 拖拽，改变位置
+      document.onmousemove = function(e) {
+        var x2 = e.clientX
+        var y2 = e.clientY
+        var x = x2 - x1 + originX
+        var y = y2 - y1 + originY
+        box.style.left = x + 'px'
+        box.style.top = y + 'px'
+      }
+      document.onmouseup = function() {
+        this.onmousemove = this.onmouseup = null
+        clip2X = box.offsetLeft
+        clip2Y = box.offsetTop
+        clip2W = box.offsetWidth
+        clip2H = box.offsetHeight
+      }
+    }
+
+    if (resize) {
+      // 拖拽，改变尺寸
+      document.onmousemove = function(e) {
+        var x2 = e.clientX
+        var y2 = e.clientY
+        var l, t, w, h
+        var isL = sClass.indexOf('l') > -1
+        var isT = sClass.indexOf('t') > -1
+        var o = {}
+        if (isL) {
+          o.left = x2 - x1 + originX
+        }
+        if (isT) {
+          o.top = y2 - y1 + originY
+        }
+        o.width = (isL ? x1 - x2 : x2 - x1) + originW
+        o.height = (isT ? y1 - y2 : y2 - y1) + originH
+
+        var iMin = 80
+        if (o.width < iMin) {
+          o.width = iMin
+          if (isL) {
+            o.left = originX + originW - iMin
+          }
+        }
+        if (o.height < iMin) {
+          o.height = iMin
+          if (isT) {
+            o.top = originY + originH - iMin
+          }
+        }
+
+
+        var json = {
+          'l': ['left', 'width'],
+          't': ['top', 'height'],
+          'r': ['width'],
+          'b': ['height'],
+          'lt': ['left', 'width', 'top', 'height'],
+          'rt': ['top', 'width', 'height'],
+          'rb': ['width', 'height'],
+          'lb': ['left', 'width', 'height'],
+        }
+        json[sClass].forEach(function(attr, idx) {
+          box.style[attr] = o[attr] + 'px'
+        })
+      }
+      document.onmouseup = function() {
+        this.onmousemove = this.onmouseup = null
+        clip2X = box.offsetLeft
+        clip2Y = box.offsetTop
+        clip2W = box.offsetWidth
+        clip2H = box.offsetHeight
+      }
+    }
+  }
+});
+
+
+
+</script>
+
+</body>
+</html

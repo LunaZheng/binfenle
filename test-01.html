@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>try</title>
+</head>
+<body>
+<style>
+  * {margin: 0; padding: 0; box-sizing: border-box; color: inherit; font: inherit; 
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -o-user-select: none;
+    user-select: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  ul, li {list-style: none;}
+  a {text-decoration: none;}
+  .fl {float: left;}
+  .fr {float: right;}
+  .wrap {width: 1200px; margin: 0 auto;}
+  .clear:after {content: ''; display: inline-block; clear: both;}
+
+  html,body {height: 100%; overflow: hidden;}
+  body {background: #eee;display: flex;
+  justify-content: center;
+  align-items: center;}
+  #box {background: transparent; width: 500px; height: 400px; border: 2px solid green; position: relative;}
+  canvas {vertical-align: top; border: 1px solid red; position: absolute; left: 200px; top: 20px;}
+</style>
+
+<div id="box">
+  <canvas id="canvas">您的浏览器不支持canvas</canvas>
+</div>
+<div><img width="100" src="http://img2.imgtn.bdimg.com/it/u=1866416149,2722971791&fm=26&gp=0.jpg" alt=""></div>
+<!-- <iframe srcdoc="<p>Hello world!</p>" src="demo_iframe_srcdoc.htm"></iframe> -->
+
+<script>
+var c = document.getElementsByTagName('canvas')[0]
+var gd = c.getContext('2d')
+
+window.onload = window.onresize = function(e) {
+  
+}
+
+var w = 200
+  var h = 150
+  c.width = w
+  c.height = h
+
+  var img = new Image()
+  img.src="http://img2.imgtn.bdimg.com/it/u=1866416149,2722971791&fm=26&gp=0.jpg"
+  var imgW = img.width
+  var imgH = img.height
+  gd.drawImage(img,0,0);
+
+  canvas.onmousedown = function(e) {
+    e.preventDefault()
+    var x1 = e.clientX
+    var y1 = e.clientY
+    var originX = img.offsetLeft
+    var originY = img.offsetTop
+    console.log(originX, originY)
+   /* bigImg.style.transition = 'none'
+    bigImg.style.width = bigImg.offsetWidth + 'px'
+    bigImg.style.height = bigImg.offsetHeight + 'px'
+    bigImg.style.left = bigImg.offsetLeft + 'px'
+    bigImg.style.top = bigImg.offsetTop + 'px'
+    gd.drawImage(img, x2 - x1, y2 - y1);
+    bigImg.style.position = 'absolute'
+*/
+    document.onmousemove = function(e) {
+      var x2 = e.clientX
+      var y2 = e.clientY
+      // bigImg.style.left = x2 - x1 + originX + 'px'
+      // bigImg.style.top = y2 - y1 + originY + 'px'
+      gd.drawImage(img, x2 - x1, y2 - y1);
+      originX = img.offsetLeft
+      originY = img.offsetTop
+    console.log(originX, originY)
+    }
+    document.onmouseup = function(e) {
+      this.onmousemove = this.onmouseup = null
+    }
+  }
+
+function addEvent(el, eventName, fn) {
+  if ('addEventListener' in document) {
+    el.addEventListener(eventName, fn, false)
+  } else {
+    el.attachEvent('on' + eventName, fn)
+  }
+  return fn
+}
+
+
+</script>
+
+</body>
+</html>

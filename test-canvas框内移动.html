@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>try</title>
+</head>
+<body>
+<style>
+  * {margin: 0; padding: 0; box-sizing: border-box; color: inherit; font: inherit; 
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -o-user-select: none;
+    user-select: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  ul, li {list-style: none;}
+  a {text-decoration: none;}
+  .fl {float: left;}
+  .fr {float: right;}
+  .wrap {width: 1200px; margin: 0 auto;}
+  .clear:after {content: ''; display: inline-block; clear: both;}
+
+  html,body {height: 100%; overflow: hidden;}
+  body {background: #fff;}
+  .canvas-box {width: 100%; height: 100%; display: flex;
+  justify-content: center;
+  align-items: center; overflow: hidden;}
+  canvas {vertical-align: top; border: 8px solid #eee; -position: absolute; -left: 200px; -top: 20px;}
+  .file {position: absolute; top: 0; left: 0;}
+  #ul1 {position: absolute; top: 30px; left: 0;}
+  #ul1 li {display: inline-block;}
+</style>
+
+<div class="canvas-box">
+  <canvas id="c"></canvas>
+</div>
+<a href="javascript:;" class="file">添加照片
+  <input type="file" name="" id="fileEL" multiple="">
+</a>
+<ul id="ul1"></ul>
+
+<script src='./fabric.js'></script>
+<script src='./jq.js'></script>
+<!-- <script src='https://cdn.jsdelivr.net/g/lodash@4(lodash.min.js+lodash.fp.min.js)'></script> -->
+<script>
+fileEL.onchange = function() {
+  [].slice.call(this.files).forEach(function(oFile, idx) {
+    var src = URL.createObjectURL(oFile)
+    var li = document.createElement('li')
+    li.innerHTML = '<img width="50" src="' + src + '" alt="" clsaa="img' + idx + '" draggable="true" ondragstart="drag(event)"/>'
+    li.onload = function() {
+      window.URL.revokeObjectURL(src)
+    }
+    ul1.appendChild(li)
+  })
+  this.value = ''
+}
+var dragImg
+
+// create a wrapper around native canvas element (with id="c")
+var canvas = new fabric.Canvas('c');
+canvas.setWidth(700)
+canvas.setHeight(400)
+
+// var bgImg = './bg.png'
+
+// changeBg(bgImg)
+// function changeBg(bgImg) {
+  /*fabric.Image.fromURL('./bg.png', function(img) {
+    canvas.backgroundImage = img;
+    canvas.backgroundImage.width = canvas.get('width');
+    // canvas.backgroundImage.height = canvas.get('height');
+    img.selectable = false
+    canvas.add(img).renderAll();
+  });*/
+// }
+// canvas.renderAll();
+
+/*fabric.Image.fromURL(bgImg, function(oImg) {
+  // oImg.selectable = false;
+  oImg.scale(1).set({
+    left: 0,
+    top: 0,
+    selectable: false
+  });
+  // 将对象设置为居中画布
+  canvas.centerObject(oImg);
+  canvas.add(oImg);
+  canvas.renderAll();
+});*/
+
+
+/*var clipPoly = new fabric.Polygon([
+        { x: 180, y: 10 },
+        { x: 300, y: 50 },
+        { x: 300, y: 180 },
+        { x: 180, y: 220 }
+  ], {
+    originX: 'left',
+    originY: 'top',
+    left: 100,
+    top: 10,
+    width: 200,
+    height: 200,
+    fill: 'transparent', // use transparent for no fill 
+    stroke: 'red',
+    strokeWidth: 1,
+    // selectable: false
+});*/
+
+var clipPoly = new fabric.Rect({
+    originX: 'left',
+    originY: 'top',
+    left: 70,
+    top: 150,
+    width: 140,
+    height: 180,
+    fill: 'transparent',
+    // stroke: 'red',
+    // strokeWidth: 10,
+    selectable: false
+});
+
+// clipPoly.set({
+//     clipFor: 'pug'
+// });
+canvas.add(clipPoly)
+
+fabric.Image.fromURL('./bg.png', function(img) {
+    canvas.backgroundImage = img;
+    canvas.backgroundImage.width = canvas.get('width');
+    // canvas.backgroundImage.height = canvas.get('height');
+    img.selectable = false
+    canvas.add(img).renderAll();
+    // canvas.sendBackwards(img)// 1级向下
+  });
+
+
+// 设置线性渐变
+/*clipPoly.setGradient('fill', {
+  type: 'linear',
+  x1: -clipPoly.width / 2,
+  y1: 0,
+  x2: clipPoly.width / 2,
+  y2: 0,
+  colorStops: {
+    0: 'red',
+    0.5: '#005555',
+    1: 'rgba(0,0,255,0.5)'
+  }
+});
+canvas.renderAll();*/
+
+// 背景图
+// fabric.util.loadImage('http://fabricjs.com/assets/escheresque_ste.png', function(img) {
+//   clipPoly.setPatternFill({
+//     source: img,
+//     repeat: 'repeat'
+//   });
+//   canvas.renderAll();
+// });
+
+// 设置对象的位置
+// var point = new fabric.Point(100, 100)
+// clipPoly.setPositionByOrigin(point)
+// 用字符串表示法设置阴影
+// clipPoly.setShadow('5px 5px 10px rgba(0,0,0,0.5)');
+// console.log(clipPoly.setCoords())
+// canvas.renderAll();
+// 将对象转换为类似数据网址的字符串
+// console.log(clipPoly.toDataURL())
+
+
+function degToRad(degrees) {
+    return degrees * (Math.PI / 180);
+}
+
+function addImg(dragImg) {
+  var pugImg = new Image();
+  pugImg.onload = function (img) {    
+      var scaleNum = 1
+      var pug = new fabric.Image(pugImg, {
+          originX: 'left',
+          originY: 'top',
+          hasControls: false, // 隐藏控件
+          // hasBorders: false, // 隐藏框centeredScaling
+          // centeredScaling: true, 
+          clipTo: function(ctx) { 
+              ctx.save();
+
+              ctx.translate(-5, -5);
+              ctx.fillStyle="#999";
+              ctx.fillRect(
+                clipPoly.left - pug.left - pug.width / 2,
+                clipPoly.top - pug.top - pug.height / 2,
+                clipPoly.width + 10,
+                clipPoly.height + 10
+              );
+
+              ctx.restore();
+              
+              ctx.save();
+
+              ctx.fillStyle="#fff";
+              ctx.fillRect(
+                clipPoly.left - pug.left - pug.width / 2,
+                clipPoly.top - pug.top - pug.height / 2,
+                clipPoly.width,
+                clipPoly.height
+              );
+              
+              ctx.restore();
+            
+              var ctxLeft = -( pug.width / 2 );
+              var ctxTop = -( pug.height / 2 );
+
+              ctx.rect(
+                clipPoly.left - pug.left - pug.width / 2,
+                clipPoly.top - pug.top - pug.height / 2,
+                clipPoly.width,
+                clipPoly.height
+              );
+              ctx.rotate(degToRad(0))
+              ctx.translate(ctxLeft + pug.width / 2, ctxTop + pug.height / 2)
+              ctx.scale(scaleNum, scaleNum)
+              
+          }
+      });
+      // 取消旋转控件
+      pug.hasRotatingPoint = false
+      pug.set({
+        'left':  clipPoly.strokeWidth + clipPoly.left - pug.width / 4 - pug.left,
+        'top':  clipPoly.strokeWidth + clipPoly.top - pug.height / 4 - pug.top
+      })
+      canvas.add(pug);
+      canvas.renderAll()
+      // canvas.bringToFront(pug); // 一路向上
+  };
+  dragImg ? pugImg.src = dragImg.src : pugImg.src = 'https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=2871764249,1040041727&fm=27&gp=0.jpg';
+  canvas.renderAll()
+}
+
+function drag(ev) {
+  dragImg = ev.target
+  addImg(dragImg)
+}
+
+canvas.on('after:render', function(options) {
+  // console.log(canvas.item(2))
+  // console.log(canvas.toSVG())
+  // console.log(JSON.stringify(canvas.toJSON()))
+  var canvasElement = document.getElementById("c");
+  var dataURL = canvasElement.toDataURL();
+  // console.log(dataURL);
+  
+  var fullQuality = canvas.toDataURL("image/jpeg", 1.0);
+})
+
+
+/*
+## arc()
+
+## arcTo()
+
+## beginPath()
+
+## bezierCurveTo()
+
+## clearRect()
+
+## clip()
+
+## closePath()
+
+## createImageData()
+
+
+## createLinearGradient()
+------------------
+ctx.font="30px Verdana";
+// // 创建渐变
+// var gradient=ctx.createLinearGradient(0,0,200,0);
+// gradient.addColorStop("0","magenta");
+// gradient.addColorStop("0.5","blue");
+// gradient.addColorStop("1.0","red");
+// // 用渐变填色
+// ctx.fillStyle=gradient;
+// ctx.fillText("w3school.com.cn",-90,-250);
+
+//我们如果单独处理一张图片的时候，而且不想影响其他部分的绘制 canvas.save();和canvas.restore();
+------------------
+
+
+## createPattern(image,"repeat|repeat-x|repeat-y|no-repeat")  在指定的方向上重复指定的元素, image指实用的图片，画布或者是视频对象
+----------
+var aImg = new Image();
+aImg.src = '4.jpg';
+aImg.onload = function() {
+  draw(this);
+}
+function draw(obj) {
+  //这里为了演示方便，把其他的先注释
+  //var bg = ctx.createPattern(obj,"repeat");
+  //var bg = ctx.createPattern(obj,"repeat-x");
+  //var bg = ctx.createPattern(obj,"repeat-y");
+  var bg = ctx.createPattern(obj, "no-repeat");
+  ctx.fillStyle = bg;
+  ctx.fillRect(0, 0, 400, 400);
+}
+----------
+
+## createRadialGradient()
+
+## drawFocusIfNeeded()
+
+
+## drawImage()
+------------
+ctx.drawImage(pugImg,-100,-100)
+------------
+
+## ellipse()
+
+## fill()
+
+## fillRect()
+
+## fillText()
+
+## getImageData()
+
+## getLineDash()
+
+## isPointInPath(x,y) 指定点是否在路径区域中，如果在则返回true，不在则返回false
+------------
+var canvas = document.getElementById("canvas");
+var ctx = canvas.getContext("2d");
+ctx.beginPath();
+ctx.fillStyle = 'red';
+ctx.rect(50, 50, 100, 100);
+ctx.fill();
+canvas.onclick = function(ev) {
+  var ev = ev || event;
+  ctx.clearRect(200, 0, 200, 200);
+  var l = ev.clientX - canvas.offsetLeft;
+  var t = ev.clientY - canvas.offsetTop;
+  if (ctx.isPointInPath(l, t)) {
+    ctx.font = "40px Arial";
+    ctx.fillText((l + ',' + t), 200, 120);
+  }
+}
+------------
+
+
+## isPointInStroke(x,y)  指定点是否在路径中，如果在则返回true，不在则返回false
+此方法跟上面的方法很相似，不同点在于，isPointInPath是在一个区域中，不管是用fill还是stroke，但是isPointInStroke只能用stroke填充，且指定的区域是在线框上 http://www.cnblogs.com/liugang-vip/p/5443536.html
+---------------
+var canvas = document.getElementById("canvas");
+var ctx = canvas.getContext("2d");
+
+ctx.beginPath();
+ctx.strokeStyle = 'red';
+ctx.lineWidth = 5;
+ctx.rect(50, 50, 100, 100);
+ctx.stroke();
+canvas.onclick = function(ev) {
+  var ev = ev || event;
+  ctx.clearRect(200, 0, 200, 200);
+  var l = ev.clientX - canvas.offsetLeft;
+  var t = ev.clientY - canvas.offsetTop;
+  if (ctx.isPointInStroke(l, t)) {
+    ctx.font = "40px Arial";
+    ctx.fillText((l + ',' + t), 200, 120);
+  }
+}
+---------------
+## lineTo()
+
+## measureText()
+
+## moveTo()
+
+## putImageData()
+
+## quadraticCurveTo()
+
+## rect()
+
+## resetTransform()
+
+## restore()
+
+## rotate()
+
+## save()
+
+## scale()
+
+
+ctx.shadowBlur=20;
+ctx.shadowColor="black";
+
+
+## setLineDash(arr)  在画布上画一条虚线
+----------
+ctx.beginPath();
+ctx.moveTo(0,100);
+ctx.lineTo(400, 100);
+ctx.setLineDash([10,20]);
+// ctx.setLineDash([10,20,30,40]);
+ctx.stroke();
+----------
+
+## setTransform(水平旋转,水平倾斜,垂直倾斜,垂直缩放,水平移动,垂直移动) 重置并创建新的变换矩阵
+----------------
+ctx.fillStyle="yellow";
+ctx.fillRect(0,0,250,100)
+ctx.setTransform(1,0.5,-0.5,1,30,10);
+ctx.fillStyle="red";
+ctx.fillRect(0,0,250,100);
+----------------
+
+## stroke()
+
+## strokeRect()
+
+-----------
+ctx.save();
+
+ctx.strokeStyle="red";
+ctx.strokeRect(
+  clipPoly.left - pug.left - pug.width / 2,
+  clipPoly.top - pug.top - pug.height / 2,
+  clipPoly.width,
+  clipPoly.height
+);
+
+ctx.restore();
+-----------
+
+## strokeText()
+------------
+ctx.font="20px Georgia";
+ctx.strokeText("Hello World!",10,50);
+
+ctx.font="30px Verdana";
+// 创建渐变
+var gradient=ctx.createLinearGradient(0,0,c.width,0);
+gradient.addColorStop("0","magenta");
+gradient.addColorStop("0.5","blue");
+gradient.addColorStop("1.0","red");
+// 用渐变填色
+ctx.strokeStyle=gradient;
+ctx.strokeText("w3school.com.cn",10,90);
+-----------
+
+textAlign 属性
+--------------
+http://www.runoob.com/jsref/prop-canvas-textalign.html
+--------------
+
+
+## transform()
+
+添加一个新的变换矩阵，再次绘制矩形；添加一个新的变换矩阵，然后再次绘制矩形。请注意，每当您调用 transform() 时，它都会在前一个变换矩阵上构建
+----------------
+ctx.save();
+
+ctx.fillStyle="yellow";
+ctx.fillRect(0,0,250,100)
+
+ctx.transform(1,0.5,-0.5,1,30,10);
+ctx.fillStyle="red";
+ctx.fillRect(0,0,250,100);
+
+ctx.transform(1,0.5,-0.5,1,30,10);
+ctx.fillStyle="blue";
+ctx.fillRect(0,0,250,100);
+
+ctx.restore();
+-----------------
+
+## translate()
+-----------------
+ctx/canvas.translate(10, 10);//把当前画布的原点移到(10,10),后面的操作都以(10,10)作为参照点，默认原点为(0,0)  
+------------------
+
+*/
+
+</script>
+
+</body>
+</html

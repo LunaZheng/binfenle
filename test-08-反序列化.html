@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>try</title>
+</head>
+<body>
+<style>
+  * {margin: 0; padding: 0; box-sizing: border-box; color: inherit; font: inherit; 
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -o-user-select: none;
+    user-select: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  ul, li {list-style: none;}
+  a {text-decoration: none;}
+  .fl {float: left;}
+  .fr {float: right;}
+  .wrap {width: 1200px; margin: 0 auto;}
+  .clear:after {content: ''; display: inline-block; clear: both;}
+
+  html,body {height: 100%; overflow: hidden;}
+  body {background: #fff;display: flex;
+  justify-content: center;
+  align-items: center;}
+  canvas {vertical-align: top; border: 1px solid red; position: absolute; left: 200px; top: 20px;}
+  input {}
+</style>
+
+<canvas id="c"></canvas>
+
+<script src='./fabric.js'></script>
+<script src='./jq.js'></script>
+<script>
+
+var canvas = new fabric.Canvas('c');
+canvas.setWidth(500)
+canvas.setHeight(500)
+
+//从字符串加载画布
+canvas.loadFromJSON('{"objects":[{"type":"image","originX":"center","originY":"center","left":72.5,"top":91.5,"width":658,"height":982,"fill":"rgb(0,0,0)","stroke":null,"strokeWidth":0,"strokeDashArray":null,"strokeLineCap":"butt","strokeLineJoin":"miter","strokeMiterLimit":10,"scaleX":0.22,"scaleY":0.22,"angle":0,"flipX":false,"flipY":false,"opacity":1,"shadow":null,"visible":true,"clipTo":null,"backgroundColor":"","fillRule":"nonzero","globalCompositeOperation":"source-over","transformMatrix":null,"skewX":0,"skewY":0,"crossOrigin":"","cropX":0,"cropY":0,"src":"http://zhengrongrong.top/my-blog/dist/static/img/face-20.png","filters":[]}]}', canvas.renderAll.bind(canvas)); 
+//****** canvas.renderAll.bind(canvas)) 在每帧变化时重新渲染 ********
+
+//通过“hasControls”和“hasBorders”属性来控制对象的边框和边角
+// canvas.item(0).hasBorders = false;
+
+// 普通加载图片
+/*fabric.Image.fromURL('http://fabricjs.com/assets/1.svg', function(oImg) {
+  oImg.scale(0.8).set('flipX', true)
+  // oImg.setLeft(100).setTop(100)
+  oImg.set('left',100).set('top', 100)
+  canvas.add(oImg);
+});*/
+
+//SVG加载方法 ---> loadSVGFromString
+/*var svg = '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="500" height="500" viewBox="0 0 500 500" xml:space="preserve"><desc>Created with Fabric.js 2.0.0-beta6</desc><defs></defs>  <g transform="translate(123.25 73.1)">    <text xml:space="preserve" font-family="Times New Roman" font-size="40" font-style="normal" font-weight="normal" style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(0,0,0); fill-rule: nonzero; opacity: 1; white-space: pre;" >      <tspan x="-72.75" y="12.57" >New text</tspan>    </text>  </g><rect x="-10" y="-10" rx="0" ry="0" width="20" height="20" style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(0,128,0); fill-rule: nonzero; opacity: 1;" transform="translate(60.5 60.5)"/></svg>'
+
+fabric.loadSVGFromString(svg, function(objects, options) {
+  // console.log(objects, options)
+  var obj = fabric.util.groupSVGElements(objects, options);
+  canvas.add(obj).renderAll();
+});
+*/
+
+//SVG加载方法 ---> loadSVGFromURL
+/*fabric.loadSVGFromURL('http://fabricjs.com/assets/1.svg', function(objects, options) {
+  // console.log(objects, options)
+  var obj = fabric.util.groupSVGElements(objects, options);
+  canvas.add(obj).renderAll();
+});*/
+
+/*
+var src = "http://fabricjs.com/lib/pug.jpg";
+canvas.backgroundColor = "#333";
+
+var object;
+fabric.util.loadImage(src, function (img) {
+    object = new fabric.Image(img);
+    object.set({
+        left: 100,
+        top: 100,
+        selectable: false,
+        clipTo: function(ctx) {
+            console.log("ctx")
+            console.log(ctx);
+            ctx.rect(
+                        2,
+                        2,
+                        500,
+                        500
+                    );
+        }
+    });
+    object.hasRotatingPoint = true;
+    object.scaleX = object.scaleY = 0.5;
+    canvas.add(object);
+    canvas.renderAll();
+});*/
+
+
+  /*fabric.Object.prototype.transparentCorners = false;
+
+  var radius = 300;
+  var shape = canvas.item(0);
+
+  fabric.Image.fromURL('http://fabricjs.com/lib/pug.jpg', function(img) {
+    img.scale(0.5).set({
+      left: 100,
+      top: 100,
+      angle: -15,
+      clipTo: function (ctx) {
+        // ctx.arc(0, 0, radius, 0, Math.PI * 0.5, true);
+        ctx.rect(-100,-100,300,300);
+      }
+    });
+    canvas.add(img).setActiveObject(img);
+  });*/
+
+  /*(function animate() {
+    fabric.util.animate({
+      startValue: Math.round(radius) === 50 ? 50 : 300,
+      endValue: Math.round(radius) === 50 ? 300 : 50,
+      duration: 1000,
+      onChange: function(value) {
+        radius = value;
+        canvas.renderAll();
+      },
+      onComplete: animate
+    });
+  })();*/
+</script>
+
+</body>
+</html>

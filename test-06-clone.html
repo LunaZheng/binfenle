@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>try</title>
+</head>
+<body>
+<style>
+  * {margin: 0; padding: 0; box-sizing: border-box; color: inherit; font: inherit; 
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -o-user-select: none;
+    user-select: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  ul, li {list-style: none;}
+  a {text-decoration: none;}
+  .fl {float: left;}
+  .fr {float: right;}
+  .wrap {width: 1200px; margin: 0 auto;}
+  .clear:after {content: ''; display: inline-block; clear: both;}
+
+  html,body {height: 100%; overflow: hidden;}
+  body {background: #fff;display: flex;
+  justify-content: center;
+  align-items: center;}
+  canvas {vertical-align: top; border: 1px solid red; position: absolute; left: 200px; top: 20px;}
+  input {}
+</style>
+
+<canvas id="c"></canvas>
+<button id="clone">clone</button>
+<button id="colorchange">change color</button>
+
+<script src='./fabric.js'></script>
+<script src='./jq.js'></script>
+<script>
+
+var canvas = new fabric.Canvas('c');
+canvas.setWidth(500)
+canvas.setHeight(500)
+
+var itext = new fabric.IText( "New text", { left : 50, top : 50} );
+itext.setSelectionStyles({fill: 'red'});
+canvas.add(itext).renderAll();
+// document.getElementById("c").fabric = canvas
+// var oImg = document.getElementById("c").fabric.toDataURL() // ==> 将canvas转为base64
+canvas.setActiveObject(itext);
+
+$('#clone').on('click', function(){ 
+  var gobj = canvas.getActiveObject(); //获取当前选中对象
+  if(gobj == null) return; // 如果没有当前没有选中对象return
+  // var obj1 = gobj.clone(); // 报错???????????
+  var obj1 = fabric.util.object.clone(gobj); // 成功克隆,但是原对象也跟着改变
+
+  canvas.fxRemove(gobj); // 过度删除原对象
+  
+  canvas.discardActiveObject(); // 不选中
+  canvas.setActiveObject(obj1); // 选中克隆后对象
+  var vobj = obj1;
+  vobj.title = vobj.title + '_copy';
+  vobj.id = (vobj.id * 2);
+  vobj.set({
+     left: gobj.get('left') + 50,
+     top: gobj.get('top') + 50,
+     fill: 'blue'
+  });
+  canvas.renderAll().add(vobj);
+});
+
+$("#colorchange").on('click',function(){
+  var obj = canvas.getActiveObject();
+  if(obj == null) return;
+  if(obj.setSelectionStyles && obj.isEditing)
+    obj.setSelectionStyles({fill: 'red'});
+  else   
+  obj.set({fill: 'red'});
+  canvas.renderAll();
+});
+
+/*// 添加背景：
+fabric.Image.fromURL('http://img5.imgtn.bdimg.com/it/u=606033584,1136309151&fm=26&gp=0.jpg', function(img) {
+  canvas.backgroundImage = img;
+  console.log(img)
+  canvas.backgroundImage.width = canvas.get('width');
+  canvas.backgroundImage.height = canvas.get('height');
+  canvas.add(img).renderAll();
+});
+
+//添加图片，不能跨域
+fabric.Image.fromURL('http://pic.cnblogs.com/face/359302/20140609162721.png',function (img){
+  img.scale(0.8);//缩放比例
+  var top = 100; //设置位置
+  var left = 400;
+  img.set({top:top, left:left,borderColor: 'gray', cornerColor: '#000',});
+  //添加到画布
+  canvas.add(img);
+  //设置为当前选中
+  canvas.setActiveObject(img);
+})*/
+</script>
+
+</body>
+</html>

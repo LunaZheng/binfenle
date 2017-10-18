@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>try</title>
+</head>
+<body>
+<style>
+  * {margin: 0; padding: 0; box-sizing: border-box; color: inherit; font: inherit; 
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -o-user-select: none;
+    user-select: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  ul, li {list-style: none;}
+  a {text-decoration: none;}
+  .fl {float: left;}
+  .fr {float: right;}
+  .wrap {width: 1200px; margin: 0 auto;}
+  .clear:after {content: ''; display: inline-block; clear: both;}
+
+  html,body {height: 100%; overflow: hidden;}
+  body {background: 000;}
+  #box {width: 200px; height: 150px; border: 2px solid green;}
+  canvas {vertical-align: top; border: 1px solid red;}
+</style>
+
+<div id="box">
+  <canvas>您的浏览器不支持canvas</canvas>
+</div>
+<iframe srcdoc="<p>Hello world!</p>" src="demo_iframe_srcdoc.htm"></iframe>
+
+<script>
+var c = document.getElementsByTagName('canvas')[0]
+var gd = c.getContext('2d')
+
+window.onload = window.onresize = function(e) {
+  var w = box.clientWidth
+  var h = box.clientHeight
+  c.width = w
+  c.height = h
+
+  var img = new Image()
+  img.src="http://binfenle.com/Photo_import.aspx?pcid=800001&tpid=162132&syear=2013&smonth=1&mcount=-1&hdid="
+  gd.drawImage(img,20,5);
+}
+</script>
+
+</body>
+</html>

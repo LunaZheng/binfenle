@@ -47,7 +47,6 @@ apiServer.use('/api', apiRouter)
 apiServer.listen(port + 1, () => {
   console.log('JSON Server is running')
 })
-```````````````````````````````````````````````````````````````````
 
 // config\index.js
 proxyTable: {

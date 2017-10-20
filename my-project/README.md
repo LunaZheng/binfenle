@@ -35,7 +35,7 @@ $ cnpm install stylus stylus-loader --save-dev
 安装:
 $ npm install json-server --save
 
-------------------------------------------
+```````````````````````````````````````````````````````````````````
 // build\dev-server.js
 const jsonServer = require('json-server')
 const apiServer = jsonServer.create()
@@ -47,14 +47,13 @@ apiServer.use('/api', apiRouter)
 apiServer.listen(port + 1, () => {
   console.log('JSON Server is running')
 })
-----------------------------------------------
+```````````````````````````````````````````````````````````````````
 
 // config\index.js
 proxyTable: {
     '/api/': 'http://localhost:8091/'
 }
-----------------------------------------------
-
+```````````````````````````````````````````````````````````````````
 运行:
 $ npm run dev
 
@@ -73,7 +72,7 @@ $ npm run dev
   $ cnpm i body-parser -S
 
   在 build\dev-server.js 的 var app = express()后面加上以下代码就可以实现了
-  --------------------------------------------------------------------------
+  ``````````````````````````````````````````````````````````````````````````
   var bodyParser = require('body-parser')
   app.use(bodyParser.urlencoded({ extended: true }))
   app.use(bodyParser.json())
@@ -102,4 +101,15 @@ $ npm run dev
     }
     console.log('Listening at http://localhost:' + (port + 1) + '\n')
   })
-  --------------------------------------------------------------------------
+  ``````````````````````````````````````````````````````````````````````````
+
+
+
+ ---------------------
+|  GitHub 代码更新 :  |
+ ---------------------
+
+步骤分别为添加、提交、推送
+git add 加要更新的文件(. 为所有文件)
+git commit -m "代码提交信息"
+git push origin master

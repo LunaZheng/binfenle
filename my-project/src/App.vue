@@ -2,7 +2,7 @@
   <div id="app">
     <v-header></v-header>
     <div class="content">
-      <span>{{totalPrice}}</span>
+      <!-- <span>{{totalPrice}}</span> -->
       <v-nav></v-nav>
       <router-view></router-view>
     </div>

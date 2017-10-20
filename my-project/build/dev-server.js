@@ -22,6 +22,37 @@ const autoOpenBrowser = !!config.dev.autoOpenBrowser
 const proxyTable = config.dev.proxyTable
 
 const app = express()
+
+// body-parser读取本地json
+var bodyParser = require('body-parser')
+app.use(bodyParser.urlencoded({ extended: true }))
+app.use(bodyParser.json())
+var apiRouter = express.Router()
+var fs = require('fs')
+apiRouter.route('/:apiName')
+.all(function (req, res) {
+  fs.readFile('./db.json', 'utf8', function (err, data) {
+    if (err) throw err
+    var data = JSON.parse(data)
+    if (data[req.params.apiName]) {
+      res.json(data[req.params.apiName])
+    }
+    else {
+      res.send('no such api name')
+    }
+
+  })
+})
+
+app.use('/api', apiRouter);
+app.listen(port + 1, function (err) {
+  if (err) {
+    console.log(err)
+    return
+  }
+  console.log('Listening at http://localhost:' + (port + 1) + '\n')
+})
+
 const compiler = webpack(webpackConfig)
 
 const devMiddleware = require('webpack-dev-middleware')(compiler, {
@@ -49,7 +80,7 @@ app.use(hotMiddleware)
 
 // proxy api requests
 Object.keys(proxyTable).forEach(function (context) {
-  const options = proxyTable[context]
+  let options = proxyTable[context]
   if (typeof options === 'string') {
     options = { target: options }
   }
@@ -65,6 +96,20 @@ app.use(devMiddleware)
 // serve pure static assets
 const staticPath = path.posix.join(config.dev.assetsPublicPath, config.dev.assetsSubDirectory)
 app.use(staticPath, express.static('./static'))
+
+
+// jsonServer --- get请求
+/*const jsonServer = require('json-server')
+const apiServer = jsonServer.create()
+const apiRouter = jsonServer.router('db.json')
+const middlewares = jsonServer.defaults()
+
+apiServer.use(middlewares)
+apiServer.use('/api', apiRouter)
+apiServer.listen(port + 1, () => {
+  console.log('JSON Server is running')
+})*/
+
 
 const uri = 'http://localhost:' + port
 

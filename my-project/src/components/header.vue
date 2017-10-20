@@ -18,8 +18,8 @@
     <div class="wrap">
       <div class="logo">
         <img src="/static/img/logo.png" alt="">
-        <button @click="addOne">add one</button>
-        <button @click="minusOne">minus one</button>
+        <!-- <button @click="addOne">add one</button>
+        <button @click="minusOne">minus one</button> -->
       </div>
     </div>
   </div>
@@ -30,16 +30,16 @@ export default {
   name: 'header',
   data() {
     return {
-      price: 5
+      // price: 5
     }
   },
   methods: {
-    addOne() {
-      this.$store.commit('increment', this.price)
-    },
-    minusOne() {
-      this.$store.commit('decrement', this.price)
-    }
+    // addOne() {
+    //   this.$store.commit('increment', this.price)
+    // },
+    // minusOne() {
+    //   this.$store.commit('decrement', this.price)
+    // }
   }
 }
 </script>

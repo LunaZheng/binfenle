@@ -41,6 +41,16 @@ import hotGoods from '../../components/hotGoods.vue'
 
 export default {
   name: 'index',
+  created() {
+    var vm = this
+    // vm.$axios.post('/api/getOrderList', {id: 1})
+    vm.$axios.post('/api/getNewsList')
+    .then((res) => {
+      console.log(res.data)
+    }, (err) => {
+      console.log(err)
+    })
+  },
   data () {
     return {
       seriesList: [{

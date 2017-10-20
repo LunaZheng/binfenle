@@ -1,5 +1,5 @@
 <template>
-  <div class="nav-box" :style="{'background-image': 'url(http://localhost:8081/static/img/home-focus0'+ (isOn*1 + 1) + '.png'}">
+  <div class="nav-box" :style="{'background-image': 'url('+path+'/static/img/home-focus0'+ (isOn*1 + 1) + '.png'}">
     <div class="nav-bar">
       <div class="wrap">
         <span @click="isShowSortLis = !isShowSortLis">全部商品分类<i class="icon-triangle-down" v-show="!isShowSortLis"></i></span>
@@ -34,6 +34,7 @@ export default {
   name: 'nav',
   data () {
     return {
+      path: '',
       isShowSortLis: true,
       isOn: "",
       isToGoodsLeft: false,
@@ -54,7 +55,7 @@ export default {
       $(e.target.closest('a')).addClass('on')
       $(e.target.closest('.nav-box')).css({
         'height': '437px',
-        'background-image': 'url("http://localhost:8081/static/img/home-focus' + urlIdx + '.png")'
+        'background-image': 'url("'+this.path+'/static/img/home-focus' + urlIdx + '.png")'
       })
     },
     gotoGoodsList() {
@@ -72,6 +73,7 @@ export default {
   },
   mounted() {
     var vm = this
+    vm.path = location.origin
     if(location.hash.substring(2)==='0') {
       vm.isShowSortLis = true
       vm.isOn = 0

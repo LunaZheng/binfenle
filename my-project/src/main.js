@@ -5,6 +5,9 @@ import App from './App'
 import router from './router'
 import store from './store'
 
+import axios from 'axios'
+Vue.prototype.$axios = axios
+
 Vue.config.productionTip = false
 
 import './common/stylus/index.styl'

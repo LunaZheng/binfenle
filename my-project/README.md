@@ -42,7 +42,7 @@ For a detailed explanation on how things work, check out the [guide](http://vuej
 ***特别强调*** 或者 ___特别强调___ (示例：粗斜体)   
 ```
 示例:  
-**strong** or __strong__ ( Ctrl + B )
+**strong** or __strong__ ( Ctrl + B )   
 *emphasize* or _emphasize_ ( Ctrl + I )  
 （4）代码  
 使用反引号(esc键下面的按钮)将代码包裹起来  
@@ -52,7 +52,8 @@ For a detailed explanation on how things work, check out the [guide](http://vuej
 如果我们在文章中引用了资料，那么我们可以通过一个右尖括号">"来表示这是一段引用内容   
 示例:   
 > 这是一级引用   
->> 这是二级引用    
+>> 这是二级引用   
+
 （7）链接     
 ``` 
 [链接文字](链接地址)
@@ -63,7 +64,7 @@ For a detailed explanation on how things work, check out the [guide](http://vuej
 有序:  
 1. Ordered list item
 2. Ordered list item
-3. Ordered list item  
+3. Ordered list item    
 无序:  
 * Unordered list item
 * Unordered list item
@@ -77,21 +78,25 @@ or :
 有序:  
 1. Ordered list item
 2. Ordered list item
-3. Ordered list item  
-无序:  
+3. Ordered list item     
+
+无序:   
 * Unordered list item
 * Unordered list item
-* Unordered list item  
+* Unordered list item    
+
 or :  
 - Unordered list item
 - Unordered list item
 - Unordered list item
 
 （9）分割线  
-在单独一行里输入3个或以上的短横线、星号或者下划线实现    
-示例:   
----   
+在单独一行里输入3个或以上的短横线、星号或者下划线实现  
+  
+示例:  
+
 ***   
+---   
 ___
 
 

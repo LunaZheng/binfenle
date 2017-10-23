@@ -20,6 +20,17 @@ npm run build --report
 
 For a detailed explanation on how things work, check out the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
 
+
+ ---------------------
+|  GitHub 代码更新 :  |
+ ---------------------
+   
+步骤分别为添加、提交、推送     
+git add 加要更新的文件(. 为所有文件)    
+git commit -m "代码提交信息"    
+git push origin master    
+
+
  ----------------------
 |   vue-cli 项目步骤:  |  
  ----------------------
@@ -102,13 +113,7 @@ $ npm run dev
   })
   ``````````````````````````````````````````````````````````````````````````
 
-
-
- ---------------------
-|  GitHub 代码更新 :  |
- ---------------------
-   
-步骤分别为添加、提交、推送     
-git add 加要更新的文件(. 为所有文件)    
-git commit -m "代码提交信息"    
-git push origin master    
+ -----------
+|  待解决:  |
+ -----------     
+  1. 001:  小竖线的优化及收藏 ( src\components\bar-right.vue )

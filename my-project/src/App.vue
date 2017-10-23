@@ -1,6 +1,12 @@
 <template>
   <div id="app">
-    <v-header></v-header>
+    <v-header :g="g">
+      <div slot="bar-left" class="isEditPage" v-if="g.login.username && g.login.isEditPage">
+        <img src="/static/img/logo.png" alt="" class="bar-left-logo">
+      </div>
+      <div slot="bar-left" class="isLogin" v-if="g.login.username && (!g.login.isEditPage)">{{g.login.username}}</div>
+    </v-header>
+
     <div class="content">
       <!-- <span>{{totalPrice}}</span> -->
       <v-nav></v-nav>
@@ -26,10 +32,31 @@ export default {
     totalPrice() {
       return this.$store.getters.getOrderList
     }
+  },
+  data() {
+    return {
+      g: {
+        login: {
+          // username: '世界那么大，欢迎您！',
+          username: '',
+          isEditPage: false
+        },
+        isLoginPage: false,
+        isRegisterPage: false
+      }
+    }
+  },
+  mounted() {
+    var vm = this
+
   }
 }
 </script>
 
 <style lang="stylus" rel="stylesheet/stylus">
-
+.isEditPage
+  .bar-left-logo 
+    height 25px
+.isLogin
+  color #666
 </style>

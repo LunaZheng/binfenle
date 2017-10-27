@@ -3,6 +3,8 @@ import Router from 'vue-router'
 import Index from '@/pages/index/Index.vue'
 import Print from '@/pages/print/Print.vue'
 import Life from '@/pages/life/Life.vue'
+import Detail from '@/pages/detail/Detail.vue'
+import Edit from '@/pages/edit/Edit.vue'
 import goodsList from '@/pages/goodsList/goodsList.vue'
 
 Vue.use(Router)
@@ -26,5 +28,11 @@ export default new Router({
   },{
     path: '/*/goodsList/:sort',
     component: goodsList
+  },{
+    path: '/detail',
+    component: Detail
+  },{
+    path: '/edit',
+    component: Edit
   }]
 })

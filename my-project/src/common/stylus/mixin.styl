@@ -8,6 +8,33 @@ border-1px($color)
     width: 100%
     border-top: 1px solid $color
     content: ''
+  
+    
+btn($bgColor)
+  display inline-block
+  width 66px
+  height 63px
+  position absolute
+  top 50%
+  margin-top -33px
+  font-size 60px
+  color #666
+  border 1px solid transparent
+  border-radius 4px
+  padding-top 5px
+  &:hover
+    // border 1px solid #ccc
+    color #000
+  &:before
+    position absolute
+    left 1px
+    color $bgColor
+  &.icon-next
+    right 0px
+    &:before
+      position absolute
+      right 7px
+      left auto
  
 border-none()
   &:after

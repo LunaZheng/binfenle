@@ -11,23 +11,12 @@
         <slot name="bar-right" class="bar-right">
           <bar-right :g="g"></bar-right>
         </slot>
-        <!-- <div class="bar-left">
-          <span class="sign">请登录</span>
-          <span class="register">免费注册</span>
-        </div>
-        <div class="bar-right">
-          <ul>
-            <li>我的乐享</li><i class="icon-thumb_down"></i>
-            <li>帮助中心</li><i class="icon-minus-info"></i>
-            <li>购物车</li><i class="icon-shopping_cart"></i>
-          </ul>
-        </div> -->
       </div>
     </div>
     <div class="wrap">
       <slot name="logo-box">
         <div class="logo-box" :class="{'isHeighter': !g.login.username && (g.isLoginPage || g.isRegisterPage)}">
-          <img src="/static/img/logo.png" alt="">
+          <router-link to="/0"><img src="/static/img/logo.png" alt=""></router-link>
           <!-- <button @click="addOne">add one</button>
           <button @click="minusOne">minus one</button> -->
           <div class="logo-box-right" v-if="!isShowBar">

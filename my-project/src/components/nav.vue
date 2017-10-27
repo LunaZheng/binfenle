@@ -1,5 +1,5 @@
 <template>
-  <div class="nav-box" :style="{'background-image': 'url('+path+'/static/img/home-focus0'+ (isOn*1 + 1) + '.png'}">
+  <div class="nav-box" :style="{'background-image': !isShowSortLis ? '' : 'url('+path+'/static/img/home-focus0'+ (isOn*1 + 1) + '.png'}">
     <div class="nav-bar">
       <div class="wrap">
         <span @click="isShowSortLis = !isShowSortLis">全部商品分类<i class="icon-triangle-down" v-show="!isShowSortLis"></i></span>
@@ -44,7 +44,9 @@ export default {
   },
   watch: {
     isShowSortLis(newVal) {
-      
+      if(!newVal) {
+        document.getElementsByClassName('nav-box')[0].style.background = ''
+      }
     }
   },
   methods: {
@@ -62,10 +64,13 @@ export default {
       var vm = this
       vm.isShowSortLis = false
       vm.isToGoodsLeft = true
-      if(location.hash.indexOf('goodsList') > -1) {
+      if(location.hash.indexOf('goodsList') > -1 || location.hash.indexOf('edit') > -1) {
         vm.isToGoodsLeft = true
         document.getElementsByClassName('nav-box')[0].style.height = '42px'
         document.getElementsByClassName('nav-bar')[0].style.background = 'rgb(53, 167, 142)'
+        document.getElementsByClassName('nav')[0].childNodes.forEach(function(item, idx) {
+          item.childNodes[0].style.color = "#fff"
+        })
       } else {
         vm.isToGoodsLeft = false
       }

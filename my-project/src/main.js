@@ -4,6 +4,7 @@ import Vue from 'vue'
 import App from './App'
 import router from './router'
 import store from './store'
+import fabric from 'fabric'
 
 import axios from 'axios'
 Vue.prototype.$axios = axios

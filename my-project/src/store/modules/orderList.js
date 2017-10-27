@@ -1,7 +1,7 @@
 import Vue from 'vue'
 
 const state = { // state 存放数据
-  totalPrice: 0
+  totalPrice: 11
 }
 
 const getters = {

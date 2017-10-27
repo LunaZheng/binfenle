@@ -1,8 +1,12 @@
 <template>
   <div class="footer">
-    <div class="medal wrap">
-      <img src="/static/img/footer.png" alt="">
-    </div>
+    <slot name="medal">
+      <div class="medal">
+        <div class="wrap">
+          <img src="/static/img/footer.png" alt="">
+        </div>
+      </div>
+    </slot>
     <div class="main">
       <span>关于我们</span>
       <span>商家合作</span>
@@ -31,12 +35,12 @@ export default {
   .medal
     padding 25px
     text-align center
+    border-bottom 1px solid #ccc
     img
       width 850px
   .main
     display flex
     justify-content center
-    border-top 1px solid #ccc
     span
       display inline-block
       color #999

@@ -97,7 +97,11 @@ export default {
   },
   mounted() {
     var vm = this
-    
+    window.addEventListener('hashchange', (e) => {
+      if(e.newURL.slice(-2) === '/0') {
+        console.log('asdfg')
+      }
+    }, false)
   }
 }
 </script>

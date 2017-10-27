@@ -8,7 +8,7 @@
           <p>{{item.msg}}</p>
           <img :src="item.url" alt="">
           <div>
-            <button>{{sort.btn}}</button>
+            <router-link to="/detail" class="button">{{sort.btn}}</router-link>
           </div>
         </li>
       </ul>
@@ -85,6 +85,8 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="stylus" rel="stylesheet/stylus" scoped>
+@import "../../common/stylus/mixin.styl"
+
 .print-box
   position relative
   >h1
@@ -129,9 +131,11 @@ export default {
       >img
         height 250px
       >div
-        button
+        .button
+          display inline-block
           width 130px
           height 40px
+          line-height 40px
           margin 30px
           background rgb(53, 167, 142)
           border 1px solid rgb(53, 167, 142)
@@ -142,27 +146,5 @@ export default {
           &:hover
             background rgb(43, 157, 132)
   .btn
-    display inline-block
-    width 66px
-    height 63px
-    position absolute
-    top 50%
-    margin-top -33px
-    font-size 60px
-    color #666
-    border 1px solid transparent
-    border-radius 4px
-    padding-top 5px
-    &:hover
-      border 1px solid #ccc
-    &:before
-      position absolute
-      left 1px
-      color #fff
-    &.icon-next
-      right 0px
-      &:before
-        position absolute
-        right 7px
-        left auto
+    btn(#fff)
 </style>

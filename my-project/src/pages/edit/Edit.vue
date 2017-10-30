@@ -11,12 +11,12 @@
         <img :src="(idx === curChangeIconIdx || idx === curShowListIdx) ? ('/static/img/edit/' + item.name + '-hover.svg') : ('/static/img/edit/' + item.name + '.svg')" alt="" class="edit-list-icon">
         <span>{{item.name}}</span>
         <i class="icon-more"></i>
-          <ul :class="'edit-' + item.tag + '-list item-list'" v-if="idx === curShowListIdx" :style="{'top': 42 * (idx + 1) + 'px'}" @click="stopParentEvent">
-            <li v-for="(v, i) in item.item">
-              <img :src="v.img" alt="" :class="{'on': i === 0}" :title="v.title" @click="editListClick(item.name, i, $event)">
-              <h1 v-if="item.name === '模板'">{{v.tag}}</h1>
-            </li>
-          </ul>
+        <ul :class="'edit-' + item.tag + '-list item-list'" v-if="idx === curShowListIdx" :style="{'top': 42 * (idx + 1) + 'px'}" @click="stopParentEvent">
+          <li v-for="(v, i) in item.item" :class="{'on': i === 0}">
+            <img :src="v.img" alt="" :title="v.title" @click="editListClick(item.name, i, $event)">
+            <h1 v-if="item.name === '模板'">{{v.tag}}</h1>
+          </li>
+        </ul>
       </li>
       <a href="javascript:;" class="file">添加照片
         <input type="file" name="" id="fileEL" multiple="" @change="selectPic">
@@ -49,6 +49,127 @@
       </div>
       <div class="canvas-box">
         <canvas id="canvasOut"></canvas>
+        <ul class="font-edit" v-if="isAddtext">
+          <span class="close" @click="isAddtext = false">x</span>
+          <li>
+            <select class="selectFontFamily" v-model="fontEditData.fontFamily">
+              <option style="font-family: 'STXingkai'" value="STXingkai">STXingkai 华文行楷</option>
+              <option style="font-family: 'STXinwei'" value="STXinwei">STXinwei 华文新魏</option>
+              <option style="font-family: 'STLiti'" value="STLiti">STLiti 华文隶书</option>
+              <option style="font-family: 'STHupo'" value="STHupo">STHupo 华文琥珀</option>
+              <option style="font-family: 'STCaiyun'" value="STCaiyun">STCaiyun 华文彩云</option>
+              <option style="font-family: 'FZYaoti'" value="FZYaoti">FZYaoti 方正姚体</option>
+              <option style="font-family: 'Delicious'" value="Delicious">Delicious</option>
+              <option style="font-family: 'Hoefler Text'" value="Hoefler Text">Hoefler Text</option>
+              <option style="font-family: 'STXinwei'" value="STXinwei">STXinwei</option>
+            </select>
+            <select class="selectFontSize" v-model="fontEditData.fontSize">
+              <option value="8">8px</option>
+              <option value="9">9px</option>
+              <option value="10">10px</option>
+              <option value="11">11px</option>
+              <option value="12">12px</option>
+              <option value="14">14px</option>
+              <option value="16">16px</option>
+              <option value="18">18px</option>
+              <option value="20">20px</option>
+              <option value="22">22px</option>
+              <option value="24">24px</option>
+              <option value="26">26px</option>
+              <option value="28">28px</option>
+              <option value="36">36px</option>
+              <option value="48">48px</option>
+              <option value="72">72px</option>
+            </select>
+            <span class="bold" @click="fontEditData.fontWeight = 'bold'"><img src="/static/img/edit/bold.svg" alt=""></span>
+            <span class="italic" @click="fontEditData.fontStyle = 'italic'"><img src="/static/img/edit/italic.svg" alt=""></span>
+            <span class="leftAlign" @click="fontEditData.textAlign = 'left'"><img src="/static/img/edit/leftAlign.svg" alt=""></span>
+            <span class="centerAlign" @click="fontEditData.textAlign = 'center'"><img src="/static/img/edit/centerAlign.svg" alt=""></span>
+            <span class="rightAlign" @click="fontEditData.textAlign = 'right'"><img src="/static/img/edit/rightAlign.svg" alt=""></span>
+          </li>
+          <li class="img-controls">
+            <span class="moveup" @click="curText ? changeMoveup(curText, curObj) : fontEditData.top-=10">
+              <img src="/static/img/edit/up.svg" alt="">上移
+            </span>
+            <span class="movedown" @click="curText ? changeMovedown(curText, curObj) : fontEditData.top+=10">
+              <img src="/static/img/edit/down.svg" alt="">下移
+            </span>
+            <span class="cutImg" @click="curText ? changeAngle(curText, curObj) : fontEditData.angle+=45">
+              <img src="/static/img/edit/cut.svg" alt="">旋转
+            </span>
+            <span class="copy">
+              <img src="/static/img/edit/copy.svg" alt="">复制
+            </span>
+            <span class="removeImg" @click="removeText">
+              <img src="/static/img/edit/remove.svg" alt="">删除
+            </span>
+          </li>
+          <li class="img-controls">
+            <div class="left">
+              <div class="top">
+                <label>阴影</label>
+                <select class="selectFontSize" v-model="fontEditData.shadow">
+                  <option value="0">0</option>
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                  <option value="3">3</option>
+                  <option value="4">4</option>
+                  <option value="5">5</option>
+                  <option value="6">6</option>
+                  <option value="7">7</option>
+                  <option value="8">8</option>
+                  <option value="9">9</option>
+                  <option value="10">10</option>
+                </select>
+                <label>描边</label>
+                <select class="selectFontSize" v-model="fontEditData.strokeWidth">
+                  <option value="0">0</option>
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                  <option value="3">3</option>
+                  <option value="4">4</option>
+                  <option value="5">5</option>
+                  <option value="6">6</option>
+                  <option value="7">7</option>
+                  <option value="8">8</option>
+                  <option value="9">9</option>
+                  <option value="10">10</option>
+                </select>
+              </div>
+              <div class="bottom">
+                <label>边框</label>
+                <select class="selectFontFrame">
+                  <option value="相框1">相框1</option>
+                  <option value="相框2">相框2</option>
+                  <option value="花边">花边</option>
+                  <option value="水文">水文</option>
+                  <option value="杂志封面">杂志封面</option>
+                  <option value="广告">广告</option>
+                </select>
+                <span class="font-edit-color">
+                  <label>颜色</label>
+                  <input type="color" v-model="fontEditData.stroke">
+                </span>
+              </div>
+            </div>
+            <div class="right">
+              <span class="img-edit-scale">
+                <label>大小</label>
+                <input type="range" min="100" max="1000" value="0.5" class="img-scale" v-model="fontEditData.scale">
+              </span>
+              <span class="img-edit-opacity">
+                <label>透明</label>
+                <input type="range" min="50" max="1000" value="1000" class="img-opacity" v-model="fontEditData.opacity">
+              </span>
+            </div>
+            <div class="bottom">
+              <span class="font-edit-content">
+                <label>文字</label>
+                <input type="text" class="addtext" placeholder="点击输入文字" v-model="fontEditData.world" @keyup.enter="addtext(fontEditData, curObj)">
+              </span>
+            </div>
+          </li>
+        </ul>
       </div>
       <div class="edit-bottom">
         <div class="btn-box">
@@ -95,11 +216,39 @@ export default {
   name: 'edit',
   data () {
     return {
+      curObj: '',
+      curText: '',
       curShowListIdx: -1,
       curChangeIconIdx: -1,
       filePicData: [],
+      isAddtext: false,
       curBgImg: '/static/img/edit/bg.png',
+      fontEditData: {
+        world: '',
+        left: 10,
+        top: 10,
+        fontFamily: 'Hoefler Text',
+        fontSize: 16,
+        angle: 0,
+        opacity: 0.8,
+        shadow: 5,
+        fontWeight: 'normal',
+        fontStyle: 'normal', // 斜体
+        textDecoration: 'none',
+        stroke: '#ff1318', // 描边
+        strokeWidth: 1, // 描边宽度
+        textAlign: 'right',
+        lineHeight: 1,
+        textBackgroundColor: 'transparent', // 背景色
+        fill: 'black',
+        flipX: false,
+        flipY: false,
+        scale: 100
+      },
       filePageData: [{
+        src: '/static/img/edit/bg.png',
+        name: '摄影'
+      },{
         src: '/static/img/edit/page-01.png',
         name: '多彩泡泡111'
       },{
@@ -248,6 +397,15 @@ export default {
       }]
     }
   },
+  watch: {
+    isAddtext(newVal) {
+      var vm = this
+      if(!newVal) {
+        vm.curObj.discardActiveObject()
+        vm.curObj.renderAll()
+      }
+    }
+  },
   methods: {
     hoverIn(idx) {
       this.curChangeIconIdx = idx
@@ -256,21 +414,30 @@ export default {
       this.curChangeIconIdx = -1
     },
     showList(idx, e) {
-      if(this.curShowListIdx === -1) {
+      var vm = this
+      if(this.curShowListIdx != idx) {
         this.curShowListIdx = idx
         this.curChangeIconIdx = idx
       } else {
         this.curShowListIdx = -1
         this.curChangeIconIdx > 0 ? idx : -1
       }
+      if(this.curShowListIdx != 1) {
+        vm.isAddtext = false
+      }
     },
     editListClick(name, idx, e) {
+      var vm = this
       switch (name) {
         case '模板': // 模板
           console.log('模板', idx)
           break
         case '文字': // 文字
-          console.log('文字', idx)          
+          $(e.target.closest('li')).siblings().removeClass('on')
+          $(e.target.closest('li')).addClass('on')
+          var fontFamily = vm.editList[1].item[idx].title
+          vm.fontEditData.fontFamily = fontFamily.slice(0, fontFamily.indexOf(' '))
+          vm.isAddtext = true
           break
         case '背景': // 背景
           console.log('背景', idx)          
@@ -285,6 +452,132 @@ export default {
           console.log('布局', idx)        
           break
       }
+      if(name != "文字") {
+        vm.isAddtext = false
+      }
+    },
+    addtext(data, obj) {
+      var vm = this
+      console.log(eval(data.world)
+      var text = new fabric.Text(data.world, { 
+        left: data.left, 
+        top: data.top,
+        fontFamily: data.fontFamily,
+        fontSize: data.fontSize,
+        stroke: data.stroke,
+        strokeWidth: data.strokeWidth,
+        padding: 50,
+        width: 150,
+        angle: data.angle,
+        opacity: data.opacity,
+        shadow: 'rgba(0,0,0,0.3) 5px 5px ' + data.shadow + 'px',
+        fontWeight: data.fontWeight,
+        fontStyle: data.fontStyle, // 斜体
+        stroke: data.stroke, // 描边
+        strokeWidth: data.strokeWidth, // 描边宽度
+        textAlign: data.textAlign,
+        lineHeight: data.lineHeight,
+        textDecoration: data.textDecoration, // 下划线'underline'/中划线'line-through'/上划线'overline'
+        fill : data.fill,
+        flipX : data.flipX,
+        flipY : data.flipY
+      })
+      var text2 = new fabric.Text('with extensive \ndecoration support', {
+        left: 10,
+        top: 30,
+        angle: 0,
+        fontFamily: 'Courier',
+        fontSize: 18,
+        underline: true,
+        fill: 'blue',
+        textAlign: 'center'
+      })
+      text.scale(data.scale * 0.01)
+      obj.add(text, text2)
+      console.log(text)
+      // obj.setActiveObject(text)
+      obj.renderAll()
+      vm.isAddtext = false
+    },
+    /*addtext(curText, data, obj) {
+      var vm = this
+      // console.log(curText)
+      if(!curText) {
+        var text = new fabric.Text(data.world, { 
+          left: data.left, 
+          top: data.top,
+          fontFamily: data.fontFamily,
+          fontSize: data.fontSize,
+          stroke: data.stroke,
+          strokeWidth: data.strokeWidth,
+          padding: 50,
+          angle: data.angle,
+          opacity: data.opacity,
+          shadow: 'rgba(0,0,0,0.3) 5px 5px ' + data.shadow + 'px',
+          fontWeight: data.fontWeight,
+          fontStyle: data.fontStyle, // 斜体
+          underline: data.underline, // 下划线
+          linethrough: data.linethrough, //中划线
+          overline: data.overline, //上划线
+          stroke: data.stroke, // 描边
+          strokeWidth: data.strokeWidth, // 描边宽度
+          textAlign: data.textAlign,
+          lineHeight: data.lineHeight,
+          scale: data.scale
+        })
+        obj.add(text)
+        obj.setActiveObject(text)
+        obj.renderAll()
+      } else {
+        obj.discardActiveObject()
+        console.log(curText)
+        curText.set({
+          left: data.left, 
+          top: data.top,
+          fontFamily: data.fontFamily,
+          fontSize: data.fontSize,
+          stroke: data.stroke,
+          strokeWidth: data.strokeWidth,
+          padding: 50,
+          angle: data.angle,
+          opacity: data.opacity,
+          shadow: 'rgba(0,0,0,0.3) 5px 5px ' + data.shadow + 'px',
+          fontWeight: data.fontWeight,
+          fontStyle: data.fontStyle, // 斜体
+          underline: data.underline, // 下划线
+          linethrough: data.linethrough, //中划线
+          overline: data.overline, //上划线
+          stroke: data.stroke, // 描边
+          strokeWidth: data.strokeWidth, // 描边宽度
+          textAlign: data.textAlign,
+          lineHeight: data.lineHeight,
+          scale: data.scale
+        })
+        obj.setActiveObject(text)
+        obj.renderAll()
+      }
+    },*/
+    removeText() {
+      var vm = this
+      vm.curObj.remove(vm.curText)
+    },
+    changeAngle(curText, curObj) {
+      var vm = this
+      vm.fontEditData.angle+=45
+      curText.set('angle', vm.fontEditData.angle)
+      curObj.renderAll()
+    },
+    changeMoveup(curText, curObj) {
+      var vm = this
+      vm.fontEditData.top-=10
+      curText.set('top', vm.fontEditData.top)
+      curObj.renderAll()
+    },
+    changeMovedown(curText, curObj) {
+      var vm = this
+      vm.fontEditData.top+=10
+      curText.set('top', vm.fontEditData.top)
+      curObj.renderAll()
     },
     stopParentEvent(e) {
       e.stopPropagation() // 阻止事件冒泡而触发父级的click事件
@@ -300,7 +593,8 @@ export default {
           top: canvas2.height / 2
         }))
         oImg.scaleToWidth(145)
-        canvas2.discardActiveObject(); // 不选中
+        canvas2.discardActiveObject()
+        // 不选中
         canvas2.setActiveObject(oImg);
         oImg.centeredScaling = true
       })
@@ -321,7 +615,6 @@ export default {
     },
     changeBg(bgImg, obj) { // 改变背景图/页面
       fabric.Image.fromURL(bgImg, function(img) {
-        var obj = new fabric.Canvas('canvasOut')
         obj.backgroundImage = img;
         obj.backgroundImage.width = 720;
         // obj.backgroundImage.width = obj.get('width');
@@ -334,9 +627,24 @@ export default {
   mounted() {
     var vm = this
     var canvas = new fabric.Canvas('canvasOut')
-    vm.changeBg(vm.curBgImg, canvas)
+    vm.curObj = canvas
     canvas.setWidth(720)
     canvas.setHeight(420)
+    vm.changeBg(vm.curBgImg, canvas)
+    vm.curObj.on('after:render', function(options) {
+      var gobj = vm.curObj.getActiveObject(); //获取当前选中对象
+      if(gobj) {
+        vm.isAddtext = true
+        vm.curText = vm.curObj.getActiveObject()
+      } else {
+        vm.curText = ''
+        vm.isAddtext = false
+      }
+    })
+    if(!vm.isAddtext) {
+      vm.curObj.discardActiveObject()
+      vm.curObj.renderAll()
+    }
   }
 }
 </script>
@@ -399,7 +707,8 @@ export default {
           width 170px
           padding 5px 28px
           border 2px solid #eee
-          &.on
+        &.on 
+          img
             border 2px solid rgb(58, 170, 146)
     .file
       position relative
@@ -466,6 +775,117 @@ export default {
     #canvasOut
       box-sizing border-box
       border 8px solid #eee
+    .addtext-box
+      position absolute
+      left 135px
+      top 10px
+      -padding 20px 15px
+      border 1px solid #3385ff
+      // display none
+      .addtext 
+        background transparent
+        border 1px dashed #aaa
+        padding 5px
+      >a
+        width 20px
+        height 20px
+        line-height 19px
+        border-radius 50%
+        background #3385ff
+        position absolute
+        top -10px
+        right -10px
+        bottom auto
+        text-align center
+        &.reset-btn
+          top 20px
+        &.replace-btn
+          left -10px
+          display none
+        img
+          margin-top 2px
+    .font-edit
+      // display none
+      width 500px
+      background rgb(250, 250, 250)
+      position absolute
+      top 160px
+      left 200px
+      padding 8px 10px 12px
+      border 1px solid rgb(170, 170, 170)
+      -display none
+      z-index 50
+      .close
+        float right
+        cursor pointer
+      >li
+        border-bottom 1px solid rgb(200, 200, 200)
+        padding 15px 0
+        user-select none
+        &:last-child
+          border-bottom 1px solid transparent
+          padding-bottom 0
+        >select
+          height 35px
+          line-height 35px
+          margin-right 20px
+          padding 8px
+          vertical-align middle
+        .selectFontFamily
+          font-family STXingkai
+        >span
+          margin-right 10px
+          img
+            vertical-align middle
+            width 20px
+        &.img-controls
+          span
+            display inline-block
+            margin-right 45px
+            &:last-child
+              margin-right 0
+            img
+              vertical-align middle
+        &:last-child
+          position relative
+          >div
+            text-align left
+            padding 0 10px
+          .left
+            width 348px
+            >div
+              margin-bottom 10px
+              label
+                font-weight 100
+                margin-right 8px
+              select
+                display inline-block
+                vertical-align middle
+                color #222
+                margin-right 15px
+                width 90px
+                padding 2px
+          .right
+            width 174px
+            position absolute
+            top 15px
+            right -30px
+            span
+                margin-bottom 15px
+              input
+                width 90px
+                vertical-align middle
+          >.bottom
+            margin 12px 0
+            span
+              label
+                font-weight 100
+                margin-right 8px
+              input
+                display inline-block
+                width 410px
+                padding 5px
+                border 1px solid #999
   .edit-bottom
     width 100%
     height 140px

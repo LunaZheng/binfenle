@@ -117,3 +117,6 @@ $ npm run dev
 |  待解决:  |
  -----------     
   1. 001:  小竖线的优化及收藏 ( src\components\bar-right.vue )
+  2. 002:  让fabric字符串换行 ( src\pages\edit\Edit.vue )
+           -->百度 :  JS 字符串换行
+           --> http://www.cnblogs.com/ziyunfei/archive/2012/10/04/2711551.html

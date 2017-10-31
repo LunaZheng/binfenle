@@ -49,10 +49,10 @@
       </div>
       <div class="canvas-box">
         <canvas id="canvasOut"></canvas>
-        <ul class="font-edit" v-if="isAddtext" @mousedown="fontEditDown">
+        <ul class="font-edit" v-if="isAddtext">
           <span class="close" @click="isAddtext = false">x</span>
           <li>
-            <select class="selectFontFamily" v-model="fontEditData.fontFamily" @change="curText && changeSelect('fontFamily', curText, curObj, $event)">
+            <select class="selectFontFamily" v-model="fontEditData.fontFamily">
               <option style="font-family: 'STXingkai'" value="STXingkai">STXingkai 华文行楷</option>
               <option style="font-family: 'STXinwei'" value="STXinwei">STXinwei 华文新魏</option>
               <option style="font-family: 'STLiti'" value="STLiti">STLiti 华文隶书</option>
@@ -63,7 +63,7 @@
               <option style="font-family: 'Hoefler Text'" value="Hoefler Text">Hoefler Text</option>
               <option style="font-family: 'STXinwei'" value="STXinwei">STXinwei</option>
             </select>
-            <select class="selectFontSize" v-model="fontEditData.fontSize" @change="curText && changeSelect('fontSize', curText, curObj, $event)">
+            <select class="selectFontSize" v-model="fontEditData.fontSize">
               <option value="8">8px</option>
               <option value="9">9px</option>
               <option value="10">10px</option>
@@ -81,12 +81,11 @@
               <option value="48">48px</option>
               <option value="72">72px</option>
             </select>
-            <!-- <span class="bold" @click="changeFontStyle('fontWeight', 'bold', curText, curObj)"><img src="/static/img/edit/bold.svg" alt="" :style="fontEditData.fontWeight === 'bold' ? 'border: 1px solid rgb(98, 162, 228); background: rgb(201, 224, 247)' : 'border: 1px solid transparent'"></span> -->
-            <span class="bold" @click="fontEditData.fontWeight = (fontEditData.fontWeight === 'bold' ? 'normal' : 'bold')"><img src="/static/img/edit/bold.svg" alt="" :style="fontEditData.fontWeight === 'bold' ? 'border: 1px solid rgb(98, 162, 228); background: rgb(201, 224, 247)' : 'border: 1px solid transparent'"></span>
-            <span class="italic" @click="fontEditData.fontStyle = 'italic'"><img src="/static/img/edit/italic.svg" alt="" :style="fontEditData.fontStyle === 'italic' ? 'border: 1px solid rgb(98, 162, 228); background: rgb(201, 224, 247)' : 'border: 1px solid transparent'"></span>
-            <span class="leftAlign" @click="fontEditData.textAlign = 'left'"><img src="/static/img/edit/leftAlign.svg" alt="" :style="fontEditData.textAlign === 'left' ? 'border: 1px solid rgb(98, 162, 228); background: rgb(201, 224, 247)' : 'border: 1px solid transparent'"></span>
-            <span class="centerAlign" @click="fontEditData.textAlign = 'center'"><img src="/static/img/edit/centerAlign.svg" alt="" :style="fontEditData.textAlign === 'center' ? 'border: 1px solid rgb(98, 162, 228); background: rgb(201, 224, 247)' : 'border: 1px solid transparent'"></span>
-            <span class="rightAlign" @click="fontEditData.textAlign = 'right'"><img src="/static/img/edit/rightAlign.svg" alt="" :style="fontEditData.textAlign === 'right' ? 'border: 1px solid rgb(98, 162, 228); background: rgb(201, 224, 247)' : 'border: 1px solid transparent'"></span>
+            <span class="bold" @click="fontEditData.fontWeight = 'bold'"><img src="/static/img/edit/bold.svg" alt=""></span>
+            <span class="italic" @click="fontEditData.fontStyle = 'italic'"><img src="/static/img/edit/italic.svg" alt=""></span>
+            <span class="leftAlign" @click="fontEditData.textAlign = 'left'"><img src="/static/img/edit/leftAlign.svg" alt=""></span>
+            <span class="centerAlign" @click="fontEditData.textAlign = 'center'"><img src="/static/img/edit/centerAlign.svg" alt=""></span>
+            <span class="rightAlign" @click="fontEditData.textAlign = 'right'"><img src="/static/img/edit/rightAlign.svg" alt=""></span>
           </li>
           <li class="img-controls">
             <span class="moveup" @click="curText ? changeMoveup(curText, curObj) : fontEditData.top-=10">
@@ -109,15 +108,33 @@
             <div class="left">
               <div class="top">
                 <label>阴影</label>
-                <select class="selectFontSize" v-model="fontEditData.shadow.blur" @change="curText && changeSelect('shadow.blur', curText, curObj, $event)">
-                  <option v-for="(v, i) in 11" :value="i * 1">{{i * 1}}</option>
+                <select class="selectFontSize" v-model="fontEditData.shadow">
+                  <option value="0">0</option>
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                  <option value="3">3</option>
+                  <option value="4">4</option>
+                  <option value="5">5</option>
+                  <option value="6">6</option>
+                  <option value="7">7</option>
+                  <option value="8">8</option>
+                  <option value="9">9</option>
+                  <option value="10">10</option>
                 </select>
-                <input type="color" v-model="fontEditData.shadow.color" @change="curText && changeSelect('shadow.color', curText, curObj, $event)">
                 <label>描边</label>
-                <select class="selectFontSize" v-model="fontEditData.strokeWidth" @change="curText && changeSelect('strokeWidth', curText, curObj, $event)">
-                  <option v-for="(v, i) in 11" :value="i * 1">{{i * 1}}</option>
+                <select class="selectFontSize" v-model="fontEditData.strokeWidth">
+                  <option value="0">0</option>
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                  <option value="3">3</option>
+                  <option value="4">4</option>
+                  <option value="5">5</option>
+                  <option value="6">6</option>
+                  <option value="7">7</option>
+                  <option value="8">8</option>
+                  <option value="9">9</option>
+                  <option value="10">10</option>
                 </select>
-                <input type="color" v-model="fontEditData.stroke" @change="curText && changeSelect('stroke', curText, curObj, $event)">
               </div>
               <div class="bottom">
                 <label>边框</label>
@@ -130,11 +147,8 @@
                   <option value="广告">广告</option>
                 </select>
                 <span class="font-edit-color">
-                  <label>边距</label>
-                  <select class="selectFontSize" v-model="fontEditData.padding" @change="curText && changeSelect('strokeWidth', curText, curObj, $event)">
-                    <option v-for="(v, i) in 11" :value="i * 1">{{i * 5}}</option>
-                  </select>
-                  <input type="color">
+                  <label>颜色</label>
+                  <input type="color" v-model="fontEditData.stroke">
                 </span>
               </div>
             </div>
@@ -151,10 +165,7 @@
             <div class="bottom">
               <span class="font-edit-content">
                 <label>文字</label>
-                <!-- <input type="text" class="addtext" placeholder="点击输入文字" v-model="fontEditData.world" @keyup.enter="addtext(fontEditData, curObj)"> -->
-                <textarea name="" id="" cols="39" rows="2" placeholder="点击输入文字" v-model="fontEditData.world"></textarea>
-                <input type="color" v-model="fontEditData.fill">
-                <input class="submit" type="submit" value="添加" @click="addtext(fontEditData, curObj)">
+                <input type="text" class="addtext" placeholder="点击输入文字" v-model="fontEditData.world" @keyup.enter="addtext(fontEditData, curObj)">
               </span>
             </div>
           </li>
@@ -215,27 +226,23 @@ export default {
       fontEditData: {
         world: '',
         left: 10,
-        top: -16,
+        top: 10,
         fontFamily: 'Hoefler Text',
-        fontSize: 24,
+        fontSize: 16,
         angle: 0,
         opacity: 0.8,
-        shadow: {
-          color: '#cccccc',
-          blur: 5
-        },
+        shadow: 5,
         fontWeight: 'normal',
         fontStyle: 'normal', // 斜体
         textDecoration: 'none',
-        // stroke: '', // 描边
-        strokeWidth: 0, // 描边宽度
+        stroke: '#ff1318', // 描边
+        strokeWidth: 1, // 描边宽度
         textAlign: 'right',
         lineHeight: 1,
         textBackgroundColor: 'transparent', // 背景色
-        fill: '#111111',
+        fill: 'black',
         flipX: false,
         flipY: false,
-        padding: 2,
         scale: 100
       },
       filePageData: [{
@@ -397,18 +404,9 @@ export default {
         vm.curObj.discardActiveObject()
         vm.curObj.renderAll()
       }
-    },
-    fontEditData(newVal) {
-      var vm = this
-      if(vm.curText) {
-        console.log(newVal)
-      }
     }
   },
   methods: {
-    submit(e) {
-      console.log(e)
-    },
     hoverIn(idx) {
       this.curChangeIconIdx = idx
     },
@@ -437,32 +435,6 @@ export default {
         case '文字': // 文字
           $(e.target.closest('li')).siblings().removeClass('on')
           $(e.target.closest('li')).addClass('on')
-          vm.fontEditData = {
-            world: '',
-            left: 10,
-            top: vm.fontEditData.top + 26,
-            fontFamily: 'Hoefler Text',
-            fontSize: 24,
-            angle: 0,
-            opacity: 0.8,
-            shadow: {
-              color: '#ffffff',
-              blur: 5
-            },
-            fontWeight: 'normal',
-            fontStyle: 'normal', // 斜体
-            textDecoration: 'none',
-            stroke: '#111111', // 描边
-            strokeWidth: 0, // 描边宽度
-            textAlign: 'right',
-            lineHeight: 1,
-            // textBackgroundColor: 'transparent', // 背景色
-            fill: '#111111',
-            flipX: false,
-            flipY: false,
-            padding: 2,
-            scale: 100
-          }
           var fontFamily = vm.editList[1].item[idx].title
           vm.fontEditData.fontFamily = fontFamily.slice(0, fontFamily.indexOf(' '))
           vm.isAddtext = true
@@ -484,41 +456,6 @@ export default {
         vm.isAddtext = false
       }
     },
-    fontEditDown(e) { // 文字编辑框移动
-      this.isAddtext = true
-      if(e.target.tagName === 'UL' || e.target.tagName === 'LI') {
-        var ul = $(e.target.closest('.font-edit'))
-        var originX = ul.css('left').replace('px', '') * 1
-        var originY = ul.css('top').replace('px', '') * 1
-        // clientx(相对于浏览器) screenx(用户显示屏) pagex(也相对于浏览器但不会随着滚动条而变动) 
-        var x1 = e.clientX 
-        var y1 = e.clientY
-
-        $(document).on('mousemove.fontEdit', function(e) {
-          var x2 = e.clientX
-          var y2 = e.clientY
-          var left = x2 - x1 + originX
-          var top = y2 - y1 + originY
-          ul.css({
-            'top': top + 'px',
-            'left': left + 'px'
-          })
-        })
-        $(document).on('mouseup.fontEdit', function(e) {
-          $(document).off('mousemove.fontEdit mouseup.fontEdit')
-        })
-      }
-    },
-    /*changeFontStyle(name, value, curText, curObj) {
-      var vm = this
-      vm.fontEditData.fontWeight = (vm.fontEditData.fontWeight === 'bold' ? 'normal' : 'bold')
-      console.log(vm.fontEditData.fontWeight)
-      if(curText) {
-        vm.fontEditData[name] = value
-        curText.set(name, vm.fontEditData[name])
-        curObj.renderAll()
-      }
-    },*/
     addtext(data, obj) {
       var vm = this
       // 待解决:  002:  让fabric字符串换行
@@ -528,12 +465,13 @@ export default {
         top: data.top,
         fontFamily: data.fontFamily,
         fontSize: data.fontSize,
+        stroke: data.stroke,
         strokeWidth: data.strokeWidth,
-        padding: 2,
+        padding: 50,
         width: 150,
         angle: data.angle,
         opacity: data.opacity,
-        // shadow: 'rgba(0,0,0,0.3) '+ data.shadow + ' ' + data.shadow + ' ' + data.shadow,
+        shadow: 'rgba(0,0,0,0.3) 5px 5px ' + data.shadow + 'px',
         fontWeight: data.fontWeight,
         fontStyle: data.fontStyle, // 斜体
         stroke: data.stroke, // 描边
@@ -546,45 +484,10 @@ export default {
         flipY : data.flipY
       })
       text.scale(data.scale * 0.01)
-      /*if(data.strokeWidth) {
-        text.set
-      }*/
-      text.setShadow({
-        color: vm.fontEditData.shadow.color, 
-        offsetX: vm.fontEditData.shadow.blur, 
-        offsetY: vm.fontEditData.shadow.blur, 
-        blur: vm.fontEditData.shadow.blur
-      })
-      console.log(text)
       obj.add(text)
+      // obj.setActiveObject(text)
       obj.renderAll()
       vm.isAddtext = false
-    },
-    changeSelect(name, curText, curObj, e) {
-      var vm = this
-      if(name.indexOf('shadow') > -1) {
-        vm.fontEditData.shadow[name.slice(6)] = e.target.value
-        curText.setShadow({
-          color: vm.fontEditData.shadow.color, 
-          offsetX: vm.fontEditData.shadow.blur, 
-          offsetY: vm.fontEditData.shadow.blur, 
-          blur: vm.fontEditData.shadow.blur
-        })
-      } else if(name === 'strokeWidth') {
-        vm.fontEditData.strokeWidth = e.target.value
-        curText.set({
-          'strokeWidth': vm.fontEditData.strokeWidth === '0' ? 0 : vm.fontEditData.strokeWidth,
-          'padding': vm.fontEditData.padding
-        })
-        curText.set({
-          'left': vm.fontEditData.left, 
-          'top': vm.fontEditData.top
-        })
-      } else {
-        vm.fontEditData[name] = e.target.value
-        curText.set(name, vm.fontEditData[name])
-      }
-      curObj.renderAll()
     },
     removeText() {  // 编辑文字--删除
       var vm = this
@@ -844,7 +747,6 @@ export default {
       border 1px solid rgb(170, 170, 170)
       -display none
       z-index 50
-      cursor move
       .close
         float right
         cursor pointer
@@ -865,7 +767,6 @@ export default {
           font-family STXingkai
         >span
           margin-right 10px
-          cursor pointer
           img
             vertical-align middle
             width 20px
@@ -879,8 +780,6 @@ export default {
               vertical-align middle
         &:last-child
           position relative
-          input[type="color"]
-            width 22px
           >div
             text-align left
             padding 0 10px
@@ -895,14 +794,9 @@ export default {
                 display inline-block
                 vertical-align middle
                 color #222
-                margin-right 10px
-                width 65px
+                margin-right 15px
+                width 90px
                 padding 2px
-                &.selectFontFrame
-                  width 101px
-              input
-                margin-right 10px
-                vertical-align middle
           .right
             width 174px
             position absolute
@@ -913,31 +807,17 @@ export default {
               input
                 width 90px
                 vertical-align middle
-                cursor pointer
           >.bottom
             margin 12px 0
             span
               label
                 font-weight 100
                 margin-right 8px
-              textarea
-                vertical-align middle
               input
                 display inline-block
-                vertical-align middle
-                margin-left 18px
-                &.submit
-                  // padding 5px 20px
-                  // margin-left 30px
-                  width 82px
-                  height 35px
-                  line-height 35px
-                  color #fff
-                  border 1px solid rgb(58, 170, 146)
-                  border-radius 4px
-                  background rgb(58, 170, 146)
-                  &:hover
-                    background rgb(43, 155, 131)
+                width 410px
+                padding 5px
+                border 1px solid #999
   .edit-bottom
     width 100%
     height 140px
@@ -1003,5 +883,5 @@ export default {
               line-height 20px
               overflow hidden
               text-overflow ellipsis
-              white-space nowrap  margin-top 
+              white-space nowrap
 </style>

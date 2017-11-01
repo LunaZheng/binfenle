@@ -76,7 +76,7 @@ $ npm run dev
 ③ 打包编译失败, 改 config\index.js --> build --> assetsPublicPath: '/' 为 assetsPublicPath: './'     
 ④ json server http://localhost:8091/ 显示数据路径错误 因为加了"/api"     
 ⑤ json server 只可以 get 请求      
-  用 body-parser post/get 读取本地数据    
+  用 body-parser ( post / get ) 读取本地数据    
 
   安装:     
   $ cnpm i body-parser -S     
@@ -120,3 +120,4 @@ $ npm run dev
   2. 002:  让fabric字符串换行 ( src\pages\edit\Edit.vue )
            -->百度 :  JS 字符串换行
            --> http://www.cnblogs.com/ziyunfei/archive/2012/10/04/2711551.html
+  3. 003:  页面比例 (所有)

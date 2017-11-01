@@ -81,27 +81,26 @@
               <option value="48">48px</option>
               <option value="72">72px</option>
             </select>
-            <!-- <span class="bold" @click="changeFontStyle('fontWeight', 'bold', curText, curObj)"><img src="/static/img/edit/bold.svg" alt="" :style="fontEditData.fontWeight === 'bold' ? 'border: 1px solid rgb(98, 162, 228); background: rgb(201, 224, 247)' : 'border: 1px solid transparent'"></span> -->
-            <span class="bold" @click="fontEditData.fontWeight = (fontEditData.fontWeight === 'bold' ? 'normal' : 'bold')"><img src="/static/img/edit/bold.svg" alt="" :style="fontEditData.fontWeight === 'bold' ? 'border: 1px solid rgb(98, 162, 228); background: rgb(201, 224, 247)' : 'border: 1px solid transparent'"></span>
-            <span class="italic" @click="fontEditData.fontStyle = 'italic'"><img src="/static/img/edit/italic.svg" alt="" :style="fontEditData.fontStyle === 'italic' ? 'border: 1px solid rgb(98, 162, 228); background: rgb(201, 224, 247)' : 'border: 1px solid transparent'"></span>
-            <span class="leftAlign" @click="fontEditData.textAlign = 'left'"><img src="/static/img/edit/leftAlign.svg" alt="" :style="fontEditData.textAlign === 'left' ? 'border: 1px solid rgb(98, 162, 228); background: rgb(201, 224, 247)' : 'border: 1px solid transparent'"></span>
-            <span class="centerAlign" @click="fontEditData.textAlign = 'center'"><img src="/static/img/edit/centerAlign.svg" alt="" :style="fontEditData.textAlign === 'center' ? 'border: 1px solid rgb(98, 162, 228); background: rgb(201, 224, 247)' : 'border: 1px solid transparent'"></span>
-            <span class="rightAlign" @click="fontEditData.textAlign = 'right'"><img src="/static/img/edit/rightAlign.svg" alt="" :style="fontEditData.textAlign === 'right' ? 'border: 1px solid rgb(98, 162, 228); background: rgb(201, 224, 247)' : 'border: 1px solid transparent'"></span>
+            <span class="bold" @click="changeFontStyle('fontWeight', curText, curObj)"><img src="/static/img/edit/bold.svg" alt="" :style="fontEditData.fontWeight === 'bold' ? 'border: 1px solid rgb(98, 162, 228); background: rgb(201, 224, 247)' : 'border: 1px solid transparent'"></span>
+            <span class="italic" @click="changeFontStyle('fontStyle', curText, curObj)"><img src="/static/img/edit/italic.svg" alt="" :style="fontEditData.fontStyle === 'italic' ? 'border: 1px solid rgb(98, 162, 228); background: rgb(201, 224, 247)' : 'border: 1px solid transparent'"></span>
+            <span class="leftAlign" @click="changeFontStyle('textAlign', curText, curObj, 'left')"><img src="/static/img/edit/leftAlign.svg" alt="" :style="fontEditData.textAlign === 'left' ? 'border: 1px solid rgb(98, 162, 228); background: rgb(201, 224, 247)' : 'border: 1px solid transparent'"></span>
+            <span class="centerAlign" @click="changeFontStyle('textAlign', curText, curObj, 'center')"><img src="/static/img/edit/centerAlign.svg" alt="" :style="fontEditData.textAlign === 'center' ? 'border: 1px solid rgb(98, 162, 228); background: rgb(201, 224, 247)' : 'border: 1px solid transparent'"></span>
+            <span class="rightAlign" @click="changeFontStyle('textAlign', curText, curObj, 'right')"><img src="/static/img/edit/rightAlign.svg" alt="" :style="fontEditData.textAlign === 'right' ? 'border: 1px solid rgb(98, 162, 228); background: rgb(201, 224, 247)' : 'border: 1px solid transparent'"></span>
           </li>
           <li class="img-controls">
-            <span class="moveup" @click="curText ? changeMoveup(curText, curObj) : fontEditData.top-=10">
+            <span class="moveup" @click="changeFontStyle('top', curText, curObj, '-')" @mouseenter="hoverInColor" @mouseleave="hoverOutColor">
               <img src="/static/img/edit/up.svg" alt="">上移
             </span>
-            <span class="movedown" @click="curText ? changeMovedown(curText, curObj) : fontEditData.top+=10">
+            <span class="movedown" @click="changeFontStyle('top', curText, curObj, '+')" @mouseenter="hoverInColor" @mouseleave="hoverOutColor">
               <img src="/static/img/edit/down.svg" alt="">下移
             </span>
-            <span class="cutImg" @click="curText ? changeAngle(curText, curObj) : fontEditData.angle+=45">
+            <span class="cutImg" @click="changeFontStyle('angle', curText, curObj)" @mouseenter="hoverInColor" @mouseleave="hoverOutColor">
               <img src="/static/img/edit/cut.svg" alt="">旋转
             </span>
-            <span class="copy">
-              <img src="/static/img/edit/copy.svg" alt="">复制
+            <span class="copy" @click="changeFontStyle('flipX', curText, curObj)" @mouseenter="hoverInColor" @mouseleave="hoverOutColor">
+              <img src="/static/img/edit/copy.svg" alt="">镜像
             </span>
-            <span class="removeImg" @click="removeText">
+            <span class="removeImg" @click="removeText" @mouseenter="hoverInColor" @mouseleave="hoverOutColor">
               <img src="/static/img/edit/remove.svg" alt="">删除
             </span>
           </li>
@@ -131,7 +130,7 @@
                 </select>
                 <span class="font-edit-color">
                   <label>边距</label>
-                  <select class="selectFontSize" v-model="fontEditData.padding" @change="curText && changeSelect('strokeWidth', curText, curObj, $event)">
+                  <select class="selectFontSize" v-model="fontEditData.padding" @change="curText && changeSelect('rect', curText, curObj, $event)">
                     <option v-for="(v, i) in 11" :value="i * 1">{{i * 5}}</option>
                   </select>
                   <input type="color">
@@ -141,11 +140,11 @@
             <div class="right">
               <span class="img-edit-scale">
                 <label>大小</label>
-                <input type="range" min="100" max="1000" value="0.5" class="img-scale" v-model="fontEditData.scale">
+                <input type="range" min="1" max="1500" value="500" class="img-scale" v-model="fontEditData.scale" @input="curText && changeSelect('scale', curText, curObj, $event)">
               </span>
               <span class="img-edit-opacity">
                 <label>透明</label>
-                <input type="range" min="50" max="1000" value="1000" class="img-opacity" v-model="fontEditData.opacity">
+                <input type="range" min="1" max="1000" value="1000" class="img-opacity" v-model="fontEditData.opacity" @input="curText && changeSelect('opacity', curText, curObj, $event)">
               </span>
             </div>
             <div class="bottom">
@@ -153,7 +152,7 @@
                 <label>文字</label>
                 <!-- <input type="text" class="addtext" placeholder="点击输入文字" v-model="fontEditData.world" @keyup.enter="addtext(fontEditData, curObj)"> -->
                 <textarea name="" id="" cols="39" rows="2" placeholder="点击输入文字" v-model="fontEditData.world"></textarea>
-                <input type="color" v-model="fontEditData.fill">
+                <input type="color" v-model="fontEditData.fill" @change="curText && changeSelect('fill', curText, curObj, $event)">
                 <input class="submit" type="submit" value="添加" @click="addtext(fontEditData, curObj)">
               </span>
             </div>
@@ -203,6 +202,24 @@
 <script>
 export default {
   name: 'edit',
+  created() {
+    var vm = this
+    // vm.$axios.post('/api/getNewsList')
+    // vm.$axios.post('/api/getOrderList', {id: 0})
+    vm.$axios.post('/api/getNewsList', {id: 0})
+    .then((res) => {
+      console.log(res.data)
+    }, (err) => {
+      console.log(err)
+    })
+    /*var params = {id: 0}
+    vm.$axios.post('/api/getNewsList', qs.stringify({id: 0}))
+    .then((res) => {
+      console.log(res.data)
+    }, (err) => {
+      console.log(err)
+    })*/
+  },
   data () {
     return {
       curObj: '',
@@ -219,7 +236,7 @@ export default {
         fontFamily: 'Hoefler Text',
         fontSize: 24,
         angle: 0,
-        opacity: 0.8,
+        opacity: 1000,
         shadow: {
           color: '#cccccc',
           blur: 5
@@ -236,7 +253,7 @@ export default {
         flipX: false,
         flipY: false,
         padding: 2,
-        scale: 100
+        scale: 500
       },
       filePageData: [{
         src: '/static/img/edit/bg.png',
@@ -406,6 +423,12 @@ export default {
     }
   },
   methods: {
+    hoverInColor(e) {
+      e.target.children[0].src = e.target.children[0].src.slice(0, -4) + '-hover.svg'
+    },
+    hoverOutColor(e) {
+      e.target.children[0].src = e.target.children[0].src.slice(0, -10) + '.svg'
+    },
     submit(e) {
       console.log(e)
     },
@@ -440,11 +463,11 @@ export default {
           vm.fontEditData = {
             world: '',
             left: 10,
-            top: vm.fontEditData.top + 26,
+            top: vm.fontEditData.top + vm.fontEditData.fontSize * 1 + 2,
             fontFamily: 'Hoefler Text',
             fontSize: 24,
             angle: 0,
-            opacity: 0.8,
+            opacity: 1000,
             shadow: {
               color: '#ffffff',
               blur: 5
@@ -454,14 +477,17 @@ export default {
             textDecoration: 'none',
             stroke: '#111111', // 描边
             strokeWidth: 0, // 描边宽度
-            textAlign: 'right',
+            textAlign: 'left',
             lineHeight: 1,
             // textBackgroundColor: 'transparent', // 背景色
             fill: '#111111',
             flipX: false,
             flipY: false,
             padding: 2,
-            scale: 100
+            scale: 500
+          }
+          if(vm.curText) {
+            vm.fontEditData.top = vm.curText.top + 26
           }
           var fontFamily = vm.editList[1].item[idx].title
           vm.fontEditData.fontFamily = fontFamily.slice(0, fontFamily.indexOf(' '))
@@ -509,31 +535,58 @@ export default {
         })
       }
     },
-    /*changeFontStyle(name, value, curText, curObj) {
+    changeFontStyle(name, curText, curObj, value) {
       var vm = this
-      vm.fontEditData.fontWeight = (vm.fontEditData.fontWeight === 'bold' ? 'normal' : 'bold')
-      console.log(vm.fontEditData.fontWeight)
+      var value = value || 'left'
+      if(curText.originX === 'left') {
+      } else {
+
+      }
+      switch (name) {
+        case 'fontWeight':
+          vm.fontEditData.fontWeight = (vm.fontEditData.fontWeight === 'bold' ? 'normal' : 'bold')
+          break
+        case 'fontStyle':
+          vm.fontEditData.fontStyle = (vm.fontEditData.fontStyle === 'italic' ? 'normal' : 'italic')
+          break
+        case 'textAlign':
+          vm.fontEditData.textAlign = value
+          break
+        case 'top':
+          if(curText) {
+            vm.fontEditData.top = curText.top
+            vm.fontEditData.left = curText.left
+          }
+          value === '-' ? vm.fontEditData.top -= 5 : vm.fontEditData.top += 5
+          break
+        case 'angle':
+          vm.fontEditData.angle += 45
+          break
+        case 'flipX':
+          vm.fontEditData.flipX = !vm.fontEditData.flipX
+          break
+      }
       if(curText) {
-        vm.fontEditData[name] = value
         curText.set(name, vm.fontEditData[name])
         curObj.renderAll()
       }
-    },*/
+    },
     addtext(data, obj) {
       var vm = this
       // 待解决:  002:  让fabric字符串换行
       // var text = new fabric.Text('with extensive \ndecoration support', { 
       var text = new fabric.Text(data.world, { 
-        left: data.left, 
+        originX: 'center',
+        originY: 'center',
         top: data.top,
+        left: data.left, 
         fontFamily: data.fontFamily,
         fontSize: data.fontSize,
         strokeWidth: data.strokeWidth,
         padding: 2,
         width: 150,
         angle: data.angle,
-        opacity: data.opacity,
-        // shadow: 'rgba(0,0,0,0.3) '+ data.shadow + ' ' + data.shadow + ' ' + data.shadow,
+        opacity: data.opacity * 0.001,
         fontWeight: data.fontWeight,
         fontStyle: data.fontStyle, // 斜体
         stroke: data.stroke, // 描边
@@ -545,10 +598,20 @@ export default {
         flipX : data.flipX,
         flipY : data.flipY
       })
-      text.scale(data.scale * 0.01)
-      /*if(data.strokeWidth) {
-        text.set
-      }*/
+      text.scale(data.scale * 0.002)
+      if(vm.curText) {
+        text.set({  // 中心点为center后重新定位
+          'top': vm.curText.top + data.fontSize * 1 + 2,
+          'left': vm.curText.left
+        })
+      } else {
+        text.set({  // 中心点为center后重新定位
+          'top': text.height * 0.5 + data.top,
+          'left': text.width * 0.5 + data.left
+        })
+      }
+      // vm.fontEditData.top = text.top
+      // vm.fontEditData.left = text.left
       text.setShadow({
         color: vm.fontEditData.shadow.color, 
         offsetX: vm.fontEditData.shadow.blur, 
@@ -562,7 +625,7 @@ export default {
     },
     changeSelect(name, curText, curObj, e) {
       var vm = this
-      if(name.indexOf('shadow') > -1) {
+      /*if(name.indexOf('shadow') > -1) {
         vm.fontEditData.shadow[name.slice(6)] = e.target.value
         curText.setShadow({
           color: vm.fontEditData.shadow.color, 
@@ -573,40 +636,80 @@ export default {
       } else if(name === 'strokeWidth') {
         vm.fontEditData.strokeWidth = e.target.value
         curText.set({
-          'strokeWidth': vm.fontEditData.strokeWidth === '0' ? 0 : vm.fontEditData.strokeWidth,
+          'strokeWidth': vm.fontEditData.strokeWidth * 1, // 为字符串则出错
           'padding': vm.fontEditData.padding
         })
-        curText.set({
-          'left': vm.fontEditData.left, 
-          'top': vm.fontEditData.top
-        })
+      } else if(name === 'rect') {
+        // curText.set({
+        //   'clipTo': function(ctx) {
+        //     ctx.save();
+        //     // ctx.translate(-5, -5);
+        //     ctx.fillStyle="#999";
+        //     ctx.fillRect(100, 100, 100, 100);
+        //     ctx.restore();
+        //     ctx.save();
+        //     ctx.fillStyle="#fff";
+        //     ctx.fillRect(110, 110, 80, 80);
+        //     ctx.restore();
+        //   }
+        // })
       } else {
         vm.fontEditData[name] = e.target.value
         curText.set(name, vm.fontEditData[name])
+      }*/
+
+      switch(name) {
+        case 'strokeWidth':
+          vm.fontEditData.strokeWidth = e.target.value
+          curText.set({
+            'strokeWidth': vm.fontEditData.strokeWidth * 1, // 为字符串则出错
+            'padding': vm.fontEditData.padding
+          })
+          break
+        case 'rect':
+          /*curText.set({
+            'clipTo': function(ctx) {
+              ctx.save()
+              // ctx.translate(-5, -5)
+              ctx.fillStyle="#999"
+              ctx.fillRect(100, 100, 100, 100)
+              ctx.restore()
+              ctx.save()
+              ctx.fillStyle="#fff"
+              ctx.fillRect(110, 110, 80, 80)
+              ctx.restore()
+            }
+          })*/
+          break
+        case 'scale':
+          vm.fontEditData.scale = e.target.value
+          curText.scale(vm.fontEditData.scale * 0.002)
+          break
+        case 'opacity':
+          vm.fontEditData.opacity = e.target.value
+          curText.set('opacity', vm.fontEditData.opacity * 0.001)
+          break
+        default:
+          if(name.indexOf('shadow') > -1) {
+            vm.fontEditData.shadow[name.slice(6)] = e.target.value
+            curText.setShadow({
+              color: vm.fontEditData.shadow.color, 
+              offsetX: vm.fontEditData.shadow.blur, 
+              offsetY: vm.fontEditData.shadow.blur, 
+              blur: vm.fontEditData.shadow.blur
+            })
+          } else {
+            vm.fontEditData[name] = e.target.value
+            curText.set(name, vm.fontEditData[name])
+          }
       }
+
       curObj.renderAll()
     },
     removeText() {  // 编辑文字--删除
       var vm = this
       vm.curObj.remove(vm.curText)
-    },
-    changeAngle(curText, curObj) {  // 编辑文字--旋转
-      var vm = this
-      vm.fontEditData.angle+=45
-      curText.set('angle', vm.fontEditData.angle)
-      curObj.renderAll()
-    },
-    changeMoveup(curText, curObj) {  // 编辑文字--上移
-      var vm = this
-      vm.fontEditData.top-=10
-      curText.set('top', vm.fontEditData.top)
-      curObj.renderAll()
-    },
-    changeMovedown(curText, curObj) {  // 编辑文字--下移
-      var vm = this
-      vm.fontEditData.top+=10
-      curText.set('top', vm.fontEditData.top)
-      curObj.renderAll()
+      vm.curText = ''
     },
     stopParentEvent(e) {
       e.stopPropagation() // 阻止事件冒泡而触发父级的click事件
@@ -645,7 +748,10 @@ export default {
     changeBg(bgImg, obj) { // 改变背景图/页面
       fabric.Image.fromURL(bgImg, function(img) {
         obj.backgroundImage = img;
-        obj.backgroundImage.width = 720;
+        obj.backgroundImage.width = obj.width;
+        obj.backgroundImage.height = obj.height
+        // obj.backgroundImage.width = ($('.edit-content').width()) * 0.6455;
+        // obj.backgroundImage.height = ($('.edit-content').width()) * 0.6455 * 0.56;
         // obj.backgroundImage.width = obj.get('width');
         // obj.backgroundImage.height = obj.get('height');
         obj.add(img).renderAll();
@@ -657,8 +763,15 @@ export default {
     var vm = this
     var canvas = new fabric.Canvas('canvasOut')
     vm.curObj = canvas
+    /*// var W = ($(document.getElementsByClassName('edit-content')[0]).width()) * 0.6455
+    var W = ($('.edit-content').width()) * 0.6455
+    var H = W * 0.5833
+    canvas.setWidth(W)
+    canvas.setHeight(H)*/
+
+    // 待解决: 003: 页面比例
     canvas.setWidth(720)
-    canvas.setHeight(420)
+    canvas.setHeight(canvas.width * 420 / 720)
     vm.changeBg(vm.curBgImg, canvas)
     vm.curObj.on('after:render', function(options) {
       var gobj = vm.curObj.getActiveObject(); //获取当前选中对象
@@ -688,7 +801,7 @@ export default {
     position absolute
     top 40px
     bottom 0px
-    height 690px
+    // height 690px
     display inline-block
     border-radius 0 4px 0 0
     background #eee
@@ -769,7 +882,7 @@ export default {
     bottom 0px
     right 0px
     left 200px
-    height 690px
+    // height 690px
     .edit-top-bor
       display flex
       justify-content space-between
@@ -794,8 +907,7 @@ export default {
               color rgb(255, 120, 0)
   .canvas-box
     position absolute
-    top 88px
-    bottom 180px
+    top 11.63%
     right 180px
     left 180px
     display flex
@@ -848,10 +960,18 @@ export default {
       .close
         float right
         cursor pointer
+        &:hover
+          color red
       >li
         border-bottom 1px solid rgb(200, 200, 200)
         padding 15px 0
         user-select none
+        span
+          &:hover
+            color rgb(58, 170, 146)
+          &.removeImg
+            &:hover
+              color red
         &:last-child
           border-bottom 1px solid transparent
           padding-bottom 0
@@ -972,7 +1092,7 @@ export default {
           margin-right 5px
     .pic-box
       position relative
-      height 105px
+      height 104px
       top 5px
       .btn
         btn(#eee)

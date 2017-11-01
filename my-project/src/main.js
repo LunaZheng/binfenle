@@ -7,6 +7,10 @@ import store from './store'
 import fabric from 'fabric'
 
 import axios from 'axios'
+/*var qs = require('qs')
+var instance = axios.create({
+    headers: {'content-type': 'application/x-www-form-urlencoded'}
+})*/
 Vue.prototype.$axios = axios
 
 Vue.config.productionTip = false

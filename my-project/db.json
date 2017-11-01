@@ -19,6 +19,128 @@
       "id": 4,
       "title": "新闻条4广告发布",
       "url": "http://hearstone.com"
+    },
+    {
+      "id": 5
+    }
+  ],
+  "layoutData": [
+    {
+      "id": 0,
+      "canvasBox": {
+        "top": 10,
+        "left": 10,
+        "shape": "rect",
+        "width": 145,
+        "height": 180,
+        "angle": 0,
+        "borderRadius": 0,
+        "border": "#fff"
+      }
+    },
+    {
+      "id": 1,
+      "canvasBox": {
+        "top": 10,
+        "left": 10,
+        "shape": "rect",
+        "width": 145,
+        "height": 180,
+        "angle": 0,
+        "borderRadius": 0,
+        "border": "#fff"
+      }
+    },
+    {
+      "id": 2,
+      "canvasBox": {
+        "top": 10,
+        "left": 10,
+        "shape": "rect",
+        "width": 145,
+        "height": 180,
+        "angle": 0,
+        "borderRadius": 0,
+        "border": "#fff"
+      }
+    },
+    {
+      "id": 3,
+      "canvasBox": {
+        "top": 10,
+        "left": 10,
+        "shape": "rect",
+        "width": 145,
+        "height": 180,
+        "angle": 0,
+        "borderRadius": 0,
+        "border": "#fff"
+      }
+    },
+    {
+      "id": 3,
+      "canvasBox": {
+        "top": 10,
+        "left": 10,
+        "shape": "rect",
+        "width": 145,
+        "height": 180,
+        "angle": 0,
+        "borderRadius": 0,
+        "border": "#fff"
+      }
+    },
+    {
+      "id": 4,
+      "canvasBox": {
+        "top": 10,
+        "left": 10,
+        "shape": "rect",
+        "width": 145,
+        "height": 180,
+        "angle": 0,
+        "borderRadius": 0,
+        "border": "#fff"
+      }
+    },
+    {
+      "id": 0,
+      "canvasBox": {
+        "top": 10,
+        "left": 10,
+        "shape": "rect",
+        "width": 145,
+        "height": 180,
+        "angle": 0,
+        "borderRadius": 0,
+        "border": "#fff"
+      }
+    },
+    {
+      "id": 1,
+      "canvasBox": {
+        "top": 10,
+        "left": 10,
+        "shape": "rect",
+        "width": 145,
+        "height": 180,
+        "angle": 0,
+        "borderRadius": 0,
+        "border": "#fff"
+      }
+    },
+    {
+      "id": 2,
+      "canvasBox": {
+        "top": 10,
+        "left": 10,
+        "shape": "rect",
+        "width": 145,
+        "height": 180,
+        "angle": 0,
+        "borderRadius": 0,
+        "border": "#fff"
+      }
     }
   ],
   "login": {

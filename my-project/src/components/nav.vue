@@ -106,9 +106,10 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="stylus" rel="stylesheet/stylus" scoped>
 .nav-box
-  width 1531px
+  // width 1531px
   height 437px
-  background #eee url('/static/img/home-focus01.png') center/contain no-repeat
+  background #eee url('/static/img/home-focus01.png') center no-repeat
+  // background #eee url('/static/img/home-focus01.png') center/contain no-repeat
   .nav-bar
     height 42px
     background rgba(255,255,255,0.5)

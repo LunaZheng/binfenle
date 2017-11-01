@@ -24,8 +24,9 @@ const proxyTable = config.dev.proxyTable
 const app = express()
 
 // body-parser读取本地json
+// ``````````````````````````````````````````````````````````````````````````
 var bodyParser = require('body-parser')
-app.use(bodyParser.urlencoded({ extended: true }))
+app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 var apiRouter = express.Router()
 var fs = require('fs')
@@ -52,6 +53,7 @@ app.listen(port + 1, function (err) {
   }
   console.log('Listening at http://localhost:' + (port + 1) + '\n')
 })
+// ``````````````````````````````````````````````````````````````````````````
 
 const compiler = webpack(webpackConfig)
 

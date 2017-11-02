@@ -111,7 +111,48 @@ $ npm run dev
     }
     console.log('Listening at http://localhost:' + (port + 1) + '\n')
   })
-  ``````````````````````````````````````````````````````````````````````````
+  ``````````````````````````````````````````````````````````````````````````    
+
+⑥ NPM 引入jQuery    
+安装:   
+$ npm install jquery --save    
+build/webpack.base.conf.js，修改两处的代码     
+```
+// 在开头引入webpack，后面的plugins那里需要
+var webpack = require('webpack')    
+// resolve
+
+module.exports = {
+   // 其他代码...
+   resolve: {
+      extensions: ['', '.js', '.vue'],
+      fallback: [path.join(__dirname, '../node_modules')],
+      alias: {
+          'src': path.resolve(__dirname, '../src'),
+          'assets': path.resolve(__dirname, '../src/assets'),
+          'components': path.resolve(__dirname, '../src/components'),
+
+          // webpack 使用 jQuery，如果是自行下载的
+          // 'jquery': path.resolve(__dirname, '../src/assets/libs/jquery/jquery.min'),
+          // 如果使用NPM安装的jQuery
+          'jquery': 'jquery' 
+      }
+   },
+
+   // 增加一个plugins
+   plugins: [
+      new webpack.ProvidePlugin({
+          $: "jquery",
+          jQuery: "jquery"
+      })
+   ],
+
+   // 其他代码...
+}
+```  
+重新 run dev   
+在main.js 引入就ok了   
+import $ from 'jquery'     
 
  -----------
 |  待解决:  |

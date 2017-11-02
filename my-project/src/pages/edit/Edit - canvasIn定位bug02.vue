@@ -1207,7 +1207,7 @@ export default {
                   &:hover
                     background rgb(43, 155, 131)
     .canvasIn-box
-      yposition absolute
+      position absolute
       // top 0px
       // bottom 0px
       // left 0px

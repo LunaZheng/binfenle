@@ -5,6 +5,7 @@ import App from './App'
 import router from './router'
 import store from './store'
 import fabric from 'fabric'
+import $ from 'jquery'
 
 import axios from 'axios'
 /*var qs = require('qs')

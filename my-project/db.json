@@ -27,120 +27,318 @@
   "layoutData": [
     {
       "id": 0,
-      "canvasBox": {
-        "top": 10,
-        "left": 10,
-        "shape": "rect",
-        "width": 145,
-        "height": 180,
-        "angle": 0,
-        "borderRadius": 0,
-        "border": "#fff"
-      }
+      "canvasBox": [
+        {
+          "top": 155,
+          "left": 73,
+          "shape": "rect",
+          "width": 140,
+          "height": 180,
+          "angle": 0,
+          "borderRadius": 0,
+          "border": "6px solid #fff"
+        }
+      ]
     },
     {
       "id": 1,
-      "canvasBox": {
-        "top": 10,
-        "left": 10,
-        "shape": "rect",
-        "width": 145,
-        "height": 180,
-        "angle": 0,
-        "borderRadius": 0,
-        "border": "#fff"
-      }
+      "canvasBox": [
+        {
+          "top": 155,
+          "left": 73,
+          "shape": "rect",
+          "width": 260,
+          "height": 180,
+          "angle": 0,
+          "borderRadius": 0,
+          "border": "6px solid #fff"
+        },
+        {
+          "top": 155,
+          "left": 339,
+          "shape": "rect",
+          "width": 145,
+          "height": 180,
+          "angle": 0,
+          "borderRadius": 0,
+          "border": "6px solid #fff"
+        }
+      ]
     },
     {
       "id": 2,
-      "canvasBox": {
-        "top": 10,
-        "left": 10,
-        "shape": "rect",
-        "width": 145,
-        "height": 180,
-        "angle": 0,
-        "borderRadius": 0,
-        "border": "#fff"
-      }
+      "canvasBox": [
+        {
+          
+          "top": 155,
+          "left": 73,
+          "shape": "rect",
+          "width": 140,
+          "height": 180,
+          "angle": 0,
+          "borderRadius": 0,
+          "border": "6px solid #fff"
+        },
+        {
+          
+          "top": 155,
+          "left": 219,
+          "shape": "rect",
+          "width": 140,
+          "height": 180,
+          "angle": 0,
+          "borderRadius": 0,
+          "border": "6px solid #fff"
+        },
+        {
+          
+          "top": 155,
+          "left": 365,
+          "shape": "rect",
+          "width": 140,
+          "height": 180,
+          "angle": 0,
+          "borderRadius": 0,
+          "border": "6px solid #fff"
+        }
+      ]
     },
     {
       "id": 3,
-      "canvasBox": {
-        "top": 10,
-        "left": 10,
-        "shape": "rect",
-        "width": 145,
-        "height": 180,
-        "angle": 0,
-        "borderRadius": 0,
-        "border": "#fff"
-      }
-    },
-    {
-      "id": 3,
-      "canvasBox": {
-        "top": 10,
-        "left": 10,
-        "shape": "rect",
-        "width": 145,
-        "height": 180,
-        "angle": 0,
-        "borderRadius": 0,
-        "border": "#fff"
-      }
+      "canvasBox": [
+        {
+          
+          "top": 155,
+          "left": 73,
+          "shape": "rect",
+          "width": 140,
+          "height": 180,
+          "angle": 0,
+          "borderRadius": 0,
+          "border": "6px solid #fff"
+        },
+        {
+          
+          "top": 155,
+          "left": 219,
+          "shape": "rect",
+          "width": 140,
+          "height": 87,
+          "angle": 0,
+          "borderRadius": 0,
+          "border": "6px solid #fff"
+        },
+        {
+          
+          "top": 248,
+          "left": 219,
+          "shape": "rect",
+          "width": 67,
+          "height": 87,
+          "angle": 0,
+          "borderRadius": 0,
+          "border": "6px solid #fff"
+        },
+        {
+          
+          "top": 248,
+          "left": 292,
+          "shape": "rect",
+          "width": 67,
+          "height": 87,
+          "angle": 0,
+          "borderRadius": 0,
+          "border": "6px solid #fff"
+        }
+      ]
     },
     {
       "id": 4,
-      "canvasBox": {
-        "top": 10,
-        "left": 10,
-        "shape": "rect",
-        "width": 145,
-        "height": 180,
-        "angle": 0,
-        "borderRadius": 0,
-        "border": "#fff"
-      }
+      "canvasBox": [
+        {
+          
+          "top": 155,
+          "left": 73,
+          "shape": "rect",
+          "width": 140,
+          "height": 180,
+          "angle": 0,
+          "borderRadius": 0,
+          "border": "6px solid #fff"
+        },
+        {
+          
+          "top": 155,
+          "left": 219,
+          "shape": "rect",
+          "width": 100,
+          "height": 56,
+          "angle": 0,
+          "borderRadius": 0,
+          "border": "6px solid #fff"
+        },
+        {
+          
+          "top": 217,
+          "left": 219,
+          "shape": "rect",
+          "width": 100,
+          "height": 56,
+          "angle": 0,
+          "borderRadius": 0,
+          "border": "6px solid #fff"
+        },
+        {
+          
+          "top": 279,
+          "left": 219,
+          "shape": "rect",
+          "width": 100,
+          "height": 56,
+          "angle": 0,
+          "borderRadius": 0,
+          "border": "6px solid #fff"
+        }
+      ]
     },
     {
-      "id": 0,
-      "canvasBox": {
-        "top": 10,
-        "left": 10,
-        "shape": "rect",
-        "width": 145,
-        "height": 180,
-        "angle": 0,
-        "borderRadius": 0,
-        "border": "#fff"
-      }
+      "id": 5,
+      "canvasBox": [
+        {
+          
+          "top": 155,
+          "left": 36,
+          "shape": "rect",
+          "width": 120,
+          "height": 180,
+          "angle": 0,
+          "borderRadius": 0,
+          "border": "6px solid #fff"
+        },
+        {
+          
+          "top": 155,
+          "left": 162,
+          "shape": "rect",
+          "width": 120,
+          "height": 180,
+          "angle": 0,
+          "borderRadius": 0,
+          "border": "6px solid #fff"
+        },
+        {
+          
+          "top": 155,
+          "left": 288,
+          "shape": "rect",
+          "width": 120,
+          "height": 180,
+          "angle": 0,
+          "borderRadius": 0,
+          "border": "6px solid #fff"
+        },
+        {
+          
+          "top": 155,
+          "left": 414,
+          "shape": "rect",
+          "width": 120,
+          "height": 180,
+          "angle": 0,
+          "borderRadius": 0,
+          "border": "6px solid #fff"
+        },
+        {
+          
+          "top": 155,
+          "left": 540,
+          "shape": "rect",
+          "width": 120,
+          "height": 180,
+          "angle": 0,
+          "borderRadius": 0,
+          "border": "6px solid #fff"
+        }
+      ]
     },
     {
-      "id": 1,
-      "canvasBox": {
-        "top": 10,
-        "left": 10,
-        "shape": "rect",
-        "width": 145,
-        "height": 180,
-        "angle": 0,
-        "borderRadius": 0,
-        "border": "#fff"
-      }
+      "id": 6,
+      "canvasBox": [
+        {
+          
+          "top": 155,
+          "left": 73,
+          "shape": "rect",
+          "width": 140,
+          "height": 180,
+          "angle": 0,
+          "borderRadius": 0,
+          "border": "6px solid #fff"
+        }
+      ]
     },
     {
-      "id": 2,
-      "canvasBox": {
-        "top": 10,
-        "left": 10,
-        "shape": "rect",
-        "width": 145,
-        "height": 180,
-        "angle": 0,
-        "borderRadius": 0,
-        "border": "#fff"
-      }
+      "id": 7,
+      "canvasBox": [
+        {
+          "top": 155,
+          "left": 73,
+          "shape": "rect",
+          "width": 260,
+          "height": 180,
+          "angle": 0,
+          "borderRadius": 0,
+          "border": "6px solid #fff"
+        },
+        {
+          "top": 155,
+          "left": 339,
+          "shape": "rect",
+          "width": 145,
+          "height": 180,
+          "angle": 0,
+          "borderRadius": 0,
+          "border": "6px solid #fff"
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "canvasBox": [
+        {
+          
+          "top": 155,
+          "left": 73,
+          "shape": "rect",
+          "width": 140,
+          "height": 180,
+          "angle": 0,
+          "borderRadius": 0,
+          "border": "6px solid #fff"
+        },
+        {
+          
+          "top": 155,
+          "left": 219,
+          "shape": "rect",
+          "width": 140,
+          "height": 180,
+          "angle": 0,
+          "borderRadius": 0,
+          "border": "6px solid #fff"
+        },
+        {
+          
+          "top": 155,
+          "left": 365,
+          "shape": "rect",
+          "width": 140,
+          "height": 180,
+          "angle": 0,
+          "borderRadius": 0,
+          "border": "6px solid #fff"
+        }
+      ]
     }
   ],
   "login": {

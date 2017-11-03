@@ -50,7 +50,7 @@
       <div class="canvas-box">
         <canvas id="canvasOut"></canvas>
         <div class="canvasIn-box">
-          <!-- <canvas class="canvasIn" 
+          <canvas class="canvasIn" 
             v-for="(item, idx) in layoutData" 
             :id="'canvasIn' + idx" 
             @mouseenter="hoverInCanvasIn" 
@@ -59,15 +59,15 @@
             @dragover='allowDrop($event)' 
             @click="changeObj('canvasIn' + idx, $event)"
             :style="layoutStyle[idx]"
-          ></canvas> -->
-          <canvas class="canvasIn" 
+          ></canvas>
+          <!-- <canvas class="canvasIn" 
             v-for="(item, idx) in layoutData" 
             :id="'canvasIn' + idx" 
             @drop='drop($event)' 
             @dragover='allowDrop($event)' 
             @click="changeObj('canvasIn' + idx, $event)"
             :style="layoutStyle[idx]"
-          ></canvas>
+          ></canvas> -->
         </div>
         <ul class="font-edit" v-if="isAddtext" @mousedown="fontEditDown">
           <span class="close" @click="isAddtext = false">x</span>
@@ -120,6 +120,9 @@
             <span class="copy" @click="changeFontStyle('flipX', curText, curObj)" @mouseenter="hoverInColor" @mouseleave="hoverOutColor">
               <img src="/static/img/edit/copy.svg" alt="">镜像
             </span>
+            <span class="moveup" @click="changeFontStyle('bringToFront', curText, curObj, '-')" @mouseenter="hoverInColor" @mouseleave="hoverOutColor">
+              <img src="/static/img/edit/up.svg" alt="">前置
+            </span>
             <span class="removeImg" @click="removeText" @mouseenter="hoverInColor" @mouseleave="hoverOutColor">
               <img src="/static/img/edit/remove.svg" alt="">删除
             </span>
@@ -140,20 +143,31 @@
               </div>
               <div class="bottom">
                 <label>边框</label>
-                <select class="selectFontFrame">
-                  <option value="相框1">相框1</option>
-                  <option value="相框2">相框2</option>
-                  <option value="花边">花边</option>
-                  <option value="水文">水文</option>
-                  <option value="杂志封面">杂志封面</option>
-                  <option value="广告">广告</option>
+                <select class="selectFontFrame" @change="curText && addBorder(borderData, curText, curObj, $event)">
+                  <option value="无">无</option>
+                  <optgroup label="方框">
+                    <option value="方框1">方框1</option>
+                    <option value="方框2">方框2</option>
+                    <option value="方框3">方框3</option>
+                  </optgroup>
+                  <optgroup label="圆框">
+                    <option value="圆1">圆1</option>
+                    <option value="圆2">圆2</option>
+                    <option value="椭圆1">椭圆1</option>
+                    <option value="椭圆2">椭圆2</option>
+                  </optgroup>
+                  <optgroup label="多边形">
+                    <option value="三角形">三角形</option>
+                    <option value="五角形">五角形</option>
+                    <option value="六角形">六角形</option>
+                  </optgroup>
                 </select>
                 <span class="font-edit-color">
                   <label>边距</label>
-                  <select class="selectFontSize" v-model="fontEditData.padding" @change="curText && changeSelect('rect', curText, curObj, $event)">
-                    <option v-for="(v, i) in 11" :value="i * 1">{{i * 5}}</option>
+                  <select class="selectFontSize" v-model="borderData.width" @change="curBorder && changeBorderStyle('strokeWidth', curBorder, curObj, $event)">
+                    <option v-for="(v, i) in 21" :value="i * 1">{{i * 10}}</option>
                   </select>
-                  <input type="color">
+                  <input type="color" v-model="borderData.color" @change="curBorder && changeBorderStyle('stroke', curBorder, curObj, $event)">
                 </span>
               </div>
             </div>
@@ -171,7 +185,7 @@
               <span class="font-edit-content">
                 <label>文字</label>
                 <!-- <input type="text" class="addtext" placeholder="点击输入文字" v-model="fontEditData.world" @keyup.enter="addtext(fontEditData, curObj)"> -->
-                <textarea name="" id="" cols="39" rows="2" placeholder="点击输入文字" v-model="fontEditData.world"></textarea>
+                <textarea name="" id="" cols="39" rows="2" placeholder="点击输入文字" v-model="fontEditData.world" @input="curText && changeSelect('world', curText, curObj, $event)"></textarea>
                 <input type="color" v-model="fontEditData.fill" @change="curText && changeSelect('fill', curText, curObj, $event)">
                 <input class="submit" type="submit" value="添加" @click="addtext(fontEditData, curObj)">
               </span>
@@ -243,6 +257,11 @@ export default {
       filePicData: [],
       isAddtext: false,
       curBgImg: '/static/img/edit/bg.png',
+      curBorder: '',
+      borderData: {
+        width: 1,
+        color: '#ff0000'
+      },
       fontEditData: {
         world: '',
         left: 10,
@@ -441,23 +460,52 @@ export default {
         vm.curObj.renderAll()
       }
     },
+    curText(newVal) {
+      var vm = this
+      if(vm.isAddtext) {
+        vm.fontEditData.world = vm.curText.text,
+        vm.fontEditData.left = vm.curText.left,
+        vm.fontEditData.top = vm.curText.top,
+        vm.fontEditData.fontFamily = vm.curText.fontFamily,
+        vm.fontEditData.fontSize = vm.curText.fontSize,
+        vm.fontEditData.angle = vm.curText.angle,
+        vm.fontEditData.opacity = vm.curText.opacity * 1000,
+        vm.fontEditData.shadow = {
+          'color': vm.curText.shadow.color,
+          'blur': vm.curText.shadow.blur
+        },
+        vm.fontEditData.fontWeight = vm.curText.fontWeight,
+        vm.fontEditData.fontStyle = vm.curText.fontStyle, // 斜体
+        vm.fontEditData.textDecoration = vm.curText.textDecoration,
+        vm.fontEditData.stroke = vm.curText.stroke, // 描边
+        vm.fontEditData.strokeWidth = vm.curText.strokeWidth, // 描边宽度
+        vm.fontEditData.textAlign = vm.curText.textAlign,
+        vm.fontEditData.lineHeight = vm.curText.lineHeight,
+        vm.fontEditData.fill = vm.curText.fill,
+        vm.fontEditData.flipX = vm.curText.flipX,
+        vm.fontEditData.flipY = vm.curText.flipY,
+        vm.fontEditData.padding = vm.curText.padding,
+        vm.fontEditData.scale = vm.curText.scaleX * 500
+      }
+    },
     layoutData(newVal) {
       var obj = []
       this.layoutData.forEach(function(item, idx) {
         var canvasIn = new fabric.Canvas('canvasIn' + idx)
         canvasIn.setWidth(item.width)
         canvasIn.setHeight(item.height)
-      console.log($('.canvasIn-box .canvas-container'))
+      /*console.log($('.canvasIn-box .canvas-container'))
         $('.canvasIn-box .canvas-container').css({
           'top': item.top,
           'left': item.left
-        })
+        })*/
 
         /*canvasIn.set({
           'top': item.top,
           'left': item.left
         })*/
         obj.push(canvasIn)
+        console.log(obj)
       })
     }
   },
@@ -465,10 +513,11 @@ export default {
     layoutStyle() {
       var styleObj = []
       this.layoutData.forEach(function(item, idx) {
+
         var obj = {
-          'position': 'absolute',
-          'top': item.top + 'px',
-          'left': item.left + 'px',
+          'position': 'relative',
+          // 'top': item.top + 'px',
+          // 'left': item.left + 'px',
           'width': item.width + 'px',
           'height': item.height + 'px',
           'border': item.border,
@@ -477,6 +526,7 @@ export default {
         }
         styleObj.push(obj)
       })
+      console.log(styleObj)
       return styleObj
     },
     /*canvasInObj() {
@@ -516,7 +566,8 @@ export default {
     hoverOut(idx) {
       this.curChangeIconIdx = -1
     },
-    /*hoverInCanvasIn(e) {
+    // canvasIn hover效果
+    hoverInCanvasIn(e) {
       $(e.target).css({
         'box-shadow': '0 0 10px 2px rgba(0, 0, 0, 0.5) inset'
       })
@@ -525,7 +576,7 @@ export default {
       $(e.target).css({
         'box-shadow': '0 0 10px 2px rgba(0, 0, 0, 0) inset'
       })
-    },*/
+    },
     showList(idx, e) {
       var vm = this
       if(this.curShowListIdx != idx) {
@@ -601,67 +652,6 @@ export default {
         vm.isAddtext = false
       }
     },
-    fontEditDown(e) { // 文字编辑框移动
-      this.isAddtext = true
-      if(e.target.tagName === 'UL' || e.target.tagName === 'LI') {
-        var ul = $(e.target.closest('.font-edit'))
-        var originX = ul.css('left').replace('px', '') * 1
-        var originY = ul.css('top').replace('px', '') * 1
-        // clientx(相对于浏览器) screenx(用户显示屏) pagex(也相对于浏览器但不会随着滚动条而变动) 
-        var x1 = e.clientX 
-        var y1 = e.clientY
-
-        $(document).on('mousemove.fontEdit', function(e) {
-          var x2 = e.clientX
-          var y2 = e.clientY
-          var left = x2 - x1 + originX
-          var top = y2 - y1 + originY
-          ul.css({
-            'top': top + 'px',
-            'left': left + 'px'
-          })
-        })
-        $(document).on('mouseup.fontEdit', function(e) {
-          $(document).off('mousemove.fontEdit mouseup.fontEdit')
-        })
-      }
-    },
-    changeFontStyle(name, curText, curObj, value) {
-      var vm = this
-      var value = value || 'left'
-      if(curText.originX === 'left') {
-      } else {
-
-      }
-      switch (name) {
-        case 'fontWeight':
-          vm.fontEditData.fontWeight = (vm.fontEditData.fontWeight === 'bold' ? 'normal' : 'bold')
-          break
-        case 'fontStyle':
-          vm.fontEditData.fontStyle = (vm.fontEditData.fontStyle === 'italic' ? 'normal' : 'italic')
-          break
-        case 'textAlign':
-          vm.fontEditData.textAlign = value
-          break
-        case 'top':
-          if(curText) {
-            vm.fontEditData.top = curText.top
-            vm.fontEditData.left = curText.left
-          }
-          value === '-' ? vm.fontEditData.top -= 5 : vm.fontEditData.top += 5
-          break
-        case 'angle':
-          vm.fontEditData.angle += 45
-          break
-        case 'flipX':
-          vm.fontEditData.flipX = !vm.fontEditData.flipX
-          break
-      }
-      if(curText) {
-        curText.set(name, vm.fontEditData[name])
-        curObj.renderAll()
-      }
-    },
     addtext(data, obj) {
       var vm = this
       // 待解决:  002:  让fabric字符串换行
@@ -712,6 +702,65 @@ export default {
       obj.renderAll()
       vm.isAddtext = false
     },
+    fontEditDown(e) { // 文字编辑框移动
+      this.isAddtext = true
+      if(e.target.tagName === 'UL' || e.target.tagName === 'LI') {
+        var ul = $(e.target.closest('.font-edit'))
+        var originX = ul.css('left').replace('px', '') * 1
+        var originY = ul.css('top').replace('px', '') * 1
+        // clientx(相对于浏览器) screenx(用户显示屏) pagex(也相对于浏览器但不会随着滚动条而变动) 
+        var x1 = e.clientX 
+        var y1 = e.clientY
+
+        $(document).on('mousemove.fontEdit', function(e) {
+          var x2 = e.clientX
+          var y2 = e.clientY
+          var left = x2 - x1 + originX
+          var top = y2 - y1 + originY
+          ul.css({
+            'top': top + 'px',
+            'left': left + 'px'
+          })
+        })
+        $(document).on('mouseup.fontEdit', function(e) {
+          $(document).off('mousemove.fontEdit mouseup.fontEdit')
+        })
+      }
+    },
+    changeFontStyle(name, curText, curObj, value) {
+      var vm = this
+      switch (name) {
+        case 'fontWeight':
+          vm.fontEditData.fontWeight = (vm.fontEditData.fontWeight === 'bold' ? 'normal' : 'bold')
+          break
+        case 'fontStyle':
+          vm.fontEditData.fontStyle = (vm.fontEditData.fontStyle === 'italic' ? 'normal' : 'italic')
+          break
+        case 'textAlign':
+          vm.fontEditData.textAlign = value
+          break
+        case 'top':
+          if(curText) {
+            vm.fontEditData.top = curText.top
+            vm.fontEditData.left = curText.left
+          }
+          value === '-' ? vm.fontEditData.top -= 5 : vm.fontEditData.top += 5
+          break
+        case 'angle':
+          vm.fontEditData.angle += 45
+          break
+        case 'flipX':
+          vm.fontEditData.flipX = !vm.fontEditData.flipX
+          break
+        case 'bringToFront': // 前置
+          curObj.bringToFront(curText)
+          break
+      }
+      if(curText) {
+        curText.set(name, vm.fontEditData[name])
+        curObj.renderAll()
+      }
+    },
     changeSelect(name, curText, curObj, e) {
       var vm = this
       switch(name) {
@@ -741,6 +790,18 @@ export default {
           vm.fontEditData.scale = e.target.value
           curText.scale(vm.fontEditData.scale * 0.002)
           break
+        case 'world':
+          var oldWidth = curText.width * 0.5 * curText.scaleX
+          vm.fontEditData.world = e.target.value
+          curText.set({
+            'text': vm.fontEditData[name],
+          })
+          curObj.renderAll()
+          var addLeft = curText.width * 0.5 * curText.scaleX - oldWidth
+          curText.set({
+            'left': curText.left + addLeft
+          })
+          break
         case 'opacity':
           vm.fontEditData.opacity = e.target.value
           curText.set('opacity', vm.fontEditData.opacity * 0.001)
@@ -759,6 +820,177 @@ export default {
             curText.set(name, vm.fontEditData[name])
           }
       }
+      curObj.renderAll()
+    },
+    addBorder(data, curText, curObj, e) {
+      var vm = this
+      switch (e.target.value) {
+        case '无':
+          curObj.remove(vm.curBorder)
+          break
+        case '方框1':
+          curObj.remove(vm.curBorder)
+          var rect = new fabric.Rect({
+            originX: curText.originX,
+            originY: curText.originY,
+            top: curText.top,
+            left: curText.left,
+            angle: curText.angle,
+            width: curText.width * curText.scaleX + 5,
+            height: curText.height * curText.scaleY * curText.scaleY + 5,
+            fill: 'rgba(0,0,0,0)',
+            stroke: data.color,
+            strokeWidth: data.width,
+          })
+          /*rect.setGradient('fill', {
+            x1: 0,
+            y1: 0,
+            x2: rect.width,
+            y2: 0,
+            colorStops: {
+              0: "red",
+              1: "blue"
+            }
+          })*/
+          curObj.add(rect)
+          vm.curBorder = rect
+          break
+        case '方框2':
+          curObj.remove(vm.curBorder)
+          var rect = new fabric.Rect({
+            name: '边框',
+            originX: curText.originX,
+            originY: curText.originY,
+            top: curText.top,
+            left: curText.left,
+            angle: curText.angle,
+            width: curText.width * curText.scaleX + 5,
+            height: curText.height * curText.scaleY + 5,
+            fill: 'rgba(0,0,0,0)',
+            stroke: data.color,
+            strokeWidth: data.width,
+            strokeDashArray: [5, 5],
+          })
+          curObj.add(rect)
+          vm.curBorder = rect
+          break
+        case '方框3':
+          curObj.remove(vm.curBorder)
+          var rect = new fabric.Rect({
+            originX: curText.originX,
+            originY: curText.originY,
+            top: curText.top,
+            left: curText.left,
+            angle: curText.angle,
+            width: curText.width * curText.scaleX + 5,
+            height: curText.height * curText.scaleY + 5,
+            fill: 'rgba(0,0,0,0)',
+            stroke: data.color,
+            strokeWidth: data.width,
+            strokeDashArray: [2, 4, 6],
+          })
+          curObj.add(rect)
+          vm.curBorder = rect
+          break
+        case '圆1':
+          curObj.remove(vm.curBorder)
+          var circle = new fabric.Circle({
+            originX: curText.originX,
+            originY: curText.originY,
+            top: curText.top,
+            left: curText.left,
+            angle: curText.angle,
+            radius: curText.width * curText.scaleX * 0.5,
+            fill: 'rgba(0,0,0,0)',
+            stroke: data.color,
+            strokeWidth: data.width,
+            // strokeDashArray: [2, 4, 6],
+          })
+          curObj.add(circle)
+          vm.curBorder = circle
+          break
+        case '圆2':
+          curObj.remove(vm.curBorder)
+          var circle = new fabric.Circle({
+            originX: curText.originX,
+            originY: curText.originY,
+            top: curText.top,
+            left: curText.left,
+            angle: curText.angle,
+            radius: curText.width * curText.scaleX * 0.5,
+            fill: 'rgba(0,0,0,0)',
+            stroke: data.color,
+            strokeWidth: data.width,
+            strokeDashArray: [2, 4, 6],
+          })
+          curObj.add(circle)
+          vm.curBorder = circle
+          break
+        case '椭圆1':
+          curObj.remove(vm.curBorder)
+          var circle = new fabric.Circle({
+            originX: curText.originX,
+            originY: curText.originY,
+            top: curText.top,
+            left: curText.left,
+            angle: curText.angle,
+            radius: curText.width * curText.scaleX * 0.5,
+            scaleY: 0.5,
+            fill: 'rgba(0,0,0,0)',
+            stroke: data.color,
+            strokeWidth: data.width,
+          })
+          curObj.add(circle)
+          vm.curBorder = circle
+          break
+        case '椭圆2':
+          curObj.remove(vm.curBorder)
+          var circle = new fabric.Circle({
+            originX: curText.originX,
+            originY: curText.originY,
+            top: curText.top,
+            left: curText.left,
+            angle: curText.angle,
+            radius: curText.width * curText.scaleX * 0.5,
+            scaleY: 0.5,
+            fill: 'rgba(0,0,0,0)',
+            stroke: data.color,
+            strokeWidth: data.width,
+            strokeDashArray: [2, 4, 6],
+          })
+          curObj.add(circle)
+          vm.curBorder = circle
+          break
+        case '三角形':
+          curObj.remove(vm.curBorder)
+          var triangle = new fabric.Triangle({
+            originX: curText.originX,
+            originY: curText.originY,
+            top: curText.top,
+            left: curText.left,
+            angle: curText.angle,
+            width: curText.width * curText.scaleX * 2, 
+            height: curText.width * curText.scaleX * 2, 
+            fill: 'rgba(0,0,0,0)', 
+            stroke: data.color,
+            strokeWidth: data.width,
+            // strokeDashArray: [2, 4, 6]
+          })
+          curObj.add(triangle)
+          vm.curBorder = triangle
+          break
+        case '五角形':
+          curObj.remove(vm.curBorder)
+          console.log('五角形')
+          break
+        case '六角形':
+          curObj.remove(vm.curBorder)
+          console.log('六角形')
+          break
+      }
+    },
+    changeBorderStyle(name, curBorder, curObj, e) {
+      curBorder.set(name, e.target.value)
       curObj.renderAll()
     },
     removeText() {  // 编辑文字--删除
@@ -813,7 +1045,7 @@ export default {
     },
     allowDrop(e) { // @dragover: 在元素正在拖动到放置目标时触发
       e.preventDefault()
-      var timer
+      /*var timer
       $('.canvasIn-box .upper-canvas canvasIn').css({
         'box-shadow': '0 0 10px 2px rgba(0, 0, 0, 0.5) inset'
       })
@@ -822,7 +1054,7 @@ export default {
         $('.canvasIn-box .upper-canvas canvasIn').css({
           'box-shadow': '0 0 10px 2px rgba(0, 0, 0, 0) inset'
         })
-      }, 100)
+      }, 100)*/
     },
     changeObj(canvasId, e) {
       e.preventDefault()
@@ -864,7 +1096,7 @@ export default {
     var vm = this
     vm.$nextTick(function() {
       // dom已更新
-      vm.canvasOut = document.getElementsByClassName('canvasIn-box')[0]
+      // vm.canvasOut = document.getElementsByClassName('canvasIn-box')[0]
       var canvas = new fabric.Canvas('canvasOut')
       vm.curObj = canvas
       /*// var W = ($(document.getElementsByClassName('edit-content')[0]).width()) * 0.6455
@@ -882,6 +1114,9 @@ export default {
         if(gobj) {
           vm.isAddtext = true
           vm.curText = vm.curObj.getActiveObject()
+          if(vm.curObj.getActiveObject().name === '边框') {
+            vm.curBorder = vm.curObj.getActiveObject()
+          }
         } else {
           vm.curText = ''
           vm.isAddtext = false
@@ -893,7 +1128,7 @@ export default {
       }
 
       // canvasIn-box 实时定位
-      $('.canvasIn-box').css({
+      /*$('.canvasIn-box').css({
         'width': $('.canvas-container').width(),
         'height': $('.canvas-container').height(),
         'left': $('.canvas-container')[0].offsetLeft,
@@ -906,11 +1141,11 @@ export default {
           'left': $('.canvas-container')[0].offsetLeft,
           'top': $('.canvas-container')[0].offsetTop,
         })
-      })
+      })*/
 
       // canvasIn 布局样式调整
       // vm.layoutRender()
-      console.log($('.canvasIn-box .canvas-container'))
+      /*console.log($('.canvasIn-box .canvas-container'))
       $('.canvasIn-box .canvas-container').on('dragover', function() {
         e.preventDefault()
         var timer
@@ -923,6 +1158,16 @@ export default {
             'box-shadow': '0 0 10px 2px rgba(0, 0, 0, 0) inset'
           })
         }, 100)
+      })*/
+
+      vm.layoutData.forEach(function(item, idx) {
+        if(idx === 0) {
+          console.log($('.canvasIn-box'))
+          $('.canvasIn-box').css({
+            'top': item.top + 'px',
+            'left': item.left + 'px',
+          })
+        }
       })
 
 
@@ -1056,8 +1301,12 @@ export default {
   .canvas-box
     position absolute
     top 11.63%
-    right 180px
-    left 180px
+    // right 180px
+    // left 180px
+    width 720px
+    height 420px
+    left 50%
+    margin-left -360px
     display flex
     justify-content center
     text-align center
@@ -1140,7 +1389,7 @@ export default {
         &.img-controls
           span
             display inline-block
-            margin-right 45px
+            margin-right 27px
             &:last-child
               margin-right 0
             img
@@ -1207,13 +1456,13 @@ export default {
                   &:hover
                     background rgb(43, 155, 131)
     .canvasIn-box
-      yposition absolute
+      position absolute
       // top 0px
       // bottom 0px
       // left 0px
       // right 0px
       // min-width 720px
-      width 0px
+      // width 800px
   .edit-bottom
     width 100%
     height 140px

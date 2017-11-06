@@ -30,7 +30,7 @@
 </style>
 
 <canvas id="c"></canvas>
-<img src="http://designsoftware.ninja/printdemo/modules/blockadvertising/img/fixtures/advertising.jpg" id="my-image">
+<!-- <img src="http://designsoftware.ninja/printdemo/modules/blockadvertising/img/fixtures/advertising.jpg" id="my-image"> -->
 
 <script src='./fabric.js'></script>
 <script>
@@ -75,16 +75,21 @@ canvas.on('mouse:down', function(options) {
 });
 
 //侦听器直接附加到画布对象
-/*rect.on('selected', function() {
+rect.on('selected', function() {
   console.log('selected a rectangle');
 });
 
 var circle = new fabric.Circle({ radius: 75, fill: 'blue' });
 canvas.add(circle);
-circle.on('moving', function() {
+/*circle.on('moving', function() {
   console.log('moving a circle');
-});
-*/
+});*/
+
+
+circle.on('mouse:over', function() {
+  console.log('mouse:over a circle');
+})
+
 </script>
 
 </body>

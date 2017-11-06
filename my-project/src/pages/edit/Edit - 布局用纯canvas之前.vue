@@ -47,12 +47,29 @@
           </li>
         </ul>
       </div>
-      <div class="canvas-box"
-        @dragover='allowDrop'
-        @drop='drop'
-      >
+      <div class="canvas-box">
         <canvas id="canvasOut"></canvas>
-        
+        <div class="canvasIn-box"
+          v-for="(item, idx) in layoutData" 
+          :style="layoutStyle[idx]"
+        >
+          <canvas class="canvasIn" 
+            :id="'canvasIn' + idx" 
+            @mouseenter="hoverInCanvasIn" 
+            @mouseleave="hoverOutCanvasIn" 
+            @drop='drop($event)' 
+            @dragover='allowDrop($event)' 
+            @click="changeObj('canvasIn' + idx, $event)"
+          ></canvas>
+          <!-- <canvas class="canvasIn" 
+            v-for="(item, idx) in layoutData" 
+            :id="'canvasIn' + idx" 
+            @drop='drop($event)' 
+            @dragover='allowDrop($event)' 
+            @click="changeObj('canvasIn' + idx, $event)"
+            :style="layoutStyle[idx]"
+          ></canvas> -->
+        </div>
         <ul class="font-edit" v-if="isAddtext" @mousedown="fontEditDown">
           <span class="close" @click="isAddtext = false">x</span>
           <li>
@@ -240,10 +257,8 @@ export default {
       curShowListIdx: -1,
       curChangeIconIdx: -1,
       curDragImg: '',
-      curCanvasInIdx: -1,
       filePicData: [],
       isAddtext: false,
-      // curBgImg: '/static/img/edit/bg.png',
       curBgImg: '/static/img/edit/bg.png',
       curBorder: '',
       borderData: {
@@ -279,11 +294,31 @@ export default {
       canvasOut: '',
       layoutData: [
         {
-          "top": 160,
+          "top": 155,
           "left": 73,
           "shape": "rect",
           "width": 140,
-          "height": 185,
+          "height": 180,
+          "angle": 0,
+          "borderRadius": 0,
+          "border": "6px solid #fff"
+        },
+        {
+          "top": 155,
+          "left": 219,
+          "shape": "rect",
+          "width": 140,
+          "height": 180,
+          "angle": 0,
+          "borderRadius": 0,
+          "border": "6px solid #fff"
+        },
+        {
+          "top": 155,
+          "left": 365,
+          "shape": "rect",
+          "width": 140,
+          "height": 180,
           "angle": 0,
           "borderRadius": 0,
           "border": "6px solid #fff"
@@ -379,8 +414,6 @@ export default {
         tag: 'bg',
         name: '背景',
         item: [{
-          img: '/static/img/edit/bg.png'
-        },{
           img: '/static/img/edit/bg01.png'
         },{
           img: '/static/img/edit/bg02.png'
@@ -480,112 +513,41 @@ export default {
         vm.fontEditData.scale = vm.curText.scaleX * 500
       }
     },
-    layoutData: {　　　　
-      handler(newVal, oldVal) {
-        var vm = this
-        var objs = []
-        newVal.forEach(function(item, idx) {
-          console.log('watch执行')
-          var rect = new fabric.Rect({
-            name: 'canvasIn' + idx,
-            originX: 'center',
-            originY: 'center',
-            top: item.top + item.height * 0.5,
-            left: item.left + item.width * 0.5,
-            angle: item.angle,
-            width: item.width,
-            height: item.height,
-            fill: 'transparent',
-            stroke: '#fff',
-            strokeWidth: 6,
-          })
-          var imgElement = new Image()
-          imgElement.src = '/static/img/edit/dragTip.png'
-          var imgInstance = new fabric.Image(imgElement, {
-            originX: 'center',
-            originY: 'center',
-            top: item.top + item.height * 0.5,
-            left: item.left + item.width * 0.5,
-            angle: item.angle,
-            width: item.width - 6,
-            height: item.height - 6,
-          })
-          var group = new fabric.Group([imgInstance, rect], {
-            name: 'canvasIn' + idx
-          })
-          vm.curObj.add(group)
-          objs.push(group)
-          vm.curObj.renderAll()
-          group.selectable = false
-        })　　
-        vm.canvasInObj = objs
-      },
-      deep: true　　
-    },
-    /*layoutData(newVal, oldVal) {
+    /*layoutData(newVal) {
+      // this.canvasInToObj()
       var vm = this
       var objs = []
       newVal.forEach(function(item, idx) {
-        console.log('watch执行')
-        var rect = new fabric.Rect({
-          name: 'canvasIn' + idx,
-          originX: 'center',
-          originY: 'center',
-          top: item.top + item.height * 0.5,
-          left: item.left + item.width * 0.5,
-          angle: item.angle,
-          width: item.width,
-          height: item.height,
-          fill: 'transparent',
-          stroke: '#f00',
-          strokeWidth: 6,
-        })
-        var imgElement = new Image();
-        imgElement.src = '/static/img/edit/dragTip.png'
-        var imgInstance = new fabric.Image(imgElement, {
-          originX: 'center',
-          originY: 'center',
-          top: item.top + item.height * 0.5,
-          left: item.left + item.width * 0.5,
-          angle: item.angle,
-          width: item.width - 6,
-          height: item.height - 6,
-        })
-        var group = new fabric.Group([rect, imgInstance])
-        vm.curObj.add(group)
-        objs.push(group)
-        vm.curObj.renderAll()
-      })　　
-      vm.canvasInObj = objs
-    },*/
-    curBgImg(newVal, oldVal) {
-      var vm = this
-      vm.curObj.remove(oldVal)
-    },
-    canvasInObj(newVal, oldVal) {
-      var vm = this
-      if(oldVal) {
-        oldVal.forEach(function(item, idx) {
-          vm.curObj.remove(item)
-        })　　
-      }
-      newVal.forEach(function(item, idx) {
-        // console.log(item)
-          /*item.setShadow({
-            color: '#111', 
-            offsetX: 0, 
-            offsetY: 0, 
-            blur: 15
-          })*/
+      console.log('watch执行')
+        var canvasIn = new fabric.Canvas('canvasIn' + idx)
+        canvasIn.setWidth(item.width)
+        canvasIn.setHeight(item.height)
+        objs.push(canvasIn)
+        console.log(idx, canvasIn)
       })
-    },
-    curCanvasInIdx(newVal, oldVal) {
-      var vm = this
-      console.log(newVal, oldVal)
-    },
+      vm.canvasInObj = objs
+      
+    }*/
+    layoutData: {
+　　　handler(newVal, oldVal) {
+        var vm = this
+        var objs = []
+        newVal.forEach(function(item, idx) {
+        console.log('watch执行')
+        console.log(idx)
+          var canvasIn = new fabric.Canvas('canvasIn' + idx)
+          canvasIn.setWidth(item.width)
+          canvasIn.setHeight(item.height)
+          objs.push(canvasIn)
+          console.log(idx, canvasIn)
+        })
+        vm.canvasInObj = objs
+　　　},
+　　　deep: true,
+　　}
   },
   computed: {
-    /*layoutStyle() {
+    layoutStyle() {
       var styleObj = []
       this.layoutData.forEach(function(item, idx) {
         var obj = {
@@ -602,7 +564,7 @@ export default {
       })
       console.log(styleObj)
       return styleObj
-    },*/
+    },
     /*canvasInObj() { // 未使用不执行
       var obj = []
       this.layoutData.forEach(function(item, idx) {
@@ -697,9 +659,7 @@ export default {
           vm.isAddtext = true
           break
         case '背景': // 背景
-          // vm.curObj.clear()
-          var bgImg = e.target.src.replace('http://localhost:8090', '.')
-          vm.changeBg(bgImg, vm.curObj)        
+          console.log('背景', idx)          
           break
         case '图片': // 图片
           console.log('图片', idx)          
@@ -1100,86 +1060,14 @@ export default {
     stopParentEvent(e) {
       e.stopPropagation() // 阻止事件冒泡而触发父级的click事件
     },
-    addImg(dragImg, idx) {
-      var vm = this
-      if(idx < 0) {
-        return
-      }
-      var clipPoly = vm.canvasInObj[idx]
-      var pugImg = new Image();
-      pugImg.onload = function (img) {    
-          var scaleNum = 1
-          var pug = new fabric.Image(pugImg, {
-              originX: 'left',
-              originY: 'top',
-              // width: clipPoly.width - 12,
-              // height: clipPoly.height - 12,
-              hasControls: false, // 隐藏控件
-              // hasBorders: false, // 隐藏框centeredScaling
-              // centeredScaling: true, 
-              clipTo: function(ctx) {
-                  var ctxLeft = -( pug.width / 2 );
-                  var ctxTop = -( pug.height / 2 );
-
-                  ctx.rect(
-                    clipPoly.left - pug.left - pug.width / 2 + 6,
-                    clipPoly.top - pug.top - pug.height / 2 + 6,
-                    clipPoly.width - 12,
-                    clipPoly.height - 12
-                  );
-                  // ctx.rotate(degToRad(0))
-                  ctx.translate(ctxLeft + pug.width / 2, ctxTop + pug.height / 2)
-                  ctx.scale(scaleNum, scaleNum)
-                  
-              }
-          });
-          var ratio = pugImg.height / pugImg.width
-          var w = clipPoly.width - 12
-          var h = clipPoly.width * ratio - 12
-          pug.set({
-            'width': w,
-            'height': h
-          })
-          // 取消旋转控件
-          pug.hasRotatingPoint = false
-          pug.set({
-            'left': clipPoly.strokeWidth + clipPoly.left/* - pug.width / 4 - pug.left*/,
-            'top': clipPoly.strokeWidth + clipPoly.top/* - pug.height / 4 - pug.top*/,
-          })
-          vm.curObj.add(pug);
-          vm.curObj.renderAll()
-          // vm.curObj.bringToFront(pug); // 一路向上
-      };
-      dragImg ? pugImg.src = dragImg.src : pugImg.src = 'https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=2871764249,1040041727&fm=27&gp=0.jpg';
-      vm.curObj.renderAll()
-    },
     drag(ev) { // @dragstart: 在用户开始拖动元素时执行
       var vm = this
       vm.curDragImg = ev.target
-      // console.log(vm.curDragImg)
-      // console.log(vm.curObj)
-      vm.addImg(vm.curDragImg, vm.curCanvasInIdx)
-    },
-    allowDrop(e) { // @dragover: 在元素正在拖动到放置目标时触发
-      // var target = e.target.closest('.canvas-box')
-      // target.preventDefault()
-      var vm = this
-      /*var timer
-      $('.canvasIn-box .upper-canvas canvasIn').css({
-        'box-shadow': '0 0 10px 2px rgba(0, 0, 0, 0.5) inset'
-      })
-      clearTimeout(timer)
-      timer = setTimeout(function() {
-        $('.canvasIn-box .upper-canvas canvasIn').css({
-          'box-shadow': '0 0 10px 2px rgba(0, 0, 0, 0) inset'
-        })
-      }, 100)*/
+      console.log(vm.curDragImg)
+      console.log(vm.curObj)
     },
     drop(e) { // @drop: 在元素拖动到放置目标后触发
-      // e.target.preventDefault()
-      var vm = this
-      console.log(vm.curDragImg)
-      console.log(vm.curCanvasInIdx)
+      e.preventDefault()
       /*fabric.Image.fromURL(imgElement.src, function(oImg) {
         // scale image down, and flip it, before adding it onto canvas
         canvas2.add(oImg.set({
@@ -1194,6 +1082,19 @@ export default {
         canvas2.setActiveObject(oImg);
         oImg.centeredScaling = true
       })*/
+    },
+    allowDrop(e) { // @dragover: 在元素正在拖动到放置目标时触发
+      e.preventDefault()
+      /*var timer
+      $('.canvasIn-box .upper-canvas canvasIn').css({
+        'box-shadow': '0 0 10px 2px rgba(0, 0, 0, 0.5) inset'
+      })
+      clearTimeout(timer)
+      timer = setTimeout(function() {
+        $('.canvasIn-box .upper-canvas canvasIn').css({
+          'box-shadow': '0 0 10px 2px rgba(0, 0, 0, 0) inset'
+        })
+      }, 100)*/
     },
     changeObj(canvasId, e) {
       e.preventDefault()
@@ -1218,7 +1119,6 @@ export default {
       target.value = ''
     },
     changeBg(bgImg, obj) { // 改变背景图/页面
-      var vm = this
       fabric.Image.fromURL(bgImg, function(img) {
         obj.backgroundImage = img;
         obj.backgroundImage.width = obj.width;
@@ -1228,9 +1128,6 @@ export default {
         // obj.backgroundImage.width = obj.get('width');
         // obj.backgroundImage.height = obj.get('height');
         obj.add(img).renderAll();
-        vm.curBgImg = img
-        obj.sendToBack(img)
-        // obj.sendBackwards(img)
         img.selectable = false
       })
     }
@@ -1251,8 +1148,7 @@ export default {
       // var borderW = window.getComputedStyle(document.getElementById('canvasOut'), null).border.split('px')[0]
       canvas.setWidth(720)
       canvas.setHeight(canvas.width * 420 / 720)
-      // vm.changeBg(vm.curBgImg, canvas)
-      vm.changeBg('/static/img/edit/bg.png', canvas)
+      vm.changeBg(vm.curBgImg, canvas)
       vm.curObj.on('after:render', function(options) {
         var gobj = vm.curObj.getActiveObject(); //获取当前选中对象
         if(gobj) {
@@ -1265,46 +1161,11 @@ export default {
           vm.curText = ''
           vm.isAddtext = false
         }
-
       })
       if(!vm.isAddtext) {
         vm.curObj.discardActiveObject()
         vm.curObj.renderAll()
       }
-
-      // console.log(vm.curObj.getObjects())
-
-      // ;[].slice.call(vm.curObj.getObjects()).forEach(function(item, idx) {
-      /*vm.curObj.getObjects().forEach(function(item, idx) {
-        console.log(item.name)
-      })*/
-      // 仿hover效果
-      vm.curObj.on('mouse:over', function(e) {
-        // console.log('over', e.target.name)
-        if(e.target.name) {
-          vm.curCanvasInIdx = e.target.name.replace('canvasIn', '') * 1
-        }
-        // e.target.set('stroke', '#ff7800')
-        /*e.target.setShadow({
-          color: '#ccc', 
-          offsetX: 2, 
-          offsetY: 2, 
-          blur: 5,
-        })*/
-        vm.curObj.renderAll()
-      })
-
-      vm.curObj.on('mouse:out', function(e) {
-        // console.log('out', e.target.name)
-        // e.target.set('stroke', '#fff')
-        /*e.target.setShadow({
-          color: '#eee', 
-          offsetX: 0, 
-          offsetY: 0, 
-          blur: 0
-        })*/
-        vm.curObj.renderAll()
-      })
 
       // canvasIn-box 实时定位
       /*$('.canvasIn-box').css({
@@ -1348,11 +1209,13 @@ export default {
       vm.$axios.post('/api/layoutData')
       .then((res) => {
         vm.layoutData = res.data[0].canvasBox
+        /*if(vm.layoutData[0] != undefined) {
+          vm.canvasInToObj()
+        console.log('mounted执行')
+        }*/
       }) 
 
     })
-
-    
   },
   updated() { // DOM 更新后执行
     var vm = this

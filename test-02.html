@@ -70,14 +70,16 @@ var triangle = new fabric.Triangle({
 canvas.add(circle, triangle);*/
 
 // 图片
-/*var imgElement = document.getElementById('my-image');
+var imgElement = document.getElementById('my-image');
+/*var imgElement = new Image();
+imgElement.src = '/static/img/edit/dragTip.png'*/
 var imgInstance = new fabric.Image(imgElement, {
   left: 80,
   top: 0,
   angle: 50,
   opacity: 0.85
 });
-canvas.add(imgInstance);*/
+canvas.add(imgInstance);
 
 /*fabric.Image.fromURL('http://pic.cnblogs.com/face/359302/20140609162721.png', function(oImg) {
   // scale image down, and flip it, before adding it onto canvas

@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>try</title>
+</head>
+<body>
+<style>
+  * {margin: 0; padding: 0; box-sizing: border-box; color: inherit; font: inherit; 
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -o-user-select: none;
+    user-select: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  ul, li {list-style: none;}
+  a {text-decoration: none;}
+  .fl {float: left;}
+  .fr {float: right;}
+  .wrap {width: 1200px; margin: 0 auto;}
+  .clear:after {content: ''; display: inline-block; clear: both;}
+
+  .box {width: 200px; height: 150px; position: absolute; box-shadow: 0 0 0 1800px rgba(0,0,0,0.5);}
+  .clip-box {width: 100%; height: 100%; cursor: move; background: linear-gradient(rgba(255,255,255,0.3) 0px, rgba(255,255,255,0.3) 1px, transparent 1px, transparent 30%) 0 0 / 34% 34%, linear-gradient(90deg, rgba(255,255,255,0.3) 0px, rgba(255,255,255,0.3) 1px, transparent 1px, transparent 34%) 0 0 / 34% 34%; border: none; border-right: 1px solid rgba(255,255,255,0.3); border-bottom: 1px solid rgba(255,255,255,0.3);}
+
+  .box .resize > div > div {position: absolute; left: -1px; top: -1px;}
+  .box .resize .line > div {width: 1px; height: 1px; -background: red;}
+  .box .resize .line .l {height: 100%;}
+  .box .resize .line .t {width: 100%;}
+  .box .resize .line .r {height: 100%; left: auto; right: 0px;}
+  .box .resize .line .b {width: 100%; top: auto; bottom: -1px;}
+  .box .resize .line .l:after {content: ''; position: absolute; top: 50%; margin-top: -6px; width: 3px; height: 12px; background: #fff;}
+  .box .resize .line .t:after {content: ''; position: absolute; left: 50%; margin-left: -6px; width: 12px; height: 3px; background: #fff;}
+  .box .resize .line .r:after {content: ''; position: absolute; top: 50%; left: auto; right: -1px; margin-top: -6px; width: 3px; height: 12px; background: #fff;}
+  .box .resize .line .b:after {content: ''; position: absolute; top: auto; bottom: -0.5px; left: 50%; margin-left: -6px; width: 12px; height: 3px; background: #fff;}
+
+  .box .resize .drag .l {width: 6px; cursor: w-resize;}
+  .box .resize .drag .t {height: 6px; cursor: n-resize;}
+  .box .resize .drag .r {width: 6px; cursor: e-resize;}
+  .box .resize .drag .b {height: 6px; cursor: s-resize;}
+  .box .resize .corner > div {width: 12px; height: 3px; background: #fff;}
+  .box .resize .corner .lt {cursor: nw-resize;}
+  .box .resize .corner .rt {left: auto; right: 0.5px; cursor: ne-resize;}
+  .box .resize .corner .rb {left: auto; right: 0.5px; top: auto; bottom: -1px; cursor: se-resize;}
+  .box .resize .corner .lb {top: auto; bottom: -1px; cursor: sw-resize;}
+  .box .resize .corner .lt:after {content: ''; position: absolute; width: 3px; height: 12px; background: #fff;}
+  .box .resize .corner .rt:after {content: ''; position: absolute; left: auto; right: -1px; width: 3px; height: 12px; background: #fff;}
+  .box .resize .corner .rb:after {content: ''; position: absolute; left: auto; right: 0px; top: auto; bottom: 0; right: -1px; width: 3px; height: 12px; background: #fff;}
+  .box .resize .corner .lb:after {content: ''; position: absolute; top: auto; bottom: 0px; width: 3px; height: 12px; background: #fff;}
+
+
+  html,body {height: 100%; overflow: hidden;}
+  body {background: #fff;}
+  .canvas-box {width: 100%; height: 100%; display: flex;
+  justify-content: center;
+  align-items: center; overflow: hidden;}
+  canvas {vertical-align: top; border: 1px solid red; position: absolute; left: 200px; top: 20px;}
+
+</style>
+
+<script>
+(function() {
+
+  if (document.location.hostname === 'localhost') {
+    var links = document.getElementById('header').getElementsByTagName('a');
+    for (var i = 0, len = links.length; i < len; i++) {
+      // very retarted fix but fuck it
+      links[i].href = links[i].href.replace('fabricjs.com', 'localhost:4000');
+    }
+  }
+  else {
+    var s = document.createElement('script'), t = document.getElementsByTagName('script')[0];
+    s.async = true;
+    s.src = 'http://api.flattr.com/js/0.6/load.js?mode=auto';
+    t.parentNode.insertBefore(s, t);
+
+    !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");
+  }
+})();
+</script>
+
+
+<style>
+  p { display: inline-block; width: 200px; vertical-align: top; }
+  input[type=checkbox] { display: block; }
+</style>
+<div id="bd-wrapper" ng-controller="CanvasControls">
+  <h2><span>Fabric.js demos</span> &middot; Dynamic patterns</h2>
+<div>
+  <p>
+    <label>Repeat pattern?</label>
+    <input type="checkbox" id="img-repeat" checked>
+  </p>
+  <p>
+    <label>Pattern image width</label>
+    <input type="range" min="50" max="1000" value="100" id="img-width">
+  </p>
+  <p>
+    <label>Pattern left offset</label>
+    <input type="range" min="0" max="500" value="0" id="img-offset-x">
+  </p>
+  <p>
+    <label>Pattern top offset</label>
+    <input type="range" min="0" max="500" value="0" id="img-offset-y">
+  </p>
+  <br>
+  <p>
+    <label>Pattern image angle</label>
+    <input type="range" min="-90" max="90" value="0" id="img-angle">
+  </p>
+  <p>
+    <label>Pattern image padding</label>
+    <input type="range" min="-50" max="50" value="0" id="img-padding">
+  </p>
+</div>
+
+<canvas id="c" width="500" height="500" style="border:1px solid #ccc"></canvas>
+
+
+<script src='./fabric.js'></script>
+<script id="main">(function() {
+  var canvas = this.__canvas = new fabric.Canvas('c');
+  fabric.Object.prototype.transparentCorners = false;
+
+  var padding = 0;
+
+  fabric.Image.fromURL('https://ss1.bdstatic.com/70cFuXSh_Q1YnxGkpoWK1HF6hhy/it/u=1180263674,2802764805&fm=27&gp=0.jpg', function(img) {
+
+    img.scaleToWidth(100);
+    var patternSourceCanvas = new fabric.StaticCanvas();
+    patternSourceCanvas.add(img);
+    patternSourceCanvas.renderAll();
+    var pattern = new fabric.Pattern({
+      source: function() {
+        patternSourceCanvas.setDimensions({
+          width: img.getScaledWidth() + padding,
+          height: img.getScaledHeight() + padding
+        });
+        patternSourceCanvas.renderAll();
+        return patternSourceCanvas.getElement();
+      },
+      repeat: 'repeat'
+    });
+
+    canvas.add(new fabric.Polygon([
+      {x: 180, y: 10},
+      {x: 300, y: 50},
+      {x: 300, y: 180},
+      {x: 180, y: 220} ], {
+        left: 100,
+        top: 100,
+        angle: 0,
+        fill: pattern,
+        objectCaching: false
+      }));
+
+    document.getElementById('img-width').oninput = function() {
+      img.scaleToWidth(parseInt(this.value, 10));
+      canvas.requestRenderAll();
+    };
+    document.getElementById('img-angle').oninput = function() {
+      img.set('angle', this.value);
+      canvas.requestRenderAll();
+    };
+    document.getElementById('img-padding').oninput = function() {
+      padding = parseInt(this.value, 10);
+      canvas.requestRenderAll();
+    };
+    document.getElementById('img-offset-x').oninput = function() {
+      pattern.offsetX = parseInt(this.value, 10);
+      canvas.requestRenderAll();
+    };
+    document.getElementById('img-offset-y').oninput = function() {
+      pattern.offsetY = parseInt(this.value, 10);
+      canvas.requestRenderAll();
+    };
+    document.getElementById('img-repeat').onclick = function() {
+      pattern.repeat = this.checked ? 'repeat' : 'no-repeat';
+      canvas.requestRenderAll();
+    };
+  });
+})();
+</script>
+
+    </div>
+
+    <script>
+      (function(){
+        var mainScriptEl = document.getElementById('main');
+        if (!mainScriptEl) return;
+        var preEl = document.createElement('pre');
+        var codeEl = document.createElement('code');
+        codeEl.innerHTML = mainScriptEl.innerHTML;
+        codeEl.className = 'language-javascript';
+        preEl.appendChild(codeEl);
+        document.getElementById('bd-wrapper').appendChild(preEl);
+      })();
+    </script>
+
+    <script>
+(function() {
+  fabric.util.addListener(fabric.window, 'load', function() {
+    var canvas = this.__canvas || this.canvas,
+        canvases = this.__canvases || this.canvases;
+
+    canvas && canvas.calcOffset && canvas.calcOffset();
+
+    if (canvases && canvases.length) {
+      for (var i = 0, len = canvases.length; i < len; i++) {
+        canvases[i].calcOffset();
+      }
+    }
+  });
+})();
+</script>
+
+</body>
+</html

@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>try</title>
+</head>
+<body>
+<style>
+  * {margin: 0; padding: 0; box-sizing: border-box; color: inherit; font: inherit; 
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -o-user-select: none;
+    user-select: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  ul, li {list-style: none;}
+  a {text-decoration: none;}
+  .fl {float: left;}
+  .fr {float: right;}
+  .wrap {width: 1200px; margin: 0 auto;}
+  .clear:after {content: ''; display: inline-block; clear: both;}
+
+  html,body {height: 100%; overflow: hidden;}
+  body {background: #fff;}
+  .canvas-box {width: 100%; height: 100%; display: flex;
+  justify-content: center;
+  align-items: center; overflow: hidden;}
+  canvas {vertical-align: top; border: 8px solid #eee; -position: absolute; -left: 200px; -top: 20px;}
+  .file {position: absolute; top: 0; left: 0;}
+  #ul1 {position: absolute; top: 30px; left: 0;}
+  #ul1 li {display: inline-block;}
+</style>
+
+<div class="canvas-box">
+  <canvas id="c"></canvas>
+</div>
+<a href="javascript:;" class="file">添加照片
+  <input type="file" name="" id="fileEL" multiple="">
+</a>
+<ul id="ul1"></ul>
+
+<script src='./fabric.js'></script>
+<script src='./jq.js'></script>
+<script>
+fileEL.onchange = function() {
+  [].slice.call(this.files).forEach(function(oFile, idx) {
+    var src = URL.createObjectURL(oFile)
+    var li = document.createElement('li')
+    li.innerHTML = '<img width="50" src="' + src + '" alt="" clsaa="img' + idx + '" draggable="true" ondragstart="drag(event)"/>'
+    li.onload = function() {
+      window.URL.revokeObjectURL(src)
+    }
+    ul1.appendChild(li)
+  })
+  this.value = ''
+}
+var dragImg
+
+var canvas = new fabric.Canvas('c');
+canvas.setWidth(700)
+canvas.setHeight(400)
+var clipPoly = new fabric.Rect({
+    originX: 'left',
+    originY: 'top',
+    left: 70,
+    top: 150,
+    width: 140,
+    height: 180,
+    fill: 'transparent',
+    // stroke: 'red',
+    // strokeWidth: 10,
+    selectable: false
+});
+canvas.add(clipPoly)
+
+fabric.Image.fromURL('./bg.png', function(img) {
+    canvas.backgroundImage = img;
+    canvas.backgroundImage.width = canvas.get('width');
+    // canvas.backgroundImage.height = canvas.get('height');
+    img.selectable = false
+    canvas.add(img).renderAll();
+    // canvas.sendBackwards(img)// 1级向下
+  });
+
+
+function degToRad(degrees) {
+    return degrees * (Math.PI / 180);
+}
+
+function addImg(dragImg) {
+  var pugImg = new Image();
+  pugImg.onload = function (img) {    
+      var scaleNum = 1
+      var pug = new fabric.Image(pugImg, {
+          originX: 'left',
+          originY: 'top',
+          hasControls: false, // 隐藏控件
+          // hasBorders: false, // 隐藏框centeredScaling
+          // centeredScaling: true, 
+          clipTo: function(ctx) { 
+            
+              var ctxLeft = -( pug.width / 2 );
+              var ctxTop = -( pug.height / 2 );
+
+              ctx.rect(
+                clipPoly.left - pug.left - pug.width / 2,
+                clipPoly.top - pug.top - pug.height / 2,
+                clipPoly.width,
+                clipPoly.height
+              );
+              // ctx.rotate(degToRad(0))
+              ctx.translate(ctxLeft + pug.width / 2, ctxTop + pug.height / 2)
+              ctx.scale(scaleNum, scaleNum)
+              
+          }
+      });
+      var ratio = pugImg.height / pugImg.width
+      var w
+      var h
+      if(ratio >= 1) {
+        w = clipPoly.width
+        h = clipPoly.width * ratio
+      } else {
+        h = clipPoly.height
+        w = h / ratio
+      }
+      pug.set({
+        'width': w - 12,
+        'height': h - 12
+      })
+      // 取消旋转控件
+      pug.hasRotatingPoint = false
+      pug.set({
+        'left':  clipPoly.strokeWidth + clipPoly.left/* - pug.width / 4 - pug.left*/,
+        'top':  clipPoly.strokeWidth + clipPoly.top/* - pug.height / 4 - pug.top*/
+      })
+      canvas.add(pug);
+      canvas.renderAll()
+      // canvas.bringToFront(pug); // 一路向上
+  };
+  dragImg ? pugImg.src = dragImg.src : pugImg.src = './test.png';
+  canvas.renderAll()
+}
+
+function drag(ev) {
+  dragImg = ev.target
+  addImg(dragImg)
+}
+
+/*canvas.on('after:render', function(options) {
+  var canvasElement = document.getElementById("c");
+  var dataURL = canvasElement.toDataURL();
+  var fullQuality = canvas.toDataURL("image/jpeg", 1.0);
+})*/
+
+</script>
+
+</body>
+</html

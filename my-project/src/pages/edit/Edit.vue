@@ -52,7 +52,7 @@
         @drop='drop'
       >
         <canvas id="canvasOut"></canvas>
-        
+        <!-- 文字编辑框 -->
         <ul class="font-edit" v-if="isAddtext" @mousedown="fontEditDown">
           <span class="close" @click="isAddtext = false">x</span>
           <li>
@@ -91,7 +91,7 @@
             <span class="centerAlign" @click="changeFontStyle('textAlign', curText, curObj, 'center')"><img src="/static/img/edit/centerAlign.svg" alt="" :style="fontEditData.textAlign === 'center' ? 'border: 1px solid rgb(98, 162, 228); background: rgb(201, 224, 247)' : 'border: 1px solid transparent'"></span>
             <span class="rightAlign" @click="changeFontStyle('textAlign', curText, curObj, 'right')"><img src="/static/img/edit/rightAlign.svg" alt="" :style="fontEditData.textAlign === 'right' ? 'border: 1px solid rgb(98, 162, 228); background: rgb(201, 224, 247)' : 'border: 1px solid transparent'"></span>
           </li>
-          <li class="img-controls">
+          <li class="controls">
             <span class="moveup" @click="changeFontStyle('top', curText, curObj, '-')" @mouseenter="hoverInColor" @mouseleave="hoverOutColor">
               <img src="/static/img/edit/up.svg" alt="">上移
             </span>
@@ -107,11 +107,11 @@
             <span class="moveup" @click="changeFontStyle('bringToFront', curText, curObj, '-')" @mouseenter="hoverInColor" @mouseleave="hoverOutColor">
               <img src="/static/img/edit/up.svg" alt="">前置
             </span>
-            <span class="removeImg" @click="removeText" @mouseenter="hoverInColor" @mouseleave="hoverOutColor">
+            <span class="removeImg" @click="removeObj(curText)" @mouseenter="hoverInColor" @mouseleave="hoverOutColor">
               <img src="/static/img/edit/remove.svg" alt="">删除
             </span>
           </li>
-          <li class="img-controls">
+          <li class="controls">
             <div class="left">
               <div class="top">
                 <label>阴影</label>
@@ -149,7 +149,7 @@
                 <span class="font-edit-color">
                   <label>边距</label>
                   <select class="selectFontSize" v-model="borderData.width" @change="curBorder && changeBorderStyle('strokeWidth', curBorder, curObj, $event)">
-                    <option v-for="(v, i) in 21" :value="i * 1">{{i * 10}}</option>
+                    <option v-for="(v, i) in 21" :value="i * 1">{{i * 5}}</option>
                   </select>
                   <input type="color" v-model="borderData.color" @change="curBorder && changeBorderStyle('stroke', curBorder, curObj, $event)">
                 </span>
@@ -174,6 +174,79 @@
                 <input class="submit" type="submit" value="添加" @click="addtext(fontEditData, curObj)">
               </span>
             </div>
+          </li>
+        </ul>
+        <!-- 图片编辑框 -->
+        <ul class="font-edit img-edit" v-if="isAddimg" @mousedown="fontEditDown">
+          <span class="close" @click="isAddimg = false">x</span>
+          <li>
+            <span class="img-edit-scale">
+              <label>大小</label>
+              <input type="range" min="1" max="1500" value="500" class="img-scale" v-model="fontEditData.scale" @input="curText && changeSelect('scale', curText, curObj, $event)">
+            </span>
+            <span class="img-edit-opacity">
+              <label>透明</label>
+              <input type="range" min="1" max="1000" value="1000" class="img-opacity" v-model="fontEditData.opacity" @input="curText && changeSelect('opacity', curText, curObj, $event)">
+            </span>
+          </li>
+          <li class="controls">
+            <span class="moveup" @click="changeFontStyle('top', curText, curObj, '-')" @mouseenter="hoverInColor" @mouseleave="hoverOutColor">
+              <img src="/static/img/edit/up.svg" alt="">上移
+            </span>
+            <span class="movedown" @click="changeFontStyle('top', curText, curObj, '+')" @mouseenter="hoverInColor" @mouseleave="hoverOutColor">
+              <img src="/static/img/edit/down.svg" alt="">下移
+            </span>
+            <span class="cutImg" @click="changeFontStyle('angle', curText, curObj)" @mouseenter="hoverInColor" @mouseleave="hoverOutColor">
+              <img src="/static/img/edit/cut.svg" alt="">旋转
+            </span>
+            <span class="copy" @click="changeFontStyle('flipX', curText, curObj)" @mouseenter="hoverInColor" @mouseleave="hoverOutColor">
+              <img src="/static/img/edit/copy.svg" alt="">镜像
+            </span>
+            <span class="moveup" @click="changeFontStyle('bringToFront', curText, curObj, '-')" @mouseenter="hoverInColor" @mouseleave="hoverOutColor">
+              <img src="/static/img/edit/up.svg" alt="">前置
+            </span>
+            <span class="removeImg" @click="removeObj(curImg)" @mouseenter="hoverInColor" @mouseleave="hoverOutColor">
+              <img src="/static/img/edit/remove.svg" alt="">删除
+            </span>
+          </li>
+          <li class="controls">
+            <span>图片调整</span>
+            <ul class="img-style">
+              <li>
+                <img src="/static/img/edit/色彩优化.png" alt="">
+                <p>基本调整</p>
+                <!-- <input type="range" min="-1" max="1" step="0.003921" class="Saturation"> -->
+                <input type="range" min="50" max="1000" value="227" class="Saturation" oninput="saturationChange(event)">
+              </li>
+              <li>
+                <img src="/static/img/edit/黑白.png" alt="">
+                <p>黑白</p>
+              </li>
+              <li>
+                <img src="/static/img/edit/旧照片.png" alt="">
+                <p>旧照片</p>
+              </li>
+              <li>
+                <img src="/static/img/edit/素描.png" alt="">
+                <p>素描</p>
+              </li>
+              <li>
+                <img src="/static/img/edit/柔化.png" alt="">
+                <p>柔化</p>
+              </li>
+              <li>
+                <img src="/static/img/edit/锐化.png" alt="">
+                <p>锐化</p>
+              </li>
+              <li>
+                <img src="/static/img/edit/色彩叠加.png" alt="">
+                <p>色彩叠加</p>
+              </li>
+              <li>
+                <img src="/static/img/edit/基本调整.png" alt="">
+                <p>色彩优化</p>
+              </li>
+            </ul>
           </li>
         </ul>
       </div>
@@ -201,8 +274,18 @@
           <i class="btn icon-next"></i>
           <div class="img-list">
             <ul id="ul1">
+              <!-- <li v-if="!isShowPage" v-for="(img, idx) in filePicData">
+                <img height="78" draggable="true" 
+                :src="img.src" alt="" :clsaa="'img' + idx" 
+                :title="img.name" 
+                @dragstart="drag($event)"
+              /> -->
               <li v-if="!isShowPage" v-for="(img, idx) in filePicData">
-                <img height="78" :src="img.src" alt="" :clsaa="'img' + idx" :title="img.name" draggable="true" @dragstart="drag($event)"/>
+                <img height="78" draggable="true" 
+                :src="img.src" alt="" :clsaa="'img' + idx" 
+                :title="img.name" 
+                @mousedown="drag($event)"
+              />
                 <h1 :title="img.name">{{idx + 1}}页 {{img.name}}</h1>
               </li>
               <li v-if="isShowPage" v-for="(page, idx) in filePageData">
@@ -243,9 +326,12 @@ export default {
       curCanvasInIdx: -1,
       filePicData: [],
       isAddtext: false,
-      // curBgImg: '/static/img/edit/bg.png',
+      isEditBorder: false,
       curBgImg: '/static/img/edit/bg.png',
       curBorder: '',
+      isAddimg: false,
+      curImg: '',
+      // imgEditData: {},
       borderData: {
         width: 1,
         color: '#ff0000'
@@ -276,6 +362,24 @@ export default {
         padding: 2,
         scale: 500
       },
+      /*borderEditData: {
+        left: 10,
+        top: -16,
+        angle: 0,
+        opacity: 1000,
+        shadow: {
+          color: '#cccccc',
+          blur: 5
+        },
+        fill: 'rgba(0,0,0,0)',
+        stroke: '#111111', // 描边
+        strokeWidth: 0, // 描边宽度
+        strokeDashArray: [5, 5],
+        flipX: false,
+        flipY: false,
+        padding: 0,
+        scale: 500
+      },*/
       canvasOut: '',
       layoutData: [
         {
@@ -496,7 +600,7 @@ export default {
             width: item.width,
             height: item.height,
             fill: 'transparent',
-            stroke: '#fff',
+            stroke: '#ffffff',
             strokeWidth: 6,
           })
           var imgElement = new Image()
@@ -510,7 +614,7 @@ export default {
             width: item.width - 6,
             height: item.height - 6,
           })
-          var group = new fabric.Group([imgInstance, rect], {
+          var group = new fabric.Group([rect, imgInstance], {
             name: 'canvasIn' + idx
           })
           vm.curObj.add(group)
@@ -569,15 +673,6 @@ export default {
           vm.curObj.remove(item)
         })　　
       }
-      newVal.forEach(function(item, idx) {
-        // console.log(item)
-          /*item.setShadow({
-            color: '#111', 
-            offsetX: 0, 
-            offsetY: 0, 
-            blur: 15
-          })*/
-      })
     },
     curCanvasInIdx(newVal, oldVal) {
       var vm = this
@@ -656,6 +751,9 @@ export default {
     },
     editListClick(name, idx, e) {
       var vm = this
+      vm.curObj.discardActiveObject()
+      vm.curImg = ''
+      vm.isAddimg = false
       $(e.target.closest('li')).siblings().removeClass('on')
       $(e.target.closest('li')).addClass('on')
       switch (name) {
@@ -731,7 +829,7 @@ export default {
         fontFamily: data.fontFamily,
         fontSize: data.fontSize,
         strokeWidth: data.strokeWidth,
-        padding: 2,
+        padding: 5,
         width: 150,
         angle: data.angle,
         opacity: data.opacity * 0.001,
@@ -744,7 +842,9 @@ export default {
         textDecoration: data.textDecoration, // 下划线'underline'/中划线'line-through'/上划线'overline'
         fill : data.fill,
         flipX : data.flipX,
-        flipY : data.flipY
+        flipY : data.flipY,
+        // hasBorders: false,
+        cornerStyle: 'circle',
       })
       text.scale(data.scale * 0.002)
       if(vm.curText) {
@@ -770,7 +870,7 @@ export default {
       vm.isAddtext = false
     },
     fontEditDown(e) { // 文字编辑框移动
-      this.isAddtext = true
+      // this.isAddtext = true
       if(e.target.tagName === 'UL' || e.target.tagName === 'LI') {
         var ul = $(e.target.closest('.font-edit'))
         var originX = ul.css('left').replace('px', '') * 1
@@ -898,6 +998,7 @@ export default {
         case '方框1':
           curObj.remove(vm.curBorder)
           var rect = new fabric.Rect({
+            name: '边框',
             originX: curText.originX,
             originY: curText.originY,
             top: curText.top,
@@ -944,6 +1045,7 @@ export default {
         case '方框3':
           curObj.remove(vm.curBorder)
           var rect = new fabric.Rect({
+            name: '边框',
             originX: curText.originX,
             originY: curText.originY,
             top: curText.top,
@@ -962,6 +1064,7 @@ export default {
         case '圆1':
           curObj.remove(vm.curBorder)
           var circle = new fabric.Circle({
+            name: '边框',
             originX: curText.originX,
             originY: curText.originY,
             top: curText.top,
@@ -979,6 +1082,7 @@ export default {
         case '圆2':
           curObj.remove(vm.curBorder)
           var circle = new fabric.Circle({
+            name: '边框',
             originX: curText.originX,
             originY: curText.originY,
             top: curText.top,
@@ -996,6 +1100,7 @@ export default {
         case '椭圆1':
           curObj.remove(vm.curBorder)
           var circle = new fabric.Circle({
+            name: '边框',
             originX: curText.originX,
             originY: curText.originY,
             top: curText.top,
@@ -1013,6 +1118,7 @@ export default {
         case '椭圆2':
           curObj.remove(vm.curBorder)
           var circle = new fabric.Circle({
+            name: '边框',
             originX: curText.originX,
             originY: curText.originY,
             top: curText.top,
@@ -1031,6 +1137,7 @@ export default {
         case '三角形':
           curObj.remove(vm.curBorder)
           var triangle = new fabric.Triangle({
+            name: '边框',
             originX: curText.originX,
             originY: curText.originY,
             top: curText.top,
@@ -1060,10 +1167,12 @@ export default {
       curBorder.set(name, e.target.value)
       curObj.renderAll()
     },
-    removeText() {  // 编辑文字--删除
+    removeObj(obj) {  // 编辑文字--删除
       var vm = this
-      vm.curObj.remove(vm.curText)
+      vm.curObj.remove(obj)
       vm.curText = ''
+      vm.curImg = ''
+      vm.curBorder = ''
     },
     layoutRender() { // 改变 canvasIn 样式
       var vm = this
@@ -1084,24 +1193,13 @@ export default {
         })*/
       })
     },
-    /*canvasInToObj() {
-      var vm = this
-      var objs = []
-      // console.log(vm.layoutData)
-      vm.layoutData.forEach(function(item, idx) {
-        var canvasIn = new fabric.Canvas('canvasIn' + idx)
-        canvasIn.setWidth(item.width)
-        canvasIn.setHeight(item.height)
-        objs.push(canvasIn)
-        // console.log(canvasIn)
-      })
-      vm.canvasInObj = objs
-    },*/
     stopParentEvent(e) {
       e.stopPropagation() // 阻止事件冒泡而触发父级的click事件
     },
     addImg(dragImg, idx) {
       var vm = this
+      vm.isAddtext = false
+      vm.curObj.discardActiveObject()
       if(idx < 0) {
         return
       }
@@ -1112,9 +1210,7 @@ export default {
           var pug = new fabric.Image(pugImg, {
               originX: 'left',
               originY: 'top',
-              // width: clipPoly.width - 12,
-              // height: clipPoly.height - 12,
-              hasControls: false, // 隐藏控件
+              hasControls: true, // 隐藏控件
               // hasBorders: false, // 隐藏框centeredScaling
               // centeredScaling: true, 
               clipTo: function(ctx) {
@@ -1134,11 +1230,18 @@ export default {
               }
           });
           var ratio = pugImg.height / pugImg.width
-          var w = clipPoly.width - 12
-          var h = clipPoly.width * ratio - 12
+          var w
+          var h
+          if(ratio >= 1) {
+            w = clipPoly.width
+            h = clipPoly.width * ratio
+          } else {
+            h = clipPoly.height
+            w = h / ratio
+          }
           pug.set({
-            'width': w,
-            'height': h
+            'width': w - 12,
+            'height': h - 12
           })
           // 取消旋转控件
           pug.hasRotatingPoint = false
@@ -1148,52 +1251,28 @@ export default {
           })
           vm.curObj.add(pug);
           vm.curObj.renderAll()
-          // vm.curObj.bringToFront(pug); // 一路向上
+          vm.curObj.bringToFront(pug); // 一路向上
       };
       dragImg ? pugImg.src = dragImg.src : pugImg.src = 'https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=2871764249,1040041727&fm=27&gp=0.jpg';
       vm.curObj.renderAll()
     },
-    drag(ev) { // @dragstart: 在用户开始拖动元素时执行
+    drag(e) { // @dragstart: 在用户开始拖动元素时执行
+      console.log('drag')
       var vm = this
-      vm.curDragImg = ev.target
-      // console.log(vm.curDragImg)
-      // console.log(vm.curObj)
-      vm.addImg(vm.curDragImg, vm.curCanvasInIdx)
+      vm.curDragImg = e.target
     },
     allowDrop(e) { // @dragover: 在元素正在拖动到放置目标时触发
-      // var target = e.target.closest('.canvas-box')
-      // target.preventDefault()
+      e.preventDefault()
       var vm = this
-      /*var timer
-      $('.canvasIn-box .upper-canvas canvasIn').css({
-        'box-shadow': '0 0 10px 2px rgba(0, 0, 0, 0.5) inset'
-      })
-      clearTimeout(timer)
-      timer = setTimeout(function() {
-        $('.canvasIn-box .upper-canvas canvasIn').css({
-          'box-shadow': '0 0 10px 2px rgba(0, 0, 0, 0) inset'
-        })
-      }, 100)*/
+      console.log('allowDrop')
+      // target.preventDefault()
+
     },
     drop(e) { // @drop: 在元素拖动到放置目标后触发
-      // e.target.preventDefault()
+      e.preventDefault()
       var vm = this
-      console.log(vm.curDragImg)
-      console.log(vm.curCanvasInIdx)
-      /*fabric.Image.fromURL(imgElement.src, function(oImg) {
-        // scale image down, and flip it, before adding it onto canvas
-        canvas2.add(oImg.set({
-          originX: 'center',
-          originY: 'center',
-          left: canvas2.width / 2,
-          top: canvas2.height / 2
-        }))
-        oImg.scaleToWidth(145)
-        canvas2.discardActiveObject()
-        // 不选中
-        canvas2.setActiveObject(oImg);
-        oImg.centeredScaling = true
-      })*/
+      console.log('drop')
+      vm.addImg(vm.curDragImg, vm.curCanvasInIdx)
     },
     changeObj(canvasId, e) {
       e.preventDefault()
@@ -1220,13 +1299,10 @@ export default {
     changeBg(bgImg, obj) { // 改变背景图/页面
       var vm = this
       fabric.Image.fromURL(bgImg, function(img) {
+        img.name = 'canvasOutBg'
         obj.backgroundImage = img;
         obj.backgroundImage.width = obj.width;
         obj.backgroundImage.height = obj.height
-        // obj.backgroundImage.width = ($('.edit-content').width()) * 0.6455;
-        // obj.backgroundImage.height = ($('.edit-content').width()) * 0.6455 * 0.56;
-        // obj.backgroundImage.width = obj.get('width');
-        // obj.backgroundImage.height = obj.get('height');
         obj.add(img).renderAll();
         vm.curBgImg = img
         obj.sendToBack(img)
@@ -1237,120 +1313,82 @@ export default {
   },
   mounted() {
     var vm = this
-    vm.$nextTick(function() {
-      // dom已更新
-      // vm.canvasOut = document.getElementsByClassName('canvasIn-box')[0]
+    vm.$nextTick(function() { // dom已更新
       var canvas = new fabric.Canvas('canvasOut')
       vm.curObj = canvas
-      /*// var W = ($(document.getElementsByClassName('edit-content')[0]).width()) * 0.6455
-      var W = ($('.edit-content').width()) * 0.6455
-      var H = W * 0.5833
-      canvas.setWidth(W)
-      canvas.setHeight(H)*/
-      // 待解决: 003: 页面比例
-      // var borderW = window.getComputedStyle(document.getElementById('canvasOut'), null).border.split('px')[0]
       canvas.setWidth(720)
       canvas.setHeight(canvas.width * 420 / 720)
-      // vm.changeBg(vm.curBgImg, canvas)
       vm.changeBg('/static/img/edit/bg.png', canvas)
       vm.curObj.on('after:render', function(options) {
         var gobj = vm.curObj.getActiveObject(); //获取当前选中对象
         if(gobj) {
-          vm.isAddtext = true
-          vm.curText = vm.curObj.getActiveObject()
-          if(vm.curObj.getActiveObject().name === '边框') {
+          if(gobj.type ==='text') {
+            vm.isAddtext = true
+            vm.curText = vm.curObj.getActiveObject()
+          }
+          if(('name' in gobj) && gobj.name === '边框') {
+            vm.isEditBorder = true
             vm.curBorder = vm.curObj.getActiveObject()
+          }
+          if(gobj.type === 'image') {
+            vm.isAddimg = true
+            vm.curImg = vm.curObj.getActiveObject()
           }
         } else {
           vm.curText = ''
+          vm.curBorder = ''
+          vm.curImg = ''
           vm.isAddtext = false
+          vm.isAddimg = false
+          vm.isEditBorder = false
         }
 
+        
+        // 图片编辑框定位
+        /*if(vm.isAddimg && vm.curCanvasInIdx > -1) {
+          var canvasIn = vm.canvasInObj[vm.curCanvasInIdx]
+          $('.img-edit').css({
+            top: canvasIn.top + 'px',
+            left: canvasIn.left + canvasIn.width + 10 + 'px',
+          })
+        }*/
       })
       if(!vm.isAddtext) {
         vm.curObj.discardActiveObject()
         vm.curObj.renderAll()
       }
 
-      // console.log(vm.curObj.getObjects())
-
-      // ;[].slice.call(vm.curObj.getObjects()).forEach(function(item, idx) {
-      /*vm.curObj.getObjects().forEach(function(item, idx) {
-        console.log(item.name)
-      })*/
       // 仿hover效果
-      vm.curObj.on('mouse:over', function(e) {
+      vm.curObj.on('mouse:over', function(options) {
+        /*var p = canvas.getPointer(options.e)
+        console.log(p)*/
         // console.log('over', e.target.name)
-        if(e.target.name) {
-          vm.curCanvasInIdx = e.target.name.replace('canvasIn', '') * 1
+
+        if(options.target) {
+          if(!('name' in options.target)) {
+            return
+          } else if(options.target.name.indexOf('canvasIn') > -1) {
+            vm.curCanvasInIdx = options.target.name.replace('canvasIn', '') * 1
+          }
         }
-        // e.target.set('stroke', '#ff7800')
-        /*e.target.setShadow({
-          color: '#ccc', 
-          offsetX: 2, 
-          offsetY: 2, 
-          blur: 5,
-        })*/
-        vm.curObj.renderAll()
+        // options.target.set('stroke', '#ff7800')
+        // vm.curObj.renderAll()
       })
-
-      vm.curObj.on('mouse:out', function(e) {
-        // console.log('out', e.target.name)
-        // e.target.set('stroke', '#fff')
-        /*e.target.setShadow({
-          color: '#eee', 
-          offsetX: 0, 
-          offsetY: 0, 
-          blur: 0
-        })*/
-        vm.curObj.renderAll()
-      })
-
-      // canvasIn-box 实时定位
-      /*$('.canvasIn-box').css({
-        'width': $('.canvas-container').width(),
-        'height': $('.canvas-container').height(),
-        'left': $('.canvas-container')[0].offsetLeft,
-        'top': $('.canvas-container')[0].offsetTop,
-      })
-      $(window).on('resize', function() {
-        $('.canvasIn-box').css({
-          'width': $('.canvas-container').width(),
-          'height': $('.canvas-container').height(),
-          'left': $('.canvas-container')[0].offsetLeft,
-          'top': $('.canvas-container')[0].offsetTop,
-        })
+      /*vm.curObj.on('mouse:out', function(options) {
+        var p = canvas.getPointer(options.e)
+        console.log(p)
+        // console.log('out', options.target.name)
+        // options.target.set('stroke', '#fff')
+        // vm.curObj.renderAll()
       })*/
 
-      // canvasIn 布局样式调整
-      // vm.layoutRender()
-      /*console.log($('.canvasIn-box .canvas-container'))
-      $('.canvasIn-box .canvas-container').on('dragover', function() {
-        e.preventDefault()
-        var timer
-        $('.canvasIn-box .upper-canvas canvasIn').css({
-          'box-shadow': '0 0 10px 2px rgba(0, 0, 0, 0.5) inset'
-        })
-        clearTimeout(timer)
-        timer = setTimeout(function() {
-          $('.canvasIn-box .upper-canvas canvasIn').css({
-            'box-shadow': '0 0 10px 2px rgba(0, 0, 0, 0) inset'
-          })
-        }, 100)
-      })*/
-
-      /*vm.layoutData.forEach(function(item, idx) {
-        var canvasIn = new fabric.Canvas('canvasIn' + idx)
-        canvasIn.setWidth(item.width)
-        canvasIn.setHeight(item.height)
-        console.log(item.width)
-      })*/
+      // 获取第一条数据赋值layoutData
       vm.$axios.post('/api/layoutData')
       .then((res) => {
         vm.layoutData = res.data[0].canvasBox
       }) 
 
-    })
+    }) // $nextTick
 
     
   },
@@ -1369,6 +1407,7 @@ export default {
 @import "../../common/stylus/mixin.styl"
 
 .edit
+  user-select none
   margin-top 16px
   .edit-list
     position absolute
@@ -1567,7 +1606,7 @@ export default {
           img
             vertical-align middle
             width 20px
-        &.img-controls
+        &.controls
           span
             display inline-block
             margin-right 27px
@@ -1636,14 +1675,35 @@ export default {
                   background rgb(58, 170, 146)
                   &:hover
                     background rgb(43, 155, 131)
-    // .canvasIn-box
-    //   position absolute
-      // top 0px
-      // bottom 0px
-      // left 0px
-      // right 0px
-      // min-width 720px
-      // width 800px
+    .img-edit
+      top 157px
+      left 226px
+      >li
+        span
+          label
+            vertical-align middle
+          input
+            vertical-align middle
+        &:last-child
+          text-align left
+          padding-bottom 5px
+          span
+            padding-left 30px
+          .img-style
+            >li
+              display inline-block
+              position relative
+              padding 20px 0 8px 30px
+              img
+                width 80px
+                height 80px
+              p
+                text-align center
+                font-size 12px
+              input
+                padding-top 2px
+                position absolute
+                width 80px
   .edit-bottom
     width 100%
     height 140px

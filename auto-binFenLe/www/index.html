@@ -1056,6 +1056,7 @@ imgStyle.on('click','li',function(e) {
       })
       break
     case 'Grayscale': // 黑白
+      console.log(gobj.filters)
       gobj.filters.push(new fabric.Image.filters.Grayscale())
       break
     case 'Vintage': // 旧照片/棕褐色

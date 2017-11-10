@@ -13,7 +13,15 @@
         <i class="icon-more"></i>
         <ul :class="'edit-' + item.tag + '-list item-list'" v-if="idx === curShowListIdx" :style="{'top': 42 * (idx + 1) + 'px'}" @click="stopParentEvent">
           <li v-for="(v, i) in item.item" :class="{'on': i === 0}">
-            <img :src="v.img" alt="" :title="v.title" @click="editListClick(item.name, i, $event)">
+            <img :src="v.img" alt="" :title="v.title" 
+              v-if="!(item.name === '图片' || item.name === '装饰')"
+              @click="editListClick(item.name, i, $event)"
+            >
+            <img draggable="true" 
+              :src="v.img" alt="" :title="v.title"
+              v-if="item.name === '图片' || item.name === '装饰'"
+              @mousedown="drag($event)"
+            />
             <h1 v-if="item.name === '模板'">{{v.tag}}</h1>
           </li>
         </ul>
@@ -168,7 +176,6 @@
             <div class="bottom">
               <span class="font-edit-content">
                 <label>文字</label>
-                <!-- <input type="text" class="addtext" placeholder="点击输入文字" v-model="fontEditData.world" @keyup.enter="addtext(fontEditData, curObj)"> -->
                 <textarea name="" id="" cols="39" rows="2" placeholder="点击输入文字" v-model="fontEditData.world" @input="curText && changeSelect('world', curText, curObj, $event)"></textarea>
                 <input type="color" v-model="fontEditData.fill" @change="curText && changeSelect('fill', curText, curObj, $event)">
                 <input class="submit" type="submit" value="添加" @click="addtext(fontEditData, curObj)">
@@ -182,27 +189,27 @@
           <li>
             <span class="img-edit-scale">
               <label>大小</label>
-              <input type="range" min="1" max="1500" value="500" class="img-scale" v-model="fontEditData.scale" @input="curText && changeSelect('scale', curText, curObj, $event)">
+              <input type="range" min="1" max="1500" value="500" class="img-scale" @input="curImg && changeSelect('scale', curImg, curObj, $event)">
             </span>
             <span class="img-edit-opacity">
               <label>透明</label>
-              <input type="range" min="1" max="1000" value="1000" class="img-opacity" v-model="fontEditData.opacity" @input="curText && changeSelect('opacity', curText, curObj, $event)">
+              <input type="range" min="1" max="1000" value="1000" class="img-opacity" @input="curImg && changeSelect('opacity', curImg, curObj, $event)">
             </span>
           </li>
           <li class="controls">
-            <span class="moveup" @click="changeFontStyle('top', curText, curObj, '-')" @mouseenter="hoverInColor" @mouseleave="hoverOutColor">
+            <span class="moveup" @click="changeFontStyle('top', curImg, curObj, '-')" @mouseenter="hoverInColor" @mouseleave="hoverOutColor">
               <img src="/static/img/edit/up.svg" alt="">上移
             </span>
-            <span class="movedown" @click="changeFontStyle('top', curText, curObj, '+')" @mouseenter="hoverInColor" @mouseleave="hoverOutColor">
+            <span class="movedown" @click="changeFontStyle('top', curImg, curObj, '+')" @mouseenter="hoverInColor" @mouseleave="hoverOutColor">
               <img src="/static/img/edit/down.svg" alt="">下移
             </span>
-            <span class="cutImg" @click="changeFontStyle('angle', curText, curObj)" @mouseenter="hoverInColor" @mouseleave="hoverOutColor">
-              <img src="/static/img/edit/cut.svg" alt="">旋转
+            <span class="cutImg" @click="changeFontStyle('angle', curImg, curObj)" @mouseenter="hoverInColor" @mouseleave="hoverOutColor">
+              <img src="/static/img/edit/copy.svg" alt="">旋转
             </span>
-            <span class="copy" @click="changeFontStyle('flipX', curText, curObj)" @mouseenter="hoverInColor" @mouseleave="hoverOutColor">
-              <img src="/static/img/edit/copy.svg" alt="">镜像
+            <span class="copy" @click="changeFontStyle('clip', curImg, curObj)" @mouseenter="hoverInColor" @mouseleave="hoverOutColor">
+              <img src="/static/img/edit/cut.svg" alt="">剪切
             </span>
-            <span class="moveup" @click="changeFontStyle('bringToFront', curText, curObj, '-')" @mouseenter="hoverInColor" @mouseleave="hoverOutColor">
+            <span class="moveup" @click="changeFontStyle('bringToFront', curImg, curObj, '-')" @mouseenter="hoverInColor" @mouseleave="hoverOutColor">
               <img src="/static/img/edit/up.svg" alt="">前置
             </span>
             <span class="removeImg" @click="removeObj(curImg)" @mouseenter="hoverInColor" @mouseleave="hoverOutColor">
@@ -212,40 +219,21 @@
           <li class="controls">
             <span>图片调整</span>
             <ul class="img-style">
-              <li>
-                <img src="/static/img/edit/色彩优化.png" alt="">
-                <p>基本调整</p>
-                <!-- <input type="range" min="-1" max="1" step="0.003921" class="Saturation"> -->
-                <input type="range" min="50" max="1000" value="227" class="Saturation" oninput="saturationChange(event)">
+              <li 
+                v-for="(item, idx) in imgAdjustList" 
+                @click="!item.isInputShow && changeFontStyle(item.tag, curImg, curObj)"
+              >
+                <img :src="'/static/img/edit/' + item.name + '.png'" :title="item.tag" alt="">
+                <p :title="item.tag">{{item.tag}}</p>
+                <input v-if="item.isInputShow && item.tag != 'Pixelate'" type="range" min="-300" max="500" value="0" class="Saturate" @input="item.isInputShow && changeFontStyle(item.tag, curImg, curObj, $event)">
+                <input v-if="item.tag === 'Pixelate'" type="range" min="0" max="20" value="0" @input="item.isInputShow && changeFontStyle(item.tag, curImg, curObj, $event)">
+                <!-- <div v-if="item.tag === 'Pixelate'" class="pixelate-box">
+                  <label for="小">小:<input type="radio" name="Pixelate" id="小" value="小" @click="item.isInputShow && changeFontStyle(item.tag, curImg, curObj, 4)"></label>
+                  <label for="中">中:<input type="radio" name="Pixelate" id="中" value="中" @click="item.isInputShow && changeFontStyle(item.tag, curImg, curObj, 8)"></label>
+                  <label for="大">大:<input type="radio" name="Pixelate" id="大" value="大" @click="item.isInputShow && changeFontStyle(item.tag, curImg, curObj, 12)"></label>
+                </div> -->
               </li>
-              <li>
-                <img src="/static/img/edit/黑白.png" alt="">
-                <p>黑白</p>
-              </li>
-              <li>
-                <img src="/static/img/edit/旧照片.png" alt="">
-                <p>旧照片</p>
-              </li>
-              <li>
-                <img src="/static/img/edit/素描.png" alt="">
-                <p>素描</p>
-              </li>
-              <li>
-                <img src="/static/img/edit/柔化.png" alt="">
-                <p>柔化</p>
-              </li>
-              <li>
-                <img src="/static/img/edit/锐化.png" alt="">
-                <p>锐化</p>
-              </li>
-              <li>
-                <img src="/static/img/edit/色彩叠加.png" alt="">
-                <p>色彩叠加</p>
-              </li>
-              <li>
-                <img src="/static/img/edit/基本调整.png" alt="">
-                <p>色彩优化</p>
-              </li>
+
             </ul>
           </li>
         </ul>
@@ -274,18 +262,12 @@
           <i class="btn icon-next"></i>
           <div class="img-list">
             <ul id="ul1">
-              <!-- <li v-if="!isShowPage" v-for="(img, idx) in filePicData">
-                <img height="78" draggable="true" 
-                :src="img.src" alt="" :clsaa="'img' + idx" 
-                :title="img.name" 
-                @dragstart="drag($event)"
-              /> -->
               <li v-if="!isShowPage" v-for="(img, idx) in filePicData">
                 <img height="78" draggable="true" 
-                :src="img.src" alt="" :clsaa="'img' + idx" 
-                :title="img.name" 
-                @mousedown="drag($event)"
-              />
+                  :src="img.src" alt="" :clsaa="'img' + idx" 
+                  :title="img.name" 
+                  @mousedown="drag($event)"
+                />
                 <h1 :title="img.name">{{idx + 1}}页 {{img.name}}</h1>
               </li>
               <li v-if="isShowPage" v-for="(page, idx) in filePageData">
@@ -323,7 +305,7 @@ export default {
       curShowListIdx: -1,
       curChangeIconIdx: -1,
       curDragImg: '',
-      curCanvasInIdx: -1,
+      // curCanvasInIdx: -1,
       filePicData: [],
       isAddtext: false,
       isEditBorder: false,
@@ -336,6 +318,94 @@ export default {
         width: 1,
         color: '#ff0000'
       },
+      imgAdjustList: [{
+          name: '基本调整',
+          tag: 'Saturate',
+          isInputShow: true,
+        }, {
+          name: '黑白',
+          tag: 'Grayscale',
+          isInputShow: false,
+        }, {
+          name: '旧照片',
+          tag: 'Sepia2',
+          isInputShow: false,
+        }, {
+          name: '素描',
+          tag: 'Pixelate',
+          isInputShow: true,
+        }, {
+          name: '柔化',
+          tag: 'Sepia',
+          isInputShow: false,
+        }, {
+          name: '锐化',
+          tag: 'Convolute-sharpen',
+          isInputShow: false,
+        }, {
+          name: '色彩叠加',
+          tag: 'Convolute-blur',
+          isInputShow: false,
+        }, {
+          name: '色彩优化',
+          tag: 'Convolute-Emboss',
+          isInputShow: false,
+        },{
+          name: '旧照片',
+          tag: 'Convolute-EmbossOpaqueness',
+          isInputShow: false,
+        }, {
+          name: '黑白',
+          tag: 'GradientTransparency',
+          isInputShow: true,
+        }, {
+          name: '旧照片',
+          tag: 'Invert',
+          isInputShow: false,
+        }, {
+          name: '素描',
+          tag: 'Noise',
+          isInputShow: true,
+        }, {
+          name: '柔化',
+          tag: 'Contrast',
+          isInputShow: true,
+        }, {
+          name: '锐化',
+          tag: 'Brightness',
+          isInputShow: true,
+        }, {
+          name: '色彩叠加',
+          tag: 'RemoveWhite',
+          isInputShow: false,
+        }, {
+          name: '色彩优化',
+          tag: 'Tint',
+          isInputShow: false,
+        },{
+          name: '旧照片',
+          tag: 'Multiply',
+          isInputShow: false,
+        }, {
+          name: '柔化',
+          tag: 'ColorMatrix',
+          isInputShow: false,
+        }, {
+          name: '色彩优化',
+          tag: 'Blend1',
+          isInputShow: false,
+        },{
+          name: '旧照片',
+          tag: 'Blend2',
+          isInputShow: false,
+        },
+        /*{
+          name: '柔化',
+          tag: 'Resize',
+          isInputShow: false,
+        }*/
+        ],
+
       fontEditData: {
         world: '',
         left: 10,
@@ -556,6 +626,13 @@ export default {
         vm.curObj.renderAll()
       }
     },
+    isAddimg(newVal) {
+      var vm = this
+      if(!newVal) {
+        vm.curObj.discardActiveObject()
+        vm.curObj.renderAll()
+      }
+    },
     curText(newVal) {
       var vm = this
       if(vm.isAddtext) {
@@ -589,8 +666,7 @@ export default {
         var vm = this
         var objs = []
         newVal.forEach(function(item, idx) {
-          console.log('watch执行')
-          var rect = new fabric.Rect({
+          /*var rect = new fabric.Rect({
             name: 'canvasIn' + idx,
             originX: 'center',
             originY: 'center',
@@ -600,68 +676,37 @@ export default {
             width: item.width,
             height: item.height,
             fill: 'transparent',
-            stroke: '#ffffff',
-            strokeWidth: 6,
-          })
+          })*/
           var imgElement = new Image()
           imgElement.src = '/static/img/edit/dragTip.png'
           var imgInstance = new fabric.Image(imgElement, {
-            originX: 'center',
-            originY: 'center',
-            top: item.top + item.height * 0.5,
-            left: item.left + item.width * 0.5,
+            top: item.top,
+            left: item.left,
             angle: item.angle,
-            width: item.width - 6,
-            height: item.height - 6,
+            width: item.width,
+            height: item.height,
+            stroke: item.stroke,
+            strokeWidth: item.strokeWidth,
+            // stroke: '#f00',
+            // strokeWidth: 6,
           })
-          var group = new fabric.Group([rect, imgInstance], {
-            name: 'canvasIn' + idx
+          vm.curObj.add(imgInstance)
+          objs.push(imgInstance)
+          imgInstance.selectable = false
+          /*var group = new fabric.Group([rect, imgInstance], {
+            name: 'canvasIn' + idx,
+            // stroke: '#ff7800',
+            // strokeWidth: 6*0.5,
           })
           vm.curObj.add(group)
           objs.push(group)
+          group.selectable = false*/
           vm.curObj.renderAll()
-          group.selectable = false
         })　　
         vm.canvasInObj = objs
       },
       deep: true　　
     },
-    /*layoutData(newVal, oldVal) {
-      var vm = this
-      var objs = []
-      newVal.forEach(function(item, idx) {
-        console.log('watch执行')
-        var rect = new fabric.Rect({
-          name: 'canvasIn' + idx,
-          originX: 'center',
-          originY: 'center',
-          top: item.top + item.height * 0.5,
-          left: item.left + item.width * 0.5,
-          angle: item.angle,
-          width: item.width,
-          height: item.height,
-          fill: 'transparent',
-          stroke: '#f00',
-          strokeWidth: 6,
-        })
-        var imgElement = new Image();
-        imgElement.src = '/static/img/edit/dragTip.png'
-        var imgInstance = new fabric.Image(imgElement, {
-          originX: 'center',
-          originY: 'center',
-          top: item.top + item.height * 0.5,
-          left: item.left + item.width * 0.5,
-          angle: item.angle,
-          width: item.width - 6,
-          height: item.height - 6,
-        })
-        var group = new fabric.Group([rect, imgInstance])
-        vm.curObj.add(group)
-        objs.push(group)
-        vm.curObj.renderAll()
-      })　　
-      vm.canvasInObj = objs
-    },*/
     curBgImg(newVal, oldVal) {
       var vm = this
       vm.curObj.remove(oldVal)
@@ -674,10 +719,10 @@ export default {
         })　　
       }
     },
-    curCanvasInIdx(newVal, oldVal) {
+    /*curCanvasInIdx(newVal, oldVal) {
       var vm = this
       console.log(newVal, oldVal)
-    },
+    },*/
   },
   computed: {
     /*layoutStyle() {
@@ -819,8 +864,6 @@ export default {
     },
     addtext(data, obj) {
       var vm = this
-      // 待解决:  002:  让fabric字符串换行
-      // var text = new fabric.Text('with extensive \ndecoration support', { 
       var text = new fabric.Text(data.world, { 
         originX: 'center',
         originY: 'center',
@@ -896,37 +939,294 @@ export default {
     },
     changeFontStyle(name, curText, curObj, value) {
       var vm = this
-      switch (name) {
-        case 'fontWeight':
-          vm.fontEditData.fontWeight = (vm.fontEditData.fontWeight === 'bold' ? 'normal' : 'bold')
-          break
-        case 'fontStyle':
-          vm.fontEditData.fontStyle = (vm.fontEditData.fontStyle === 'italic' ? 'normal' : 'italic')
-          break
-        case 'textAlign':
-          vm.fontEditData.textAlign = value
-          break
-        case 'top':
-          if(curText) {
-            vm.fontEditData.top = curText.top
-            vm.fontEditData.left = curText.left
-          }
-          value === '-' ? vm.fontEditData.top -= 5 : vm.fontEditData.top += 5
-          break
-        case 'angle':
-          vm.fontEditData.angle += 45
-          break
-        case 'flipX':
-          vm.fontEditData.flipX = !vm.fontEditData.flipX
-          break
-        case 'bringToFront': // 前置
-          curObj.bringToFront(curText)
-          break
-      }
-      if(curText) {
-        curText.set(name, vm.fontEditData[name])
+      if(curText.type === 'text') {
+        switch (name) {
+          case 'fontWeight':
+            vm.fontEditData.fontWeight = (vm.fontEditData.fontWeight === 'bold' ? 'normal' : 'bold')
+            break
+          case 'fontStyle':
+            vm.fontEditData.fontStyle = (vm.fontEditData.fontStyle === 'italic' ? 'normal' : 'italic')
+            break
+          case 'textAlign':
+            vm.fontEditData.textAlign = value
+            break
+          case 'top':
+            if(curText) {
+              vm.fontEditData.top = curText.top
+              vm.fontEditData.left = curText.left
+            }
+            value === '-' ? vm.fontEditData.top -= 5 : vm.fontEditData.top += 5
+            break
+          case 'angle':
+            vm.fontEditData.angle += 45
+            break
+          case 'flipX':
+            vm.fontEditData.flipX = !vm.fontEditData.flipX
+            break
+          case 'bringToFront': // 前置
+            curObj.bringToFront(curText)
+            break
+        }
+        if(curText) {
+          curText.set(name, vm.fontEditData[name])
+          curObj.renderAll()
+        }
+      } else if(curText.type === 'image') {
+        var curImg = curText
+        switch (name) {
+          case 'top':
+            value === '-' ? curImg.set(name, curImg.top - 5) : curImg.set(name, curImg.top + 5)
+            break
+          case 'angle':
+            var val = vm.degToRad(curImg.myAngle + 45)
+            var clipPoly = curImg.curCanvasInObj
+            curImg.myAngle = curImg.myAngle + 45
+            curImg.set({
+              'clipTo': function(ctx) {
+                ctx.rect(
+                  clipPoly.left - curImg.left + clipPoly.strokeWidth,
+                  clipPoly.top - curImg.top + clipPoly.strokeWidth,
+                  clipPoly.width - clipPoly.strokeWidth,
+                  clipPoly.height - clipPoly.strokeWidth
+                )
+                ctx.rotate(val)
+                ctx.scale(curImg.myScale, curImg.myScale)
+              }
+            })
+            break
+          case 'clip':
+            console.log('clip')
+            break
+          case 'bringToFront': // 前置
+            curObj.bringToFront(curImg)
+            break
+          case 'Saturate': // 饱和度
+            var val = value.target.value
+            var filter = new fabric.Image.filters.Saturate({
+              saturate: parseFloat(val)
+            })
+            curImg.filters.push(filter)
+            curImg.filters = curImg.filters.slice(-1)
+            curImg.applyFilters(curObj.renderAll.bind(curObj))
+            break
+          case 'Grayscale': // 黑白
+            curImg.filters = []
+            curImg.filters.push(new fabric.Image.filters.Grayscale())
+            curImg.filters = curImg.filters.slice(-1)
+            curImg.applyFilters(curObj.renderAll.bind(curObj))
+            break
+          case 'Sepia2': // 旧照片/棕褐色
+            curImg.filters.push(new fabric.Image.filters.Sepia2())
+            curImg.filters = curImg.filters.slice(-1)
+            curImg.applyFilters(curObj.renderAll.bind(curObj))
+            break
+          case 'Pixelate': // 像素化-素描
+            var val = value.target.value
+            // curImg.filters.push(new fabric.Image.filters.Brownie())
+            curImg.filters.push(new fabric.Image.filters.Pixelate({
+              blocksize: parseFloat(val, val)
+            }))
+            curImg.filters = curImg.filters.slice(-1)
+            curImg.applyFilters(curObj.renderAll.bind(curObj))
+            break
+          case 'Sepia': // 旧照片/棕褐色
+            curImg.filters.push(new fabric.Image.filters.Sepia())
+            curImg.filters = curImg.filters.slice(-1)
+            curImg.applyFilters(curObj.renderAll.bind(curObj))
+            break
+          case 'Convolute-sharpen': // 
+            var filter = new fabric.Image.filters.Convolute({
+              matrix: [0, -1, 0, -1, 5, -1, 0, -1, 0]
+            });
+            curImg.filters.push(filter)
+            curImg.filters = curImg.filters.slice(-1)
+            curImg.applyFilters(curObj.renderAll.bind(curObj))
+            break
+          case 'Convolute-blur': // 
+            var filter = new fabric.Image.filters.Convolute({ // blur
+                matrix: [ 1/9, 1/9, 1/9,
+                          1/9, 1/9, 1/9,
+                          1/9, 1/9, 1/9 ]
+            })
+            curImg.filters.push(filter)
+            curImg.filters = curImg.filters.slice(-1)
+            curImg.applyFilters(curObj.renderAll.bind(curObj))
+            break
+          case 'Convolute-Emboss': // 
+            var filter = new fabric.Image.filters.Convolute({ // Emboss 浮雕
+                matrix: [ 1,   1,  1,
+                          1, 0.7, -1,
+                         -1,  -1, -1 ]
+            })
+            curImg.filters.push(filter)
+            curImg.filters = curImg.filters.slice(-1)
+            curImg.applyFilters(curObj.renderAll.bind(curObj))
+            break
+          case 'Convolute-EmbossOpaqueness': // 
+            var filter = new fabric.Image.filters.Convolute({ // Emboss opaqueness
+              opaque: true,                                   // 浮雕过滤器与不透明
+              matrix: [ 1,   1,  1,
+                        1, 0.7, -1,
+                       -1,  -1, -1 ]
+            })
+            curImg.filters.push(filter)
+            curImg.filters = curImg.filters.slice(-1)
+            curImg.applyFilters(curObj.renderAll.bind(curObj))
+            break
+          case 'GradientTransparency': // 渐变透明
+            // var val = value.target.value
+            var val = value.target.value
+            var filter = new fabric.Image.filters.GradientTransparency({
+                threshold: parseFloat(val)
+            })
+            curImg.filters.push(filter)
+            curImg.filters = curImg.filters.slice(-1)
+            curImg.applyFilters(curObj.renderAll.bind(curObj))
+            break
+          case 'Invert': // 倒置(底片)
+            var filter = new fabric.Image.filters.Invert()
+            curImg.filters.push(filter)
+            curImg.filters = curImg.filters.slice(-1)
+            curImg.applyFilters(curObj.renderAll.bind(curObj))
+            break
+          case 'Noise': // 噪声
+            var val = value.target.value
+            var filter = new fabric.Image.filters.Noise({
+                noise: parseFloat(val)
+            })
+            curImg.filters.push(filter)
+            curImg.filters = curImg.filters.slice(-1)
+            curImg.applyFilters(curObj.renderAll.bind(curObj))
+            break
+          case 'Contrast': // 对比
+            var val = value.target.value
+            var filter = new fabric.Image.filters.Contrast({
+                contrast: parseFloat(val)
+            })
+            curImg.filters.push(filter)
+            curImg.filters = curImg.filters.slice(-1)
+            curImg.applyFilters(curObj.renderAll.bind(curObj))
+            break
+          case 'Brightness': // 亮度
+            var val = value.target.value
+            var filter = new fabric.Image.filters.Brightness({
+                brightness: parseFloat(val)
+            })
+            curImg.filters.push(filter)
+            curImg.filters = curImg.filters.slice(-1)
+            curImg.applyFilters(curObj.renderAll.bind(curObj))
+            break
+          case 'RemoveWhite': // 白色==>变透明
+            var filter = new fabric.Image.filters.RemoveWhite({
+                threshold: 40,
+                distance: 140
+            })
+            curImg.filters.push(filter)
+            curImg.filters = curImg.filters.slice(-1)
+            curImg.applyFilters(curObj.renderAll.bind(curObj))
+            break
+          case 'Tint':
+            var filter = new fabric.Image.filters.Tint({
+                color: 'rgba(53, 21, 176, 0.5)'
+            })
+            curImg.filters.push(filter)
+            curImg.filters = curImg.filters.slice(-1)
+            curImg.applyFilters(curObj.renderAll.bind(curObj))
+            break
+          case 'Multiply':
+            var filter = new fabric.Image.filters.Multiply({
+               color: 'rgb(53, 21, 176)'
+            })
+            curImg.filters.push(filter)
+            curImg.filters = curImg.filters.slice(-1)
+            curImg.applyFilters(curObj.renderAll.bind(curObj))
+            break
+          case 'Blend1': // 混合
+            var filter = new fabric.Image.filters.Blend({
+                image: curImg,
+                color: '#000',
+                mode: 'multiply'
+            })
+            curImg.filters.push(filter)
+            curImg.filters = curImg.filters.slice(-1)
+            curImg.applyFilters(curObj.renderAll.bind(curObj))
+            break
+          case 'Blend2': // 混合
+            var filter = new fabric.Image.filters.Blend({
+                image: curImg,
+                mode: 'multiply',
+                alpha: 0.5
+            })
+            curImg.filters.push(filter)
+            curImg.filters = curImg.filters.slice(-1)
+            curImg.applyFilters(curObj.renderAll.bind(curObj))
+            break
+          /*case 'Resize':
+            var filter = new fabric.Image.filters.Resize()
+            curImg.filters.push(filter)
+            // curImg.filters = curImg.filters.slice(-1)
+            curImg.applyFilters(curObj.renderAll.bind(curObj))
+            break*/
+          case 'ColorMatrix':
+            var filter = new fabric.Image.filters.ColorMatrix({
+                matrix: [
+                 1.1285582396593525, -0.3967382283601348, -0.03992559172921793, 0, 63.72958762196502,
+                 -0.16404339962244616, 1.0835251566291304, -0.05498805115633132, 0, 24.732407896706203,
+                 -0.16786010706155763, -0.5603416277695248, 1.6014850761964943, 0, 35.62982807460946,
+                 0, 0, 0, 1, 0
+                ]
+            })
+            curImg.filters.push(filter)
+            curImg.filters = curImg.filters.slice(-1)
+            curImg.applyFilters(curObj.renderAll.bind(curObj))
+            break
+        }
         curObj.renderAll()
       }
+    },
+    toFilter(name, curImg, curObj, e) {
+      console.log(curImg)
+      var val = e.target.value
+      var filter = new fabric.Image.filters.Brightness({Brightness: val})
+      curImg.filters.push(filter)
+      // curImg.filters = curImg.filters.slice(-1)
+      curImg.applyFilters()
+      curObj.renderAll()
+    },
+    applyFilter(index, filter) {
+      var vm = this
+      var obj = vm.curImg
+      obj.filters[index] = filter
+      obj.applyFilters()
+      vm.curObj.renderAll()
+    },
+    toGrayscaleDown(curImg, curObj, e) {
+      var vm = this
+      var f = fabric.Image.filters
+      // e.preventDefault()
+      // e.stopPropagation()
+      curImg.filters.push(new f.Grayscale())
+      curImg.applyFilters()
+      curObj.renderAll()
+    },
+    toGrayscaleUp(curImg, curObj, e) {
+      var vm = this
+      var f = fabric.Image.filters
+      // e.preventDefault()
+      // e.stopPropagation()
+      curImg.filters.push(new f.Grayscale())
+      curImg.applyFilters()
+      curObj.renderAll()
+    },
+    toGrayscale(curImg, curObj, e) {
+      var vm = this
+      var f = fabric.Image.filters
+      // e.preventDefault()
+      // e.stopPropagation()
+      curImg.filters.push(new f.Grayscale())
+      curImg.applyFilters()
+      curObj.renderAll()
+      // vm.applyFilter(0, this.checked && new f.Grayscale())
     },
     changeSelect(name, curText, curObj, e) {
       var vm = this
@@ -938,24 +1238,41 @@ export default {
             'padding': vm.fontEditData.padding
           })
           break
-        case 'rect':
-          /*curText.set({
-            'clipTo': function(ctx) {
-              ctx.save()
-              // ctx.translate(-5, -5)
-              ctx.fillStyle="#999"
-              ctx.fillRect(100, 100, 100, 100)
-              ctx.restore()
-              ctx.save()
-              ctx.fillStyle="#fff"
-              ctx.fillRect(110, 110, 80, 80)
-              ctx.restore()
-            }
-          })*/
-          break
         case 'scale':
-          vm.fontEditData.scale = e.target.value
-          curText.scale(vm.fontEditData.scale * 0.002)
+          if(curText.type === 'text') {
+            vm.fontEditData.scale = e.target.value
+            curText.scale(vm.fontEditData.scale * 0.002)
+          } else if(curText.type === 'image') {
+            var curImg = curText
+            var val = (e.target.value * 0.002).toFixed(2)
+            curImg.myScale = val
+            var clipPoly = curImg.curCanvasInObj
+            curImg.set({
+              'clipTo': function(ctx) {
+                ctx.rect(
+                  clipPoly.left - curImg.left + clipPoly.strokeWidth,
+                  clipPoly.top - curImg.top + clipPoly.strokeWidth,
+                  clipPoly.width - clipPoly.strokeWidth,
+                  clipPoly.height - clipPoly.strokeWidth
+                );
+                ctx.rotate(vm.degToRad(curImg.myAngle))
+                ctx.scale(val, val)
+              }
+            })
+            /*console.log(curImg.oCoords)
+            var l = curImg.oCoords.tl.x
+            var t = curImg.oCoords.tl.y
+            var r = curImg.oCoords.br.x
+            var b = curImg.oCoords.br.y*/
+            var padding 
+            var ratio = curImg.height / curImg.width
+            if(ratio >= 1) {
+              padding = (clipPoly.height / 2) * val - clipPoly.height / 2
+            } else {
+              padding = (clipPoly.width / 2) * val - clipPoly.width / 2
+            }
+            curImg.set('padding', padding)
+          }
           break
         case 'world':
           var oldWidth = curText.width * 0.5 * curText.scaleX
@@ -970,8 +1287,13 @@ export default {
           })
           break
         case 'opacity':
-          vm.fontEditData.opacity = e.target.value
-          curText.set('opacity', vm.fontEditData.opacity * 0.001)
+          if(curText.type === 'text') {
+            vm.fontEditData.opacity = e.target.value
+            curText.set('opacity', vm.fontEditData.opacity * 0.001)
+          } else if(curText.type === 'image') {
+            var curImg = curText
+            curImg.set('opacity', e.target.value * 0.001)
+          }
           break
         default:
           if(name.indexOf('shadow') > -1) {
@@ -1174,25 +1496,6 @@ export default {
       vm.curImg = ''
       vm.curBorder = ''
     },
-    layoutRender() { // 改变 canvasIn 样式
-      var vm = this
-      ;[].slice.call($('.canvasIn-box').children()).forEach(function(canvas, id) {
-        /*vm.layoutData.forEach(function(item, idx) {
-          if(id === idx) {
-            $(canvas).css({
-              'position': 'absolute',
-              'top': item.top + 'px',
-              'left': item.left + 'px',
-              'width': item.width + 'px',
-              'height': item.height + 'px',
-              'border': item.border,
-              'border-radius': item.borderRadius + 'px',
-              'background': 'rgb(229,229,229) url(/static/img/edit/dragTip.png) no-repeat center / contain',
-            })
-          }
-        })*/
-      })
-    },
     stopParentEvent(e) {
       e.stopPropagation() // 阻止事件冒泡而触发父级的click事件
     },
@@ -1204,83 +1507,86 @@ export default {
         return
       }
       var clipPoly = vm.canvasInObj[idx]
-      var pugImg = new Image();
+      var pugImg = new Image()
       pugImg.onload = function (img) {    
           var scaleNum = 1
           var pug = new fabric.Image(pugImg, {
-              originX: 'left',
-              originY: 'top',
-              hasControls: true, // 隐藏控件
+              originX: 'center',
+              originY: 'center',
+              curCanvasInObj: clipPoly,
+              myAngle: 0,
+              myScale: 1,
+              hasControls: false, // 隐藏控件
               // hasBorders: false, // 隐藏框centeredScaling
               // centeredScaling: true, 
               clipTo: function(ctx) {
-                  var ctxLeft = -( pug.width / 2 );
-                  var ctxTop = -( pug.height / 2 );
-
-                  ctx.rect(
-                    clipPoly.left - pug.left - pug.width / 2 + 6,
-                    clipPoly.top - pug.top - pug.height / 2 + 6,
-                    clipPoly.width - 12,
-                    clipPoly.height - 12
-                  );
-                  // ctx.rotate(degToRad(0))
-                  ctx.translate(ctxLeft + pug.width / 2, ctxTop + pug.height / 2)
-                  ctx.scale(scaleNum, scaleNum)
-                  
+                // var ctxLeft = -( pug.width / 2 );
+                // var ctxTop = -( pug.height / 2 );
+                ctx.rect(
+                  clipPoly.left - pug.left + clipPoly.strokeWidth,
+                  clipPoly.top - pug.top + clipPoly.strokeWidth,
+                  clipPoly.width - clipPoly.strokeWidth,
+                  clipPoly.height - clipPoly.strokeWidth
+                );
+                // ctx.rotate(vm.degToRad(-45))
+                // ctx.translate(ctxLeft + pug.width / 2, ctxTop + pug.height / 2)
+                ctx.scale(scaleNum, scaleNum)
               }
           });
           var ratio = pugImg.height / pugImg.width
           var w
           var h
           if(ratio >= 1) {
-            w = clipPoly.width
+            w = clipPoly.width - clipPoly.strokeWidth,
             h = clipPoly.width * ratio
           } else {
-            h = clipPoly.height
+            h = clipPoly.height - clipPoly.strokeWidth
             w = h / ratio
           }
           pug.set({
-            'width': w - 12,
-            'height': h - 12
+            'width': w,
+            'height': h
           })
           // 取消旋转控件
           pug.hasRotatingPoint = false
           pug.set({
-            'left': clipPoly.strokeWidth + clipPoly.left/* - pug.width / 4 - pug.left*/,
-            'top': clipPoly.strokeWidth + clipPoly.top/* - pug.height / 4 - pug.top*/,
+            'left': clipPoly.left + clipPoly.width / 2 + clipPoly.strokeWidth * 0.5,
+            'top': clipPoly.top + clipPoly.height / 2 + clipPoly.strokeWidth * 0.5,
           })
-          vm.curObj.add(pug);
+          vm.curObj.add(pug)
           vm.curObj.renderAll()
           vm.curObj.bringToFront(pug); // 一路向上
-      };
-      dragImg ? pugImg.src = dragImg.src : pugImg.src = 'https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=2871764249,1040041727&fm=27&gp=0.jpg';
+      }
+      dragImg ? pugImg.src = dragImg.src : pugImg.src = 'https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=2871764249,1040041727&fm=27&gp=0.jpg'
       vm.curObj.renderAll()
     },
+    degToRad(degrees) {
+      return degrees * (Math.PI / 180);
+    },
     drag(e) { // @dragstart: 在用户开始拖动元素时执行
-      console.log('drag')
       var vm = this
       vm.curDragImg = e.target
     },
     allowDrop(e) { // @dragover: 在元素正在拖动到放置目标时触发
       e.preventDefault()
       var vm = this
-      console.log('allowDrop')
-      // target.preventDefault()
-
     },
     drop(e) { // @drop: 在元素拖动到放置目标后触发
       e.preventDefault()
       var vm = this
-      console.log('drop')
-      vm.addImg(vm.curDragImg, vm.curCanvasInIdx)
-    },
-    changeObj(canvasId, e) {
-      e.preventDefault()
-      $('#canvasIn0').css({
-        'box-shadow': '0 0 10px 2px rgba(0, 0, 0, 0) inset'
+      var x = e.offsetX
+      var y = e.offsetY
+      vm.canvasInObj.forEach(function(item, idx) {
+        var l = item.left
+        var t = item.top
+        var r = l + item.width
+        var b = t + item.height
+        if(x >= l && y >= t && x <= r && y <= b) {
+          vm.addImg(vm.curDragImg, idx)
+        } else {
+          console.log('没拖到框内')
+        }
       })
-      var vm = this
-      // console.log(vm.canvasInObj)
     },
     addPics(e) { // 添加照片
       var vm = this
@@ -1319,19 +1625,47 @@ export default {
       canvas.setWidth(720)
       canvas.setHeight(canvas.width * 420 / 720)
       vm.changeBg('/static/img/edit/bg.png', canvas)
+
+        /*fabric.Image.fromURL('/static/img/edit/bg.png', function(img) {
+              var img3 = img.set({ left: -250, top: -150 })
+              canvas.add(img3)
+            })*/
+        
       vm.curObj.on('after:render', function(options) {
+        var p = canvas.getPointer(options.e)
+        console.log(p)
+        /*var x = p.x
+        var y = p.y
+        vm.canvasInObj.forEach(function(item, idx) {
+          var l = item.left
+          var t = item.top
+          var r = l + item.width
+          var b = t + item.height
+          if(x >= l && y >= t && x <= r && y <= b) {
+            console.log('在canvasIn' + idx + '里')
+          } else {
+            console.log('在canvasIn外')
+          }
+        })*/
+
         var gobj = vm.curObj.getActiveObject(); //获取当前选中对象
         if(gobj) {
           if(gobj.type ==='text') {
             vm.isAddtext = true
+            vm.isAddimg = false
+            vm.isEditBorder = false
             vm.curText = vm.curObj.getActiveObject()
           }
           if(('name' in gobj) && gobj.name === '边框') {
             vm.isEditBorder = true
+            vm.isAddtext = false
+            vm.isAddimg = false
             vm.curBorder = vm.curObj.getActiveObject()
           }
           if(gobj.type === 'image') {
             vm.isAddimg = true
+            vm.isAddtext = false
+            vm.isEditBorder = false
             vm.curImg = vm.curObj.getActiveObject()
           }
         } else {
@@ -1353,33 +1687,21 @@ export default {
           })
         }*/
       })
-      if(!vm.isAddtext) {
+      /*if(!vm.isAddtext) {
         vm.curObj.discardActiveObject()
         vm.curObj.renderAll()
-      }
+      }*/
 
       // 仿hover效果
-      vm.curObj.on('mouse:over', function(options) {
-        /*var p = canvas.getPointer(options.e)
-        console.log(p)*/
-        // console.log('over', e.target.name)
-
-        if(options.target) {
-          if(!('name' in options.target)) {
-            return
-          } else if(options.target.name.indexOf('canvasIn') > -1) {
-            vm.curCanvasInIdx = options.target.name.replace('canvasIn', '') * 1
-          }
-        }
-        // options.target.set('stroke', '#ff7800')
-        // vm.curObj.renderAll()
+      /*vm.curObj.on('mouse:over', function(options) {
+        // var p = canvas.getPointer(options.e)
+        // console.log(p)
+        options.target.set('stroke', '#ff7800')
+        vm.curObj.renderAll()
       })
-      /*vm.curObj.on('mouse:out', function(options) {
-        var p = canvas.getPointer(options.e)
-        console.log(p)
-        // console.log('out', options.target.name)
-        // options.target.set('stroke', '#fff')
-        // vm.curObj.renderAll()
+      vm.curObj.on('mouse:out', function(options) {
+        options.target.set('stroke', '#fff')
+        vm.curObj.renderAll()
       })*/
 
       // 获取第一条数据赋值layoutData
@@ -1407,13 +1729,13 @@ export default {
 @import "../../common/stylus/mixin.styl"
 
 .edit
-  user-select none
+  // user-select none
   margin-top 16px
   .edit-list
     position absolute
     top 40px
     bottom 0px
-    // height 690px
+    min-height 688px
     display inline-block
     border-radius 0 4px 0 0
     background #eee
@@ -1494,7 +1816,7 @@ export default {
     bottom 0px
     right 0px
     left 200px
-    // height 690px
+    min-height 688px
     min-width 1100px
     .edit-top-bor
       display flex
@@ -1688,22 +2010,44 @@ export default {
           text-align left
           padding-bottom 5px
           span
-            padding-left 30px
+            cursor text
+            padding-left 35px
+            &:hover
+              color #111
           .img-style
+            height 245px
+            overflow-y scroll
             >li
               display inline-block
               position relative
-              padding 20px 0 8px 30px
+              margin 20px 0 8px 35px
+              &:hover
+                color rgb(58, 170, 146)
               img
+                cursor pointer
                 width 80px
                 height 80px
               p
+                cursor text
                 text-align center
                 font-size 12px
+                width 80px
+                overflow hidden
+                white-space nowrap
+                text-overflow ellipsis
               input
                 padding-top 2px
                 position absolute
                 width 80px
+              .pixelate-box
+                padding-top 5px
+                position absolute
+                font-size 12px
+                label
+                  display inline-block
+                  width 24px
+                input
+                  width 12px
   .edit-bottom
     width 100%
     height 140px
@@ -1769,5 +2113,5 @@ export default {
               line-height 20px
               overflow hidden
               text-overflow ellipsis
-              white-space nowrap  margin-top 
+              white-space nowrap
 </style>

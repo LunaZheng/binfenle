@@ -113,52 +113,57 @@ $ npm run dev
   })
   ``````````````````````````````````````````````````````````````````````````    
 
-⑥ NPM 引入jQuery    
-安装:   
-$ npm install jquery --save    
-build/webpack.base.conf.js，修改两处的代码     
-```
-// 在开头引入webpack，后面的plugins那里需要
-var webpack = require('webpack')    
-// resolve
+⑥ NPM 引入jQuery   
 
-module.exports = {
-   // 其他代码...
-   resolve: {
-      extensions: ['', '.js', '.vue'],
-      fallback: [path.join(__dirname, '../node_modules')],
-      alias: {
-          'src': path.resolve(__dirname, '../src'),
-          'assets': path.resolve(__dirname, '../src/assets'),
-          'components': path.resolve(__dirname, '../src/components'),
+  安装:   
+  $ npm install jquery --save    
+  build/webpack.base.conf.js，修改两处的代码     
+  ```
+  // 在开头引入webpack，后面的plugins那里需要
+  var webpack = require('webpack')    
+  // resolve
 
-          // webpack 使用 jQuery，如果是自行下载的
-          // 'jquery': path.resolve(__dirname, '../src/assets/libs/jquery/jquery.min'),
-          // 如果使用NPM安装的jQuery
-          'jquery': 'jquery' 
-      }
-   },
+  module.exports = {
+     // 其他代码...
+     resolve: {
+        extensions: ['', '.js', '.vue'],
+        fallback: [path.join(__dirname, '../node_modules')],
+        alias: {
+            'src': path.resolve(__dirname, '../src'),
+            'assets': path.resolve(__dirname, '../src/assets'),
+            'components': path.resolve(__dirname, '../src/components'),
 
-   // 增加一个plugins
-   plugins: [
-      new webpack.ProvidePlugin({
-          $: "jquery",
-          jQuery: "jquery"
-      })
-   ],
+            // webpack 使用 jQuery，如果是自行下载的
+            // 'jquery': path.resolve(__dirname, '../src/assets/libs/jquery/jquery.min'),
+            // 如果使用NPM安装的jQuery
+            'jquery': 'jquery' 
+        }
+     },
 
-   // 其他代码...
-}
-```  
-重新 run dev   
-在main.js 引入就ok了   
-import $ from 'jquery'     
+     // 增加一个plugins
+     plugins: [
+        new webpack.ProvidePlugin({
+            $: "jquery",
+            jQuery: "jquery"
+        })
+     ],
+
+     // 其他代码...
+  }
+  ```  
+  重新 run dev   
+  在main.js 引入就ok了   
+  import $ from 'jquery'     
 
  -----------
 |  待解决:  |
  -----------     
   1. 001:  小竖线的优化及收藏 ( src\components\bar-right.vue )
+
   2. 002:  让fabric字符串换行 ( src\pages\edit\Edit.vue )
-           -->百度 :  JS 字符串换行
-           --> http://www.cnblogs.com/ziyunfei/archive/2012/10/04/2711551.html
+  ```
+  已解决:   
+    改 <input> 为 <textarea></textarea>  
+  ```   
+
   3. 003:  页面比例 (所有)

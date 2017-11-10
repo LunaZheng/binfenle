@@ -30,13 +30,14 @@
       "canvasBox": [
         {
           "top": 160,
-          "left": 73,
+          "left": 72,
           "shape": "rect",
           "width": 140,
           "height": 185,
           "angle": 0,
           "borderRadius": 0,
-          "border": "6px solid #fff"
+          "strokeWidth": 6,
+          "stroke": "#ffffff"
         }
       ]
     },
@@ -45,23 +46,25 @@
       "canvasBox": [
         {
           "top": 160,
-          "left": 73,
+          "left": 72,
           "shape": "rect",
           "width": 260,
           "height": 185,
           "angle": 0,
           "borderRadius": 0,
-          "border": "6px solid #fff"
+          "strokeWidth": 6,
+          "stroke": "#ffffff"
         },
         {
           "top": 160,
-          "left": 333,
+          "left": 332,
           "shape": "rect",
           "width": 145,
           "height": 185,
           "angle": 0,
           "borderRadius": 0,
-          "border": "6px solid #fff"
+          "strokeWidth": 6,
+          "stroke": "#ffffff"
         }
       ]
     },
@@ -71,35 +74,38 @@
         {
           
           "top": 160,
-          "left": 73,
+          "left": 72,
           "shape": "rect",
           "width": 140,
           "height": 185,
           "angle": 0,
           "borderRadius": 0,
-          "border": "6px solid #fff"
+          "strokeWidth": 6,
+          "stroke": "#ffffff"
         },
         {
           
           "top": 160,
-          "left": 213,
+          "left": 212,
           "shape": "rect",
           "width": 140,
           "height": 185,
           "angle": 0,
           "borderRadius": 0,
-          "border": "6px solid #fff"
+          "strokeWidth": 6,
+          "stroke": "#ffffff"
         },
         {
           
           "top": 160,
-          "left": 353,
+          "left": 352,
           "shape": "rect",
           "width": 140,
           "height": 185,
           "angle": 0,
           "borderRadius": 0,
-          "border": "6px solid #fff"
+          "strokeWidth": 6,
+          "stroke": "#ffffff"
         }
       ]
     },
@@ -109,46 +115,50 @@
         {
           
           "top": 160,
-          "left": 73,
+          "left": 72,
           "shape": "rect",
           "width": 140,
           "height": 185,
           "angle": 0,
           "borderRadius": 0,
-          "border": "6px solid #fff"
+          "strokeWidth": 6,
+          "stroke": "#ffffff"
         },
         {
           
           "top": 160,
-          "left": 213,
+          "left": 212,
           "shape": "rect",
           "width": 140,
           "height": 93,
           "angle": 0,
           "borderRadius": 0,
-          "border": "6px solid #fff"
+          "strokeWidth": 6,
+          "stroke": "#ffffff"
         },
         {
           
           "top": 252,
-          "left": 213,
+          "left": 212,
           "shape": "rect",
           "width": 70,
           "height": 93,
           "angle": 0,
           "borderRadius": 0,
-          "border": "6px solid #fff"
+          "strokeWidth": 6,
+          "stroke": "#ffffff"
         },
         {
           
           "top": 252,
-          "left": 283,
+          "left": 282,
           "shape": "rect",
           "width": 70,
           "height": 93,
           "angle": 0,
           "borderRadius": 0,
-          "border": "6px solid #fff"
+          "strokeWidth": 6,
+          "stroke": "#ffffff"
         }
       ]
     },
@@ -158,46 +168,50 @@
         {
           
           "top": 160,
-          "left": 73,
+          "left": 72,
           "shape": "rect",
           "width": 140,
           "height": 185,
           "angle": 0,
           "borderRadius": 0,
-          "border": "6px solid #fff"
+          "strokeWidth": 6,
+          "stroke": "#ffffff"
         },
         {
           
           "top": 160,
-          "left": 213,
+          "left": 212,
           "shape": "rect",
           "width": 100,
           "height": 62,
           "angle": 0,
           "borderRadius": 0,
-          "border": "6px solid #fff"
+          "strokeWidth": 6,
+          "stroke": "#ffffff"
         },
         {
           
           "top": 222,
-          "left": 213,
+          "left": 212,
           "shape": "rect",
           "width": 100,
           "height": 62,
           "angle": 0,
           "borderRadius": 0,
-          "border": "6px solid #fff"
+          "strokeWidth": 6,
+          "stroke": "#ffffff"
         },
         {
           
           "top": 283,
-          "left": 213,
+          "left": 212,
           "shape": "rect",
           "width": 100,
           "height": 62,
           "angle": 0,
           "borderRadius": 0,
-          "border": "6px solid #fff"
+          "strokeWidth": 6,
+          "stroke": "#ffffff"
         }
       ]
     },
@@ -207,57 +221,62 @@
         {
           
           "top": 160,
-          "left": 36,
+          "left": 35,
           "shape": "rect",
           "width": 120,
           "height": 185,
           "angle": 0,
           "borderRadius": 0,
-          "border": "6px solid #fff"
+          "strokeWidth": 6,
+          "stroke": "#ffffff"
         },
         {
           
           "top": 160,
-          "left": 156,
+          "left": 155,
           "shape": "rect",
           "width": 120,
           "height": 185,
           "angle": 0,
           "borderRadius": 0,
-          "border": "6px solid #fff"
+          "strokeWidth": 6,
+          "stroke": "#ffffff"
         },
         {
           
           "top": 160,
-          "left": 276,
+          "left": 275,
           "shape": "rect",
           "width": 120,
           "height": 185,
           "angle": 0,
           "borderRadius": 0,
-          "border": "6px solid #fff"
+          "strokeWidth": 6,
+          "stroke": "#ffffff"
         },
         {
           
           "top": 160,
-          "left": 396,
+          "left": 395,
           "shape": "rect",
           "width": 120,
           "height": 185,
           "angle": 0,
           "borderRadius": 0,
-          "border": "6px solid #fff"
+          "strokeWidth": 6,
+          "stroke": "#ffffff"
         },
         {
           
           "top": 160,
-          "left": 516,
+          "left": 515,
           "shape": "rect",
           "width": 120,
           "height": 185,
           "angle": 0,
           "borderRadius": 0,
-          "border": "6px solid #fff"
+          "strokeWidth": 6,
+          "stroke": "#ffffff"
         }
       ]
     },
@@ -266,13 +285,14 @@
       "canvasBox": [
         {
           "top": 160,
-          "left": 73,
+          "left": 72,
           "shape": "rect",
           "width": 140,
           "height": 185,
           "angle": 0,
           "borderRadius": 0,
-          "border": "6px solid #fff"
+          "strokeWidth": 6,
+          "stroke": "#ffffff"
         }
       ]
     },
@@ -281,23 +301,25 @@
       "canvasBox": [
         {
           "top": 160,
-          "left": 73,
+          "left": 72,
           "shape": "rect",
           "width": 260,
           "height": 185,
           "angle": 0,
           "borderRadius": 0,
-          "border": "6px solid #fff"
+          "strokeWidth": 6,
+          "stroke": "#ffffff"
         },
         {
           "top": 160,
-          "left": 333,
+          "left": 332,
           "shape": "rect",
           "width": 145,
           "height": 185,
           "angle": 0,
           "borderRadius": 0,
-          "border": "6px solid #fff"
+          "strokeWidth": 6,
+          "stroke": "#ffffff"
         }
       ]
     },
@@ -307,35 +329,38 @@
         {
           
           "top": 160,
-          "left": 73,
+          "left": 72,
           "shape": "rect",
           "width": 140,
           "height": 185,
           "angle": 0,
           "borderRadius": 0,
-          "border": "6px solid #fff"
+          "strokeWidth": 6,
+          "stroke": "#ffffff"
         },
         {
           
           "top": 160,
-          "left": 213,
+          "left": 212,
           "shape": "rect",
           "width": 140,
           "height": 185,
           "angle": 0,
           "borderRadius": 0,
-          "border": "6px solid #fff"
+          "strokeWidth": 6,
+          "stroke": "#ffffff"
         },
         {
           
           "top": 160,
-          "left": 353,
+          "left": 352,
           "shape": "rect",
           "width": 140,
           "height": 185,
           "angle": 0,
           "borderRadius": 0,
-          "border": "6px solid #fff"
+          "strokeWidth": 6,
+          "stroke": "#ffffff"
         }
       ]
     }

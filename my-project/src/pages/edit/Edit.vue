@@ -279,6 +279,90 @@
         </div>
       </div>
     </div>
+    <div class="cutMask">
+      <div class="cut-bok">
+        <div class="cut-left">
+          <p><i class="icon-cut"></i>照片剪切</p>
+          <div class="img-box">
+            
+          </div>
+        </div>
+        <div class="cut-right">
+          <i class="icon-close"></i>
+          <ul class="cut-edit">
+            <li class="num">
+              <i class="icon-circle-left"></i>
+              <span>1 / 1</span>
+              <i class="icon-circle-right"></i>
+            </li>
+            <li class="size">
+              <p>可选尺寸:</p>
+              <label for="6寸" class="on">
+                <input type="radio" name="imgSize" id="6寸">
+                <span>6寸</span>
+              </label>
+              <label for="全景6寸">
+                <input type="radio" name="imgSize" id="全景6寸">
+                <span>全景6寸</span>
+              </label>
+              <label for="7寸">
+                <input type="radio" name="imgSize" id="7寸">
+                <span>7寸</span>
+              </label>
+              <label for="8寸">
+                <input type="radio" name="imgSize" id="8寸">
+                <span>8寸</span>
+              </label>
+              <label for="10寸">
+                <input type="radio" name="imgSize" id="10寸">
+                <span>10寸</span>
+              </label>
+            </li>
+            <li class="shape">
+              <p>裁剪形状:</p>
+              <label for="vertical">
+                <input type="radio" name="shape" id="vertical">
+                <i class="vertical"></i>
+              </label>
+              <label for="horizontal">
+                <input type="radio" name="shape" id="horizontal">
+                <i class="horizontal"></i>
+              </label>
+            </li>
+            <li class="info">
+              <p>裁剪形状: <span> 639 * 958 pixel</span></p>
+              <p>最佳冲印尺寸: 10寸</p>
+            </li>
+            <li class="filters">
+              <label for="增加白边框" class="on">
+                <input type="checkbox" name="filters" id="增加白边框">
+                <span>增加白边框</span>
+              </label>
+              <label for="自动色彩调整">
+                <input type="checkbox" name="filters" id="自动色彩调整">
+                <span>自动色彩调整</span>
+              </label>
+              <label for="自动肤色调整">
+                <input type="checkbox" name="filters" id="自动肤色调整">
+                <span>自动肤色调整</span>
+              </label>
+              <label for="光面">
+                <input type="checkbox" name="filters" id="光面">
+                <span>光面</span>
+              </label>
+              <label for="绒面">
+                <input type="checkbox" name="filters" id="绒面">
+                <span>绒面</span>
+              </label>
+            </li>
+            <li class="btns">
+              <div class="btn-save">保存</div>
+              <div class="btn-remove">移除</div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -464,6 +548,7 @@ export default {
         }
       ],
       canvasInObj: [],
+      canvasInItemObjs: [],
       filePageData: [{
         src: '/static/img/edit/bg.png',
         name: '摄影'
@@ -714,6 +799,9 @@ export default {
     canvasInObj(newVal, oldVal) {
       var vm = this
       if(oldVal) {
+        vm.canvasInItemObjs.forEach(function(item, idx) {
+          vm.curObj.remove(item)
+        })　　
         oldVal.forEach(function(item, idx) {
           vm.curObj.remove(item)
         })　　
@@ -1554,6 +1642,7 @@ export default {
             'top': clipPoly.top + clipPoly.height / 2 + clipPoly.strokeWidth * 0.5,
           })
           vm.curObj.add(pug)
+          vm.canvasInItemObjs.push(pug)
           vm.curObj.renderAll()
           vm.curObj.bringToFront(pug); // 一路向上
       }
@@ -1632,8 +1721,8 @@ export default {
             })*/
         
       vm.curObj.on('after:render', function(options) {
-        var p = canvas.getPointer(options.e)
-        console.log(p)
+        /*var p = canvas.getPointer(options.e)
+        console.log(p)*/
         /*var x = p.x
         var y = p.y
         vm.canvasInObj.forEach(function(item, idx) {
@@ -2114,4 +2203,145 @@ export default {
               overflow hidden
               text-overflow ellipsis
               white-space nowrap
+  .cutMask
+    position absolute
+    top 0px
+    left 0px
+    right 0px
+    bottom 0px
+    background rgba(0, 0, 0, 0.5)
+    .cut-bok
+      width 57.5%
+      height 70%
+      margin 100px auto
+      background #fff
+      .cut-left
+        float left
+        width 50%
+        height 100%
+        p
+          padding 8px 30px
+          .icon-cut
+            position relative
+            margin-right 10px
+            top 4px
+            font-size 24px
+            color rgb(255, 120, 0)
+        .img-box
+          width 93%
+          height 87%
+          background rgba(0, 0, 0, 0.6)
+          margin 10px auto
+      .cut-right
+        float right
+        width 50%
+        height 100%
+        .icon-close
+          font-size 30px
+          display inline-block
+          margin 10px 10px 0 86%
+        .cut-edit
+          width 93%
+          height 87%
+          margin 10px auto
+          li
+            font-size 14px
+            border-bottom 1px solid #ddd
+            padding 5px 10px 5px 2px
+            line-height 32px
+            label
+              cursor pointer
+              span
+                padding 0 12px 0 6px
+              input
+                position relative
+                &[type="radio"]:after
+                  content ''
+                  position absolute
+                  top -1px
+                  left -1px
+                  display inline-block
+                  width 12px
+                  height 12px
+                  background #fff
+                  border 1px solid #ddd
+                  border-radius 50%
+              &.on
+                input[type="radio"]:before
+                  content ''
+                  display inline-block
+                  position absolute
+                  width 4px
+                  height 4px
+                  left 33%
+                  top 33%
+                  border-radius 50%
+                  z-index 10
+                  background rgb(58, 170, 146)
+                input[type="radio"]:after
+                  border 1px solid rgb(58, 170, 146)
+            &.num
+              padding 0px 10px 5px 2px
+            // &.size
+            &.shape
+              padding-bottom 0px
+              label
+                input
+                  position relative
+                  bottom 20px
+                i
+                  display inline-block
+                  width 40px
+                  height 50px
+                  background #ddd
+                  &.horizontal
+                    height 30px
+                    margin-bottom 12px
+                &:last-child
+                  margin-left 20px
+            &.info
+              span
+                color #999
+                padding-left 5px
+            &.filters
+              label
+                input
+                  position relative
+                  &[type="checkbox"]:after
+                    content ''
+                    position absolute
+                    top -1px
+                    left -1px
+                    display inline-block
+                    width 13px
+                    height 13px
+                    background #fff
+                    border 1px solid #ddd
+                &.on
+                  input[type="checkbox"]:before
+                    content ''
+                    display inline-block
+                    position absolute
+                    top -1px
+                    left -1px
+                    width 12px
+                    height 12px
+                    z-index 10
+                    background-image url('/static/img/edit/对.svg')
+                  input[type="checkbox"]:after
+                    border 1px solid rgb(58, 170, 146)
+            &.btns
+              border-bottom none
+              >div
+                display inline-block
+                width 80px
+                background rgb(58, 170, 146)
+                border 1px solid rgb(58, 170, 146)
+                color #fff
+                text-align center
+                border-radius 4px
+                margin 10px 40px 0 20px
+                &.btn-remove
+                  background #fff
+                  color rgb(58, 170, 146)
 </style>

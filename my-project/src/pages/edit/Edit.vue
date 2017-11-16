@@ -279,7 +279,7 @@
         </div>
       </div>
     </div>
-    <v-cut v-if="cutImgData.isCutImg" :cutImgData="cutImgData"></v-cut>
+    <v-cut v-if="cutImgData.isCutImg" :cutImgData="cutImgData" @clip-save="getClipSave"></v-cut>
   </div>
 </template>
 
@@ -1009,7 +1009,7 @@ export default {
             })
             break
           case 'clip':
-            vm.cutImgData.cutImg = curImg
+            vm.cutImgData.cutImg = vm.curImg
             vm.cutImgData.isCutImg = true
             vm.isAddimg = false
             vm.curObj.discardActiveObject()
@@ -1554,7 +1554,7 @@ export default {
           var w
           var h
           if(ratio >= 1) {
-            w = clipPoly.width - clipPoly.strokeWidth,
+            w = clipPoly.width - clipPoly.strokeWidth
             h = clipPoly.width * ratio
           } else {
             h = clipPoly.height - clipPoly.strokeWidth
@@ -1633,6 +1633,9 @@ export default {
         // obj.sendBackwards(img)
         img.selectable = false
       })
+    },
+    getClipSave(param) {  // param-->子组件传过来的参数
+      console.log(param) 
     }
   },
   mounted() {

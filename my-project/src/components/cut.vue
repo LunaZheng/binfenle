@@ -106,7 +106,7 @@
             </label>
           </li>
           <li class="btns">
-            <div class="btn-cut" @click="imgToClip">裁剪</div>
+            <div class="btn-cut" @click="imgToClip">确定</div>
             <div class="btn-remove" @click="resetImg">重置</div>
             <div class="btn-save" @click="clipSave">保存</div>
           </li>
@@ -126,6 +126,7 @@ export default {
       curWhiteRect: '',
       cutImg: '',
       isShowClipBox: true,
+      isSave: true,
       originImg: '',
       imgData: '',
       scale: 10,
@@ -143,6 +144,15 @@ export default {
       },
       cutGroup: []
     }
+  },
+  computed: {
+    spaceTL() {
+      var vm = this
+      var o = {}
+      o.spaceT = vm.cutImg.curCanvasInObj.top + vm.cutImg.curCanvasInObj.strokeWidth-(vm.originImg.top - vm.originImg.height / 2)
+      o.spaceL = vm.cutImg.curCanvasInObj.left + vm.cutImg.curCanvasInObj.strokeWidth-(vm.originImg.left - vm.originImg.width / 2)
+      return o
+    },
   },
   watch: {
     scale(newVal) {
@@ -171,41 +181,28 @@ export default {
       cutImg.set({
         originX: 'center',
         originY: 'center',
-        // top: 227,
-        // left: 205,
+        top: 227,
+        left: 205,
       })
       vm.curCutCanvas.add(cutImg)
       vm.curCutCanvas.setActiveObject(cutImg)
       vm.curCutCanvas.renderAll()
       vm.cutImg = cutImg
       // vm.imgData = vm.cutImg
-      console.log(vm.cutImg.curCanvasInObj)
-      /*$('.clip-box').css({
-        'top': vm.cutImg.top - vm.cutImg.height / 2,
-        'left': vm.cutImg.left - vm.cutImg.width / 2,
-        'width': vm.cutImg.width,
-        'height': vm.cutImg.height,
-      })*/
       $('.clip-box').css({
-        'top': vm.cutImg.curCanvasInObj.top + vm.cutImg.curCanvasInObj.strokeWidth,
-        'left': vm.cutImg.curCanvasInObj.left + vm.cutImg.curCanvasInObj.strokeWidth,
-        // 'top': vm.cutImg.top - vm.cutImg.height / 2,
-        // 'left': vm.cutImg.left - vm.cutImg.width / 2,
+        'top': vm.cutImg.top - vm.cutImg.height / 2 + vm.spaceTL.spaceT,
+        'left': vm.cutImg.left - vm.cutImg.width / 2 + vm.spaceTL.spaceL,
         'width': vm.cutImg.curCanvasInObj.width - vm.cutImg.curCanvasInObj.strokeWidth,
         'height': vm.cutImg.curCanvasInObj.height - vm.cutImg.curCanvasInObj.strokeWidth,
       })
-
-      /*$('.upper-canvas').css({
-        'background': 'rgba(255, 0, 0, .2)'
-      })*/
     },
     removeWhiteRect(obj) {
       var vm = this
       if(obj) {
-        var l = $('.clip-box').css('left').replace('px', '')*1 + 6
-        var t = $('.clip-box').css('top').replace('px', '')*1 + 6
-        var w = $('.clip-box').css('width').replace('px', '')*1 - 12
-        var h = $('.clip-box').css('height').replace('px', '')*1 - 12
+        var l = $('.clip-box').css('left').replace('px', '')*1/* + 6*/
+        var t = $('.clip-box').css('top').replace('px', '')*1/* + 6*/
+        var w = $('.clip-box').css('width').replace('px', '')*1/* - 12*/
+        var h = $('.clip-box').css('height').replace('px', '')*1/* - 12*/
         $('.clip-box').css({
           left: l,
           top: t,
@@ -227,10 +224,10 @@ export default {
         return
       }*/
       // if($('#增加白边框')[0].closest('label').className.indexOf('on') > -1) {}
-      var l = $('.clip-box').css('left').replace('px', '')*1 - 6
-      var t = $('.clip-box').css('top').replace('px', '')*1 - 6
-      var w = $('.clip-box').css('width').replace('px', '')*1 + 6
-      var h = $('.clip-box').css('height').replace('px', '')*1 + 6
+      var l = $('.clip-box').css('left').replace('px', '')*1/* - 6*/
+      var t = $('.clip-box').css('top').replace('px', '')*1/* - 6*/
+      var w = $('.clip-box').css('width').replace('px', '')*1 - 6
+      var h = $('.clip-box').css('height').replace('px', '')*1 - 6
       var rect = new fabric.Rect({
         left: l,
         top: t,
@@ -245,8 +242,8 @@ export default {
       $('.clip-box').css({
         left: l,
         top: t,
-        width: w + 6,
-        height: h + 6,
+        // width: w + 6,
+        // height: h/* + 6*/,
       })
 
       /*var group = new fabric.Group([vm.cutImg, rect])
@@ -261,7 +258,8 @@ export default {
       e.preventDefault()
       var vm = this
       var target = e.target
-      var ratio = vm.cutImg.height / vm.cutImg.width
+      var ratio = vm.cutImg.curCanvasInObj.height / vm.cutImg.curCanvasInObj.width
+      // var ratio = vm.cutImg.height / vm.cutImg.width
       var w
       var h
       vm.isShowClipBox = true
@@ -296,91 +294,91 @@ export default {
         } else {
           $(radio).addClass("on").siblings().removeClass("on")
           $('.clip-box').css({
-            'top': vm.cutImg.top - vm.cutImg.height / 2,
-            'left': vm.cutImg.left - vm.cutImg.width / 2,
+            'top': vm.cutImg.top - vm.cutImg.height / 2 + vm.spaceTL.spaceT,
+            'left': vm.cutImg.left - vm.cutImg.width / 2 + vm.spaceTL.spaceL,
           })
           switch (radio.htmlFor) {
             case '6寸': // 800×1200 (4 x 6)
               vm.imgSize.cun = '6寸' 
               vm.imgSize.size = '800×1200'
               if(ratio >= 1) {
-                w = vm.cutImg.width
-                h = vm.cutImg.width / (4 / 6)
+                w = vm.cutImg.curCanvasInObj.width
+                h = vm.cutImg.curCanvasInObj.width / (4 / 6)
               } else {
-                h = vm.cutImg.height
-                w = vm.cutImg.height * (4 / 6)
+                h = vm.cutImg.curCanvasInObj.height
+                w = vm.cutImg.curCanvasInObj.height * (4 / 6)
               }
               break
             case '全景6寸': // 1800x1350 (6 x 4.5)
               vm.imgSize.cun = '全景6寸' 
               vm.imgSize.size = '1800x1350'
               if(ratio >= 1) {
-                w = vm.cutImg.width
-                h = vm.cutImg.width / (6 / 4.5)
+                w = vm.cutImg.curCanvasInObj.width
+                h = vm.cutImg.curCanvasInObj.width / (6 / 4.5)
               } else {
-                h = vm.cutImg.height
-                w = vm.cutImg.height * (6 / 4.5)
+                h = vm.cutImg.curCanvasInObj.height
+                w = vm.cutImg.curCanvasInObj.height * (6 / 4.5)
               }
               break
             case '7寸': // 1000×1400 (5 x 7)
               vm.imgSize.cun = '7寸' 
               vm.imgSize.size = '1000×1400'
               if(ratio >= 1) {
-                w = vm.cutImg.width
-                h = vm.cutImg.width / (5 / 7)
+                w = vm.cutImg.curCanvasInObj.width
+                h = vm.cutImg.curCanvasInObj.width / (5 / 7)
               } else {
-                h = vm.cutImg.height
-                w = vm.cutImg.height * (5 / 7)
+                h = vm.cutImg.curCanvasInObj.height
+                w = vm.cutImg.curCanvasInObj.height * (5 / 7)
               }
               break
             case '8寸': // 1200×1600 (6 x 8)
               vm.imgSize.cun = '8寸' 
               vm.imgSize.size = '1200×1600'
               if(ratio >= 1) {
-                w = vm.cutImg.width
-                h = vm.cutImg.width / (6 / 8)
+                w = vm.cutImg.curCanvasInObj.width
+                h = vm.cutImg.curCanvasInObj.width / (6 / 8)
               } else {
-                h = vm.cutImg.height
-                w = vm.cutImg.height * (6 / 8)
+                h = vm.cutImg.curCanvasInObj.height
+                w = vm.cutImg.curCanvasInObj.height * (6 / 8)
               }
               break
             case '10寸': // 1600×2000 (8 x 10)
               vm.imgSize.cun = '10寸' 
               vm.imgSize.size = '1600×2000'
               if(ratio >= 1) {
-                w = vm.cutImg.width
-                h = vm.cutImg.width / (8 / 10)
+                w = vm.cutImg.curCanvasInObj.width
+                h = vm.cutImg.curCanvasInObj.width / (8 / 10)
               } else {
-                h = vm.cutImg.height
-                w = vm.cutImg.height * (8 / 10)
+                h = vm.cutImg.curCanvasInObj.height
+                w = vm.cutImg.curCanvasInObj.height * (8 / 10)
               }
               break
             case 'vertical': // 纵向
               vm.imgSize.size = '800×1200'
               vm.imgSize.cun = '6寸' 
               if(ratio >= 1) {
-                w = vm.cutImg.width
-                h = vm.cutImg.width / (4 / 6)
+                w = vm.cutImg.curCanvasInObj.width
+                h = vm.cutImg.curCanvasInObj.width / (4 / 6)
               } else {
-                h = vm.cutImg.height
-                w = vm.cutImg.height * (4 / 6)
+                h = vm.cutImg.curCanvasInObj.height
+                w = vm.cutImg.curCanvasInObj.height * (4 / 6)
               }
               break
             case 'horizontal': // 横向
               vm.imgSize.size = '1800x1350'
               vm.imgSize.cun = '全景6寸' 
               if(ratio >= 1) {
-                w = vm.cutImg.width
-                h = vm.cutImg.width / (6 / 4.5)
+                w = vm.cutImg.curCanvasInObj.width
+                h = vm.cutImg.curCanvasInObj.width / (6 / 4.5)
               } else {
-                h = vm.cutImg.height
-                w = vm.cutImg.height * (6 / 4.5)
+                h = vm.cutImg.curCanvasInObj.height
+                w = vm.cutImg.curCanvasInObj.height * (6 / 4.5)
               }
               break
           }
           $('.clip-box').css({
-            'width': w,
-            'height': h,
+            'width': w - vm.cutImg.curCanvasInObj.strokeWidth,
+            'height': h - vm.cutImg.curCanvasInObj.strokeWidth,
           })
           vm.imgSize.w = $('.clip-box').css('width').replace('px', '')
           vm.imgSize.h = $('.clip-box').css('height').replace('px', '')
@@ -400,16 +398,40 @@ export default {
               vm.addWhiteRect()
               break
             case '自动色彩调整':
-              console.log(checkbox.htmlFor) 
+              var filter = new fabric.Image.filters.Convolute({ // blur
+                  matrix: [ 1/8, 1/8, 1/8,
+                            1/8, 1/8, 1/8,
+                            1/8, 1/8, 1/8 ]
+              })
+              vm.cutImg.filters.push(filter)
+              vm.cutImg.filters = vm.cutImg.filters.slice(-1)
+              vm.cutImg.applyFilters(vm.curCutCanvas.renderAll.bind(vm.curCutCanvas)) 
               break
             case '自动肤色调整':
-              console.log(checkbox.htmlFor) 
+              var filter = new fabric.Image.filters.ColorMatrix({
+                  matrix: [
+                   1.1285582396593525, -0.3967382283601348, -0.03992559172921793, 0, 63.72958762196502,
+                   -0.16404339962244616, 1.0835251566291304, -0.05498805115633132, 0, 24.732407896706203,
+                   -0.16786010706155763, -0.5603416277695248, 1.6014850761964943, 0, 35.62982807460946,
+                   0, 0, 0, 1, 0
+                  ]
+              })
+              vm.cutImg.filters.push(filter)
+              vm.cutImg.filters = vm.cutImg.filters.slice(-1)
+              vm.cutImg.applyFilters(vm.curCutCanvas.renderAll.bind(vm.curCutCanvas)) 
               break
             case '光面':
-              console.log(checkbox.htmlFor) 
+              vm.cutImg.filters.push(new fabric.Image.filters.Sepia())
+              vm.cutImg.filters = vm.cutImg.filters.slice(-1)
+              vm.cutImg.applyFilters(vm.curCutCanvas.renderAll.bind(vm.curCutCanvas))
               break
             case '绒面':
-              console.log(checkbox.htmlFor) 
+              var filter = new fabric.Image.filters.Convolute({
+                matrix: [0, -1, 0, -1, 5, -1, 0, -1, 0]
+              });
+              vm.cutImg.filters.push(filter)
+              vm.cutImg.filters = vm.cutImg.filters.slice(-1)
+              vm.cutImg.applyFilters(vm.curCutCanvas.renderAll.bind(vm.curCutCanvas)) 
               break
           }
         }
@@ -420,15 +442,15 @@ export default {
       e.preventDefault()
       e.stopPropagation()
       var vm = this
-      if(vm.cutGroup[0]) {
-        var isSave = confirm('是否保存')
-        if(isSave === true) {
+      if(vm.isSave) {
+        vm.cutImgData.isCutImg = false
+      } else {
+        var isTrue = confirm('是否保存')
+        if(isTrue === true) {
           vm.clipSave()
         } else {
           vm.cutImgData.isCutImg = false
         }
-      } else {
-        vm.cutImgData.isCutImg = false
       }
     },
     clipImgDown(e) {
@@ -523,6 +545,8 @@ export default {
     },
     imgToClip() {
       var vm = this
+      vm.isSave = false
+      vm.cutGroup = []
       if(vm.isShowClipBox === true) {
         var pointBox = $('.clip-box')[0]
         var l = $('.clip-box').css('left').replace('px', '')*1
@@ -542,6 +566,14 @@ export default {
             ctx.scale(vm.cutImg.myScale, vm.cutImg.myScale)
           }
         })
+        vm.cutImg.clipRect = {
+          'left': -imgW/2 + moveL,
+          'top': -imgH/2 + moveT,
+          'width': w,
+          'height': h,
+          'myAngle': vm.cutImg.myAngle * (Math.PI / 180),
+          'myScale': vm.cutImg.myScale
+        }
         vm.curCutCanvas.renderAll()
 
         var objs = vm.curCutCanvas.getObjects()
@@ -577,6 +609,7 @@ export default {
       vm.curCutCanvas.clear()
       vm.curCutCanvas.add(group)
       this.$emit('clip-save', group)
+      vm.isSave = true
       vm.cutImgData.isCutImg = false
     }
   },
@@ -608,6 +641,7 @@ export default {
   right 0px
   bottom 0px
   background rgba(0, 0, 0, 0.5)
+  z-index 11
   .cut-bok
     // width 57.5%
     // height 70%
@@ -814,6 +848,7 @@ export default {
       float right
       width 50%
       height 100%
+      user-select none
       .icon-close
         font-size 30px
         display inline-block

@@ -34,13 +34,13 @@
       <div class="edit-top-bor">
         <ul class="edit-left">
           <li>
-            <a href="javascript:"><i class="icon-undo"></i>撤销</a>
+            <a href="javascript:" @click="historyState"><i class="icon-undo"></i>撤销</a>
           </li>
           <li>
-            <a href="javascript:"><i class="icon-redo"></i>恢复</a>
+            <a href="javascript:" @click="historyState"><i class="icon-redo"></i>恢复</a>
           </li>
           <li>
-            <a href="javascript:"><i class="icon-eye"></i>预览</a>
+            <a href="javascript:" @click="historyState"><i class="icon-eye"></i>预览</a>
           </li>
         </ul>
         <ul class="edit-right">
@@ -318,6 +318,8 @@ export default {
       curBgImg: '/static/img/edit/bg.png',
       curBorder: '',
       isAddimg: false,
+      state: [],
+      mods: 0,
       curImg: '',
       cutImgData: {
         isCutImg: false,
@@ -955,56 +957,31 @@ export default {
           curText.set(name, vm.fontEditData[name])
           curObj.renderAll()
         }
-      } else if(curText.type === 'image' || curText.type === 'group') {
+      } else if(curText.type === 'image') {
         var curImg = curText
-        var imgBox = ''
-        if(curText.type === 'group') {
-          if(curText._objects[0].type === 'image') {
-            curImg = curText._objects[0]
-            console.log(curImg)
-            if(curText._objects[1]) {
-              imgBox = curText._objects[1]
-            }
-          }
-        }
         switch (name) {
           case 'top':
             value === '-' ? curImg.set(name, curImg.top - 5) : curImg.set(name, curImg.top + 5)
-            if(imgBox) {
-              value === '-' ? imgBox.set(name, imgBox.top - 5) : imgBox.set(name, imgBox.top + 5)
-            }
             break
           case 'angle':
-            if(curText.type === 'image') {
-              var val = vm.degToRad(curImg.myAngle + 45)
-              var clipPoly = curImg.curCanvasInObj
-              curImg.myAngle = curImg.myAngle + 45
-              curImg.set({
-                'clipTo': function(ctx) {
-                  ctx.rect(
-                    clipPoly.left - curImg.left + clipPoly.strokeWidth,
-                    clipPoly.top - curImg.top + clipPoly.strokeWidth,
-                    clipPoly.width - clipPoly.strokeWidth,
-                    clipPoly.height - clipPoly.strokeWidth
-                  )
-                  ctx.rotate(val)
-                  ctx.scale(curImg.myScale, curImg.myScale)
-                }
-              })
-            } else if(curText.type === 'group') {
-               // 待解决: 
-                var val = curImg.clipRect.myAngle + vm.degToRad(45)
-                curImg.set({
-                'clipTo': function(ctx) {
-                  ctx.rect(curImg.clipRect.left, curImg.clipRect.top, curImg.clipRect.width, curImg.clipRect.height)
-                  ctx.rotate(val)
-                  ctx.scale(curImg.clipRect.myScale, curImg.clipRect.myScale)
-                }
-              })
-            } 
+            var val = vm.degToRad(curImg.myAngle + 45)
+            var clipPoly = curImg.curCanvasInObj
+            curImg.myAngle = curImg.myAngle + 45
+            curImg.set({
+              'clipTo': function(ctx) {
+                ctx.rect(
+                  clipPoly.left - curImg.left + clipPoly.strokeWidth,
+                  clipPoly.top - curImg.top + clipPoly.strokeWidth,
+                  clipPoly.width - clipPoly.strokeWidth,
+                  clipPoly.height - clipPoly.strokeWidth
+                )
+                ctx.rotate(val)
+                ctx.scale(curImg.myScale, curImg.myScale)
+              }
+            })
             break
           case 'clip':
-            vm.cutImgData.cutImg = vm.curObj.getActiveObject()
+            vm.cutImgData.cutImg = vm.curImg
             vm.cutImgData.isCutImg = true
             vm.isAddimg = false
             vm.curObj.discardActiveObject()
@@ -1631,21 +1608,58 @@ export default {
     },
     getClipSave(param) {  // param-->子组件传过来的参数
       var vm = this
-      param.curCanvasInObj = vm.cutImgData.cutImg.curCanvasInObj
+      console.log(param)
       var boxObj = vm.cutImgData.cutImg.curCanvasInObj
 
       // 待解决 004 : 裁剪后的定位
       param.set({
-        'originX': 'center',
-        'originY': 'center',
-        'left': vm.cutImgData.cutImg.left/* - vm.cutImgData.cutImg.width / 2*/,
-        'top': vm.cutImgData.cutImg.top /*- vm.cutImgData.cutImg.height / 2*/,
+        'left': vm.cutImgData.cutImg.left - vm.cutImgData.cutImg.width / 2,
+        'top': vm.cutImgData.cutImg.top - vm.cutImgData.cutImg.height / 2,
         // 'left': boxObj.left + boxObj.strokeWidth,
         // 'top': boxObj.top + boxObj.strokeWidth,
       })
       vm.removeObj(vm.cutImgData.cutImg)
       vm.curObj.add(param)
       vm.curObj.renderAll()
+    },
+    updateModifications(savehistory) {
+      var vm = this
+      var myjson
+      if (savehistory === true) {
+        myjson = JSON.stringify(vm.curObj)
+        vm.state.push(myjson)
+      }
+    },
+    historyState(e) {
+      var vm = this
+      var target = e.target.closest('a')
+      switch (target.innerText) {
+        case '撤销':
+          if (vm.mods < vm.state.length) {
+            vm.curObj.clear().renderAll();
+            vm.curObj.loadFromJSON(vm.state[vm.state.length - 1 - vm.mods - 1]);
+            vm.curObj.renderAll();
+            //console.log("geladen " + (vm.state.length-1-vm.mods-1));
+            //console.log("vm.state " + vm.state.length);
+            vm.mods += 1;
+            //console.log("vm.mods " + vm.mods);
+          }
+          break
+        case '恢复':
+          if (vm.mods > 0) {
+            vm.curObj.clear().renderAll();
+            vm.curObj.loadFromJSON(vm.state[vm.state.length - 1 - vm.mods + 1]);
+            vm.curObj.renderAll();
+            //console.log("geladen " + (vm.state.length-1-vm.mods+1));
+            vm.mods -= 1;
+            //console.log("vm.state " + vm.state.length);
+            //console.log("vm.mods " + vm.mods);
+          }
+          break
+        case '预览':
+          
+          break
+      }
     }
   },
   mounted() {
@@ -1661,8 +1675,8 @@ export default {
               var img3 = img.set({ left: -250, top: -150 })
               canvas.add(img3)
             })*/
-        
-      vm.curObj.on('after:render', function(options) {
+
+      canvas.on('after:render', function(options) {
         /*var p = canvas.getPointer(options.e)
         console.log(p)*/
         /*var x = p.x
@@ -1718,6 +1732,18 @@ export default {
           })
         }*/
       })
+      vm.curObj.on(
+        'object:modified', function () {
+          console.log('object:modified')
+          vm.updateModifications(true)
+        },
+        'object:added', function () {
+          console.log('object:added')
+          vm.updateModifications(true)
+        },
+        
+      )
+        
       /*if(!vm.isAddtext) {
         vm.curObj.discardActiveObject()
         vm.curObj.renderAll()

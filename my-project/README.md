@@ -68,9 +68,9 @@ proxyTable: {
 $ npm run dev
 
 
- --------
-|  bug:  |
- --------     
+ ------------
+|  bug记录:  |
+ ------------     
 ① 8080端口被本机占用, 改port为8090     
 ② build\dev-server.js 里 55行options报错 , 改 const 为 let     
 ③ 打包编译失败, 改 config\index.js --> build --> assetsPublicPath: '/' 为 assetsPublicPath: './'     

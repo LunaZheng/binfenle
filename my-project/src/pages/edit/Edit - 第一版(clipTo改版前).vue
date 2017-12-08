@@ -189,11 +189,11 @@
           <li>
             <span class="img-edit-scale">
               <label>大小</label>
-              <input type="range" min="1" max="1500" value="500" class="img-scale" v-model="imgEditData.scale" @input="curImg && changeSelect('scale', curImg, curObj, $event)">
+              <input type="range" min="1" max="1500" value="500" class="img-scale" @input="curImg && changeSelect('scale', curImg, curObj, $event)">
             </span>
             <span class="img-edit-opacity">
               <label>透明</label>
-              <input type="range" min="1" max="1000" value="1000" class="img-opacity" v-model="imgEditData.opacity" @input="curImg && changeSelect('opacity', curImg, curObj, $event)">
+              <input type="range" min="1" max="1000" value="1000" class="img-opacity" @input="curImg && changeSelect('opacity', curImg, curObj, $event)">
             </span>
           </li>
           <li class="controls">
@@ -328,8 +328,7 @@ export default {
         width: 1,
         color: '#ff0000'
       },
-      imgAdjustList: [ // 图片编辑框-图片调整内容
-        {
+      imgAdjustList: [{
           name: '基本调整',
           tag: 'Saturate',
           isInputShow: true,
@@ -415,9 +414,8 @@ export default {
           tag: 'Resize',
           isInputShow: false,
         }*/
-      ],
+        ],
 
-      // 文字编辑记录
       fontEditData: {
         world: '',
         left: 10,
@@ -444,12 +442,6 @@ export default {
         padding: 2,
         scale: 500
       },
-
-      // 图片编辑记录
-      imgEditData: {
-        opacity: 1000,
-        scale: 500
-      },
       /*borderEditData: {
         left: 10,
         top: -16,
@@ -469,50 +461,56 @@ export default {
         scale: 500
       },*/
       canvasOut: '',
-      layoutData: [ // 布局初始样式
-      ],
-      canvasInObj: [],
-      canvasInRectObj: [],
-      canvasInItemObjs: [],
-      filePageData: [ // 页面内容
+      layoutData: [
         {
-          src: '/static/img/edit/bg.png',
-          name: '摄影'
-        },{
-          src: '/static/img/edit/page-01.png',
-          name: '多彩泡泡111'
-        },{
-          src: '/static/img/edit/page-02.png',
-          name: '多彩泡泡222'
-        },{
-          src: '/static/img/edit/page-03.png',
-          name: '多彩泡泡333'
-        },{
-          src: '/static/img/edit/page-04.png',
-          name: '多彩泡泡444'
-        },{
-          src: '/static/img/edit/page-05.png',
-          name: '多彩泡泡555'
-        },{
-          src: '/static/img/edit/page-06.png',
-          name: '多彩泡泡666'
-        },{
-          src: '/static/img/edit/page-07.png',
-          name: '多彩泡泡777'
-        },{
-          src: '/static/img/edit/page-08.png',
-          name: '多彩泡泡888'
-        },{
-          src: '/static/img/edit/page-01.png',
-          name: '多彩泡泡111'
-        },{
-          src: '/static/img/edit/page-02.png',
-          name: '多彩泡泡222'
+          "top": 160,
+          "left": 73,
+          "shape": "rect",
+          "width": 140,
+          "height": 185,
+          "angle": 0,
+          "borderRadius": 0,
+          "border": "6px solid #fff"
         }
       ],
+      canvasInObj: [],
+      canvasInItemObjs: [],
+      filePageData: [{
+        src: '/static/img/edit/bg.png',
+        name: '摄影'
+      },{
+        src: '/static/img/edit/page-01.png',
+        name: '多彩泡泡111'
+      },{
+        src: '/static/img/edit/page-02.png',
+        name: '多彩泡泡222'
+      },{
+        src: '/static/img/edit/page-03.png',
+        name: '多彩泡泡333'
+      },{
+        src: '/static/img/edit/page-04.png',
+        name: '多彩泡泡444'
+      },{
+        src: '/static/img/edit/page-05.png',
+        name: '多彩泡泡555'
+      },{
+        src: '/static/img/edit/page-06.png',
+        name: '多彩泡泡666'
+      },{
+        src: '/static/img/edit/page-07.png',
+        name: '多彩泡泡777'
+      },{
+        src: '/static/img/edit/page-08.png',
+        name: '多彩泡泡888'
+      },{
+        src: '/static/img/edit/page-01.png',
+        name: '多彩泡泡111'
+      },{
+        src: '/static/img/edit/page-02.png',
+        name: '多彩泡泡222'
+      }],
       isShowPage: false,
-      editList: [ // 左侧编辑列表内容
-        {
+      editList: [{
         tag: 'template',
         name: '模板',
         item: [{
@@ -531,105 +529,104 @@ export default {
           img: '/static/img/edit/temp03.png',
           tag: '4页'
         }]
+      },{
+        tag: 'font',
+        name: '文字',
+        item: [{
+          img: '/static/img/edit/font01.png',
+          title: 'STXingkai 华文行楷'
         },{
-          tag: 'font',
-          name: '文字',
-          item: [{
-            img: '/static/img/edit/font01.png',
-            title: 'STXingkai 华文行楷'
-          },{
-            img: '/static/img/edit/font02.png',
-            title: 'STXinwei 华文新魏'
-          },{
-            img: '/static/img/edit/font03.png',
-            title: 'STLiti 华文隶书'
-          },{
-            img: '/static/img/edit/font01.png',
-            title: 'STHupo 华文琥珀'
-          },{
-            img: '/static/img/edit/font02.png',
-            title: 'STCaiyun 华文彩云'
-          },{
-            img: '/static/img/edit/font03.png',
-            title: 'FZYaoti 方正姚体'
-          },{
-            img: '/static/img/edit/font01.png',
-            title: 'Delicious'
-          },{
-            img: '/static/img/edit/font02.png',
-            title: 'Hoefler Text'
-          },{
-            img: '/static/img/edit/font03.png',
-            title: 'STXinwei'
-          }]
+          img: '/static/img/edit/font02.png',
+          title: 'STXinwei 华文新魏'
         },{
-          tag: 'bg',
-          name: '背景',
-          item: [{
-            img: '/static/img/edit/bg.png'
-          },{
-            img: '/static/img/edit/bg01.png'
-          },{
-            img: '/static/img/edit/bg02.png'
-          },{
-            img: '/static/img/edit/bg03.png'
-          },{
-            img: '/static/img/edit/bg01.png'
-          },{
-            img: '/static/img/edit/bg02.png'
-          }]
+          img: '/static/img/edit/font03.png',
+          title: 'STLiti 华文隶书'
         },{
-          tag: 'pic',
-          name: '图片',
-          item: [{
-            img: '/static/img/edit/bg01.png'
-          },{
-            img: '/static/img/edit/bg02.png'
-          },{
-            img: '/static/img/edit/bg03.png'
-          },{
-            img: '/static/img/edit/bg01.png'
-          },{
-            img: '/static/img/edit/bg02.png'
-          }]
+          img: '/static/img/edit/font01.png',
+          title: 'STHupo 华文琥珀'
         },{
-          tag: 'decorate',
-          name: '装饰',
-          item: [{
-            img: '/static/img/edit/decorate01.png'
-          },{
-            img: '/static/img/edit/decorate02.png'
-          },{
-            img: '/static/img/edit/decorate03.png'
-          },{
-            img: '/static/img/edit/decorate04.png'
-          },{
-            img: '/static/img/edit/decorate02.png'
-          }]
+          img: '/static/img/edit/font02.png',
+          title: 'STCaiyun 华文彩云'
         },{
-          tag: 'layout',
-          name: '布局',
-          item: [{
-            img: '/static/img/edit/layout01.png'
-          },{
-            img: '/static/img/edit/layout02.png'
-          },{
-            img: '/static/img/edit/layout03.png'
-          },{
-            img: '/static/img/edit/layout04.png'
-          },{
-            img: '/static/img/edit/layout05.png'
-          },{
-            img: '/static/img/edit/layout06.png'
-          },{
-            img: '/static/img/edit/layout01.png'
-          },{
-            img: '/static/img/edit/layout02.png'
-          },{
-            img: '/static/img/edit/layout03.png'
-          }]
-        }
-      ]
+          img: '/static/img/edit/font03.png',
+          title: 'FZYaoti 方正姚体'
+        },{
+          img: '/static/img/edit/font01.png',
+          title: 'Delicious'
+        },{
+          img: '/static/img/edit/font02.png',
+          title: 'Hoefler Text'
+        },{
+          img: '/static/img/edit/font03.png',
+          title: 'STXinwei'
+        }]
+      },{
+        tag: 'bg',
+        name: '背景',
+        item: [{
+          img: '/static/img/edit/bg.png'
+        },{
+          img: '/static/img/edit/bg01.png'
+        },{
+          img: '/static/img/edit/bg02.png'
+        },{
+          img: '/static/img/edit/bg03.png'
+        },{
+          img: '/static/img/edit/bg01.png'
+        },{
+          img: '/static/img/edit/bg02.png'
+        }]
+      },{
+        tag: 'pic',
+        name: '图片',
+        item: [{
+          img: '/static/img/edit/bg01.png'
+        },{
+          img: '/static/img/edit/bg02.png'
+        },{
+          img: '/static/img/edit/bg03.png'
+        },{
+          img: '/static/img/edit/bg01.png'
+        },{
+          img: '/static/img/edit/bg02.png'
+        }]
+      },{
+        tag: 'decorate',
+        name: '装饰',
+        item: [{
+          img: '/static/img/edit/decorate01.png'
+        },{
+          img: '/static/img/edit/decorate02.png'
+        },{
+          img: '/static/img/edit/decorate03.png'
+        },{
+          img: '/static/img/edit/decorate04.png'
+        },{
+          img: '/static/img/edit/decorate02.png'
+        }]
+      },{
+        tag: 'layout',
+        name: '布局',
+        item: [{
+          img: '/static/img/edit/layout01.png'
+        },{
+          img: '/static/img/edit/layout02.png'
+        },{
+          img: '/static/img/edit/layout03.png'
+        },{
+          img: '/static/img/edit/layout04.png'
+        },{
+          img: '/static/img/edit/layout05.png'
+        },{
+          img: '/static/img/edit/layout06.png'
+        },{
+          img: '/static/img/edit/layout01.png'
+        },{
+          img: '/static/img/edit/layout02.png'
+        },{
+          img: '/static/img/edit/layout03.png'
+        }]
+      }]
     }
   },
   watch: {
@@ -675,37 +672,22 @@ export default {
         vm.fontEditData.scale = vm.curText.scaleX * 500
       }
     },
-    curImg(newVal) {
-      var vm = this
-      if(newVal) {
-        vm.imgEditData.opacity = newVal.opacity * 1000,
-        vm.imgEditData.scale = newVal.scaleX * 500
-      }
-    },
     layoutData: {　　　　
       handler(newVal, oldVal) {
         var vm = this
         var objs = []
-        var rectObjs= []
         newVal.forEach(function(item, idx) {
-          var rect = new fabric.Rect({
-            width: item.width + item.space,
-            height: item.height + item.space,
-            top: item.top - item.space,
-            left: item.left - item.space,
-            // width: item.width + item.space + item.space,
-            // height: item.height + item.space + item.space,
+          /*var rect = new fabric.Rect({
+            name: 'canvasIn' + idx,
+            originX: 'center',
+            originY: 'center',
+            top: item.top + item.height * 0.5,
+            left: item.left + item.width * 0.5,
             angle: item.angle,
+            width: item.width,
+            height: item.height,
             fill: 'transparent',
-            // fill: '#fff',
-            stroke: '#fff',
-            strokeWidth: item.space,
-          })
-          vm.curObj.add(rect)
-          rectObjs.push(rect)
-          rect.selectable = false
-          vm.curObj.renderAll()
-
+          })*/
           var imgElement = new Image()
           imgElement.src = '/static/img/edit/dragTip.png'
           var imgInstance = new fabric.Image(imgElement, {
@@ -714,10 +696,10 @@ export default {
             angle: item.angle,
             width: item.width,
             height: item.height,
-            // stroke: item.stroke,
-            // strokeWidth: item.strokeWidth,
+            stroke: item.stroke,
+            strokeWidth: item.strokeWidth,
             // stroke: '#f00',
-            // strokeWidth: 1,
+            // strokeWidth: 6,
           })
           vm.curObj.add(imgInstance)
           objs.push(imgInstance)
@@ -733,7 +715,6 @@ export default {
           vm.curObj.renderAll()
         })　　
         vm.canvasInObj = objs
-        vm.canvasInRectObj = rectObjs
       },
       deep: true　　
     },
@@ -746,15 +727,7 @@ export default {
       if(oldVal) {
         vm.canvasInItemObjs.forEach(function(item, idx) {
           vm.curObj.remove(item)
-        })
-        oldVal.forEach(function(item, idx) {
-          vm.curObj.remove(item)
         })　　
-      }
-    },
-    canvasInRectObj(newVal, oldVal) {
-      var vm = this
-      if(oldVal) {
         oldVal.forEach(function(item, idx) {
           vm.curObj.remove(item)
         })　　
@@ -1002,9 +975,33 @@ export default {
             }
             break
           case 'angle':
-            // vm.imgEditData.angle += 45
-            // curImg.set('angle', vm.imgEditData.angle)
-            curImg.set(name, curImg.angle + 45)
+            if(curText.type === 'image') {
+              var val = vm.degToRad(curImg.myAngle + 45)
+              var clipPoly = curImg.curCanvasInObj
+              curImg.myAngle = curImg.myAngle + 45
+              curImg.set({
+                'clipTo': function(ctx) {
+                  ctx.rect(
+                    clipPoly.left - curImg.left + clipPoly.strokeWidth,
+                    clipPoly.top - curImg.top + clipPoly.strokeWidth,
+                    clipPoly.width - clipPoly.strokeWidth,
+                    clipPoly.height - clipPoly.strokeWidth
+                  )
+                  ctx.rotate(val)
+                  ctx.scale(curImg.myScale, curImg.myScale)
+                }
+              })
+            } else if(curText.type === 'group') {
+               // 待解决: 
+                var val = curImg.clipRect.myAngle + vm.degToRad(45)
+                curImg.set({
+                'clipTo': function(ctx) {
+                  ctx.rect(curImg.clipRect.left, curImg.clipRect.top, curImg.clipRect.width, curImg.clipRect.height)
+                  ctx.rotate(val)
+                  ctx.scale(curImg.clipRect.myScale, curImg.clipRect.myScale)
+                }
+              })
+            } 
             break
           case 'clip':
             vm.cutImgData.cutImg = vm.curObj.getActiveObject()
@@ -1260,7 +1257,33 @@ export default {
           } else if(curText.type === 'image') {
             var curImg = curText
             var val = (e.target.value * 0.002).toFixed(2)
-            curImg.scale(val)
+            curImg.myScale = val
+            var clipPoly = curImg.curCanvasInObj
+            curImg.set({
+              'clipTo': function(ctx) {
+                ctx.rect(
+                  clipPoly.left - curImg.left + clipPoly.strokeWidth,
+                  clipPoly.top - curImg.top + clipPoly.strokeWidth,
+                  clipPoly.width - clipPoly.strokeWidth,
+                  clipPoly.height - clipPoly.strokeWidth
+                );
+                ctx.rotate(vm.degToRad(curImg.myAngle))
+                ctx.scale(val, val)
+              }
+            })
+            /*console.log(curImg.oCoords)
+            var l = curImg.oCoords.tl.x
+            var t = curImg.oCoords.tl.y
+            var r = curImg.oCoords.br.x
+            var b = curImg.oCoords.br.y*/
+            var padding 
+            var ratio = curImg.height / curImg.width
+            if(ratio >= 1) {
+              padding = (clipPoly.height / 2) * val - clipPoly.height / 2
+            } else {
+              padding = (clipPoly.width / 2) * val - clipPoly.width / 2
+            }
+            curImg.set('padding', padding)
           }
           break
         case 'world':
@@ -1488,89 +1511,6 @@ export default {
     stopParentEvent(e) {
       e.stopPropagation() // 阻止事件冒泡而触发父级的click事件
     },
-    clipByName(ctx, img, clipObj) {
-      var vm = this
-      var o = {}
-      //  You might need to call `setCoords` on an object after centering, to update controls area (您可能需要在对象centering之后调用对象的setCoords来更新控件区域)
-      img.setCoords();
-      var scaleXTo1 = (1 / img.scaleX);
-      var scaleYTo1 = (1 / img.scaleY);
-      ctx.save();
-
-      var ctxWidth = clipObj.width - clipObj.strokeWidth;
-      var ctxHeight = clipObj.height - clipObj.strokeWidth;
-      var ctxLeft = -(img.width / 2) + clipObj.strokeWidth;
-      var ctxTop = -(img.height / 2) + clipObj.strokeWidth;
-
-      ctx.translate(ctxLeft, ctxTop);
-      ctx.scale(scaleXTo1, scaleYTo1);
-      ctx.rotate(vm.degToRad(img.angle * -1));
-
-      ctx.beginPath();
-
-      // Polygon多边形
-      // instanceof --> clipObj在不在 fabric.Polygon 构造函数中, 返回布尔值
-      var isPolygon = clipObj instanceof fabric.Polygon; 
-      // polygon cliping area
-      if (isPolygon) {
-        ctx.translate(
-          - clipObj.left - ctxWidth / 2 - clipObj.strokeWidth, 
-          - clipObj.top - ctxHeight / 2 - clipObj.strokeWidth
-        );
-        // prepare(准备) points of polygon
-        var points = [];
-        for (i in clipObj.points)
-          points.push({
-            x: (clipObj.left + clipObj.width / 2) + clipObj.points[i].x - img.oCoords.tl.x,
-            y: (clipObj.top + clipObj.height / 2) + clipObj.points[i].y - img.oCoords.tl.y
-          });
-
-        ctx.moveTo(points[0].x, points[0].y);
-        for (i = 1; i < points.length; ++i) {
-          ctx.lineTo(points[i].x, points[i].y);
-        }
-        ctx.lineTo(points[0].x, points[0].y);
-
-        ctx.closePath();
-
-        ctx.restore();
-
-        o = {
-          points: points,
-          translate01: {x: ctxLeft, y: ctxTop},
-          translate02: {
-            x: - clipObj.left - ctxWidth / 2 - clipObj.strokeWidth, 
-            y: - clipObj.top - ctxHeight / 2 - clipObj.strokeWidth
-          },
-          scale: {x: scaleXTo1, y: scaleYTo1},
-          rotate: img.angle,
-        }
-        return o
-      }
-      // rectangle cliping area
-      else {
-        ctx.rect(
-          clipObj.left - img.oCoords.tl.x,
-          clipObj.top - img.oCoords.tl.y,
-          clipObj.width,
-          clipObj.height
-        );
-        ctx.closePath();
-
-        ctx.restore();
-
-        o = {
-          left: clipObj.left - img.oCoords.tl.x,
-          top: clipObj.top - img.oCoords.tl.y,
-          width: clipObj.width,
-          height: clipObj.height,
-          translate: {x: ctxLeft, y: ctxTop},
-          scale: {x: scaleXTo1, y: scaleYTo1},
-          rotate: img.angle,
-        }
-        return o
-      }
-    },
     addImg(dragImg, idx) {
       var vm = this
       vm.isAddtext = false
@@ -1586,17 +1526,25 @@ export default {
               originX: 'center',
               originY: 'center',
               curCanvasInObj: clipPoly,
-              // myAngle: 0,
-              // myScale: 1,
-              // hasControls: false, // 隐藏控件
+              myAngle: 0,
+              myScale: 1,
+              hasControls: false, // 隐藏控件
               // hasBorders: false, // 隐藏框centeredScaling
               // centeredScaling: true, 
               clipTo: function(ctx) {
-                pug.clipRecord = vm.clipByName(ctx, pug, clipPoly)
+                // var ctxLeft = -( pug.width / 2 );
+                // var ctxTop = -( pug.height / 2 );
+                ctx.rect(
+                  clipPoly.left - pug.left + clipPoly.strokeWidth,
+                  clipPoly.top - pug.top + clipPoly.strokeWidth,
+                  clipPoly.width - clipPoly.strokeWidth,
+                  clipPoly.height - clipPoly.strokeWidth
+                );
+                // ctx.rotate(vm.degToRad(-45))
+                // ctx.translate(ctxLeft + pug.width / 2, ctxTop + pug.height / 2)
+                ctx.scale(scaleNum, scaleNum)
               }
           });
-
-          // 拖拽图片后使其自适应框的大小
           var ratio = pugImg.height / pugImg.width
           var w
           var h
@@ -1611,7 +1559,8 @@ export default {
             'width': w,
             'height': h
           })
-          // pug.hasRotatingPoint = false // 取消旋转控件
+          // 取消旋转控件
+          pug.hasRotatingPoint = false
           pug.set({
             'left': clipPoly.left + clipPoly.width / 2 + clipPoly.strokeWidth * 0.5,
             'top': clipPoly.top + clipPoly.height / 2 + clipPoly.strokeWidth * 0.5,

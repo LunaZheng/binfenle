@@ -543,92 +543,6 @@ export default {
       }
 
     },
-    clipByName(ctx, img, clipObj) {
-      var vm = this
-      var o = {}
-      //  You might need to call `setCoords` on an object after centering, to update controls area (您可能需要在对象centering之后调用对象的setCoords来更新控件区域)
-      img.setCoords();
-      var scaleXTo1 = (1 / img.scaleX);
-      var scaleYTo1 = (1 / img.scaleY);
-      ctx.save();
-
-      var ctxWidth = clipObj.width - clipObj.strokeWidth;
-      var ctxHeight = clipObj.height - clipObj.strokeWidth;
-      var ctxLeft = -(img.width / 2) + clipObj.strokeWidth;
-      var ctxTop = -(img.height / 2) + clipObj.strokeWidth;
-
-      ctx.translate(ctxLeft, ctxTop);
-      ctx.scale(scaleXTo1, scaleYTo1);
-      ctx.rotate(vm.degToRad(img.angle * -1));
-
-      ctx.beginPath();
-
-      // Polygon多边形
-      // instanceof --> clipObj在不在 fabric.Polygon 构造函数中, 返回布尔值
-      var isPolygon = clipObj instanceof fabric.Polygon; 
-      // polygon cliping area
-      if (isPolygon) {
-        ctx.translate(
-          - clipObj.left - ctxWidth / 2 - clipObj.strokeWidth, 
-          - clipObj.top - ctxHeight / 2 - clipObj.strokeWidth
-        );
-        // prepare(准备) points of polygon
-        var points = [];
-        for (i in clipObj.points)
-          points.push({
-            x: (clipObj.left + clipObj.width / 2) + clipObj.points[i].x - img.oCoords.tl.x,
-            y: (clipObj.top + clipObj.height / 2) + clipObj.points[i].y - img.oCoords.tl.y
-          });
-
-        ctx.moveTo(points[0].x, points[0].y);
-        for (i = 1; i < points.length; ++i) {
-          ctx.lineTo(points[i].x, points[i].y);
-        }
-        ctx.lineTo(points[0].x, points[0].y);
-
-        ctx.closePath();
-
-        ctx.restore();
-
-        o = {
-          points: points,
-          translate01: {x: ctxLeft, y: ctxTop},
-          translate02: {
-            x: - clipObj.left - ctxWidth / 2 - clipObj.strokeWidth, 
-            y: - clipObj.top - ctxHeight / 2 - clipObj.strokeWidth
-          },
-          scale: {x: scaleXTo1, y: scaleYTo1},
-          rotate: img.angle,
-        }
-        return o
-      }
-      // rectangle cliping area
-      else {
-        ctx.rect(
-          clipObj.left - img.oCoords.tl.x,
-          clipObj.top - img.oCoords.tl.y,
-          clipObj.width,
-          clipObj.height
-        );
-        ctx.closePath();
-
-        ctx.restore();
-
-        o = {
-          left: clipObj.left - img.oCoords.tl.x,
-          top: clipObj.top - img.oCoords.tl.y,
-          width: clipObj.width,
-          height: clipObj.height,
-          translate: {x: ctxLeft, y: ctxTop},
-          scale: {x: scaleXTo1, y: scaleYTo1},
-          rotate: img.angle,
-        }
-        return o
-      }
-    },
-    degToRad(degrees) {
-      return degrees * (Math.PI / 180);
-    },
     imgToClip() {
       var vm = this
       vm.isSave = false
@@ -645,50 +559,25 @@ export default {
         var imgH = vm.cutImg.aCoords.br.y - imgT
         var moveT = t - imgT
         var moveL = l - imgL
-        var clipRecord = vm.cutImg.clipRecord
-
-        console.log(vm.cutImg.get('left'))
-        console.log(vm.cutImg.get('top'))
         vm.cutImg.set({
-          // originX: 'center',
-          // originY: 'center',
-          // left: imgL,
-          // top: imgT,
-          // 'selectable': false,
           'clipTo': function(ctx) {
-            var clipRect2 = new fabric.Rect({ // 方形框
-              // originX: 'left',
-              // originY: 'top',
-              originX: 'center',
-              originY: 'center',
-              left: l,
-              top: t,
-              width: w,
-              height: h,
-              fill: '#ddd',
-              strokeWidth: 0,
-              // selectable: false
-            })
-            vm.cutImg.clipRecord = vm.clipByName(ctx, vm.cutImg, clipRect2)
-
-            // ctx.rect(-imgW/2 + moveL, -imgH/2 + moveT, w, h)
-            // ctx.rotate(clipRecord.rotate)
-            // ctx.scale(clipRecord.scale.x, clipRecord.scale.y)
-
-            vm.cutImg.clipRect = clipRect2
+            ctx.rect(-imgW/2 + moveL, -imgH/2 + moveT, w, h)
+            ctx.rotate(vm.cutImg.myAngle * (Math.PI / 180))
+            ctx.scale(vm.cutImg.myScale, vm.cutImg.myScale)
           }
         })
-        /*vm.cutImg.clipRect = {
+        vm.cutImg.clipRect = {
           'left': -imgW/2 + moveL,
           'top': -imgH/2 + moveT,
           'width': w,
           'height': h,
           'myAngle': vm.cutImg.myAngle * (Math.PI / 180),
           'myScale': vm.cutImg.myScale
-        }*/
+        }
         vm.curCutCanvas.renderAll()
 
         var objs = vm.curCutCanvas.getObjects()
+        console.log(objs)
         objs.forEach(function(item, idx) {
           vm.cutGroup.push(item)
         })
@@ -698,11 +587,6 @@ export default {
         vm.curCutCanvas.add(group)*/
         vm.isShowClipBox = !vm.isShowClipBox
       }
-    },
-    convertCanvasToImage(canvas) {
-      var image = new Image();
-      image.src = canvas.toDataURL("image/png");
-      return image;
     },
     canvasResize(e) {
       e.preventDefault()
@@ -724,34 +608,11 @@ export default {
       var vm = this
       var group = new fabric.Group(vm.cutGroup)
       vm.curCutCanvas.clear()
-      // vm.curCutCanvas.add(group)
-      vm.curCutCanvas.add(vm.cutImg)
-      /*vm.cutImg.set({
-        originX: 'center',
-        originY: 'center',
-        left: vm.cutImg.clipRecord.left + 90,
-        top: vm.cutImg.clipRecord.top - 40,
-      })*/
-      console.log(vm.cutImg)
-
-      /*group.item(0).set({
-        originX: 'center',
-        originY: 'center',
-        left: 43,
-        top: 54,
-        stroke: '#fff',
-        strokeWidth: 6,
-      })
-      vm.curCutCanvas.add(group.item(0))*/
-      vm.curCutCanvas.renderAll()
-      /*// convertCanvasToImage 返回<img>base64
-      var png = (vm.convertCanvasToImage(vm.curCutCanvas))
-      console.log(png.src)
-      $('.cut-bok').append(png)*/
-
-      /*this.$emit('clip-save', group)
+      vm.curCutCanvas.add(group)
+      console.log(group)
+      this.$emit('clip-save', group)
       vm.isSave = true
-      vm.cutImgData.isCutImg = false*/
+      vm.cutImgData.isCutImg = false
     }
   },
   mounted() {
@@ -832,8 +693,6 @@ export default {
           justify-content center
           align-items center
           background #666
-          #clipCanvas
-            border 1px solid #fff
           .clip-box
             width 200px
             height 150px

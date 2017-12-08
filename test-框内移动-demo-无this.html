@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>try</title>
+</head>
+<body>
+<style>
+#c {
+  border: 0px solid #ccc;
+}
+</style>
+
+<canvas id="c" width="400" height="400"></canvas>
+
+<script src='./fabric.js'></script>
+<script src='./jq.js'></script>
+
+<script>
+var img01URL = 'http://zhengrongrong.top/static/img/face.jpg';
+// var img02URL = 'http://zhengrongrong.top/static/img/avatar.jpg';
+
+var canvas = new fabric.Canvas('c');
+
+
+var clipRect2 = new fabric.Rect({ // 方形框
+  originX: 'left',
+  originY: 'top',
+  left: 10,
+  top: 10,
+  width: 150,
+  height: 150,
+  fill: '#DDD',
+  strokeWidth: 0,
+  selectable: false
+});
+canvas.add(clipRect2);
+
+
+/*var clipRect2 = new fabric.Polygon([ // 多边形框
+    { x: 10, y: 10 },
+    { x: 50, y: 30 },
+    { x: 40, y: 70 },
+    { x: 60, y: 50 },
+    { x: 300, y: 100 },
+    { x: 100, y: 150 },
+    { x: 40, y: 100 }
+  ], {
+    // left: 10,
+    // top: 10,
+    // width: 150,
+    // height: 150,
+    fill: '#DDD',
+    strokeWidth: 0,
+    stroke: '#999',
+    selectable: false
+});
+canvas.add(clipRect2);*/
+
+// Since the `angle` property of the Image object is stored 
+// in degrees, we'll use this to convert it to radians.
+function degToRad(degrees) {
+  return degrees * (Math.PI / 180);
+}
+
+var clipByName = function(ctx, img, clipObj) {
+  var o = {}
+  //  You might need to call `setCoords` on an object after centering, to update controls area (您可能需要在对象centering之后调用对象的setCoords来更新控件区域)
+  img.setCoords();
+  var scaleXTo1 = (1 / img.scaleX);
+  var scaleYTo1 = (1 / img.scaleY);
+  ctx.save();
+
+  var ctxWidth = clipObj.width - clipObj.strokeWidth;
+  var ctxHeight = clipObj.height - clipObj.strokeWidth;
+  var ctxLeft = -(img.width / 2) + clipObj.strokeWidth;
+  var ctxTop = -(img.height / 2) + clipObj.strokeWidth;
+
+  ctx.translate(ctxLeft, ctxTop);
+  ctx.scale(scaleXTo1, scaleYTo1);
+  ctx.rotate(degToRad(img.angle * -1));
+
+  ctx.beginPath();
+
+  // Polygon多边形
+  // instanceof --> clipObj在不在 fabric.Polygon 构造函数中, 返回布尔值
+  var isPolygon = clipObj instanceof fabric.Polygon; 
+  // polygon cliping area
+  if (isPolygon) {
+    ctx.translate(
+      - clipObj.left - ctxWidth / 2 - clipObj.strokeWidth, 
+      - clipObj.top - ctxHeight / 2 - clipObj.strokeWidth
+    );
+    // prepare(准备) points of polygon
+    var points = [];
+    for (i in clipObj.points)
+      points.push({
+        x: (clipObj.left + clipObj.width / 2) + clipObj.points[i].x - img.oCoords.tl.x,
+        y: (clipObj.top + clipObj.height / 2) + clipObj.points[i].y - img.oCoords.tl.y
+      });
+
+    ctx.moveTo(points[0].x, points[0].y);
+    for (i = 1; i < points.length; ++i) {
+      ctx.lineTo(points[i].x, points[i].y);
+    }
+    ctx.lineTo(points[0].x, points[0].y);
+
+    ctx.closePath();
+
+    ctx.restore();
+
+    o = {
+      points: points,
+      translate01: {x: ctxLeft, y: ctxTop},
+      translate02: {
+        x: - clipObj.left - ctxWidth / 2 - clipObj.strokeWidth, 
+        y: - clipObj.top - ctxHeight / 2 - clipObj.strokeWidth
+      },
+      scale: {x: scaleXTo1, y: scaleYTo1},
+      rotate: img.angle,
+    }
+    return o
+  }
+  // rectangle cliping area
+  else {
+    ctx.rect(
+      clipObj.left - img.oCoords.tl.x,
+      clipObj.top - img.oCoords.tl.y,
+      clipObj.width,
+      clipObj.height
+    );
+    ctx.closePath();
+
+    ctx.restore();
+
+    o = {
+      left: clipObj.left - img.oCoords.tl.x,
+      top: clipObj.top - img.oCoords.tl.y,
+      width: clipObj.width,
+      height: clipObj.height,
+      translate: {x: ctxLeft, y: ctxTop},
+      scale: {x: scaleXTo1, y: scaleYTo1},
+      rotate: img.angle,
+    }
+    return o
+  }
+}
+
+
+var faceImg = new Image();
+faceImg.onload = function(img) {
+  var face = new fabric.Image(faceImg, {
+    originX: 'center',
+    originY: 'center',
+    angle: 45,
+    // width: 550,
+    // height: 190,
+    left: clipRect2.width / 2,
+    top: clipRect2.height / 2,
+    scaleX: 1,
+    scaleY: 1,
+    clipName: 'face',
+    clipTo: function(ctx) { 
+      // 将裁剪信息存在 clipRecord 中
+      face.clipRecord = clipByName(ctx, face, clipRect2)
+    }
+  });
+  canvas.add(face);
+  console.log(face)
+};
+faceImg.src = img01URL;
+</script>
+
+</body>
+</html

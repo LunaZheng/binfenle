@@ -149,7 +149,7 @@ fabric.Image.fromURL('http://fabricjs.com/assets/pug_small.jpg', function(img) {
     [].slice.call(this.files).forEach(function(oFile, idx) {
       var src = URL.createObjectURL(oFile)
       var li = document.createElement('li')
-      li.innerHTML = '<img width="50" src="' + src + '" alt="" clsaa="img' + idx + '" draggable="true" ondragstart="drag(event)"/>'
+      li.innerHTML = '<img width="50" src="' + src + '" alt="" class="img' + idx + '" draggable="true" ondragstart="drag(event)"/>'
       li.onload = function() {
         window.URL.revokeObjectURL(src)
       }

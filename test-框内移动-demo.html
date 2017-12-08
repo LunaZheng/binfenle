@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>try</title>
+</head>
+<body>
+<style>
+#c {
+  border: 0px solid #ccc;
+}
+</style>
+
+<canvas id="c" width="400" height="400"></canvas>
+
+<script src='./fabric.js'></script>
+<script src='./jq.js'></script>
+<!-- <script src='./lodash.js'></script> -->
+
+<script>
+var img01URL = 'http://zhengrongrong.top/static/img/face.jpg';
+// var img02URL = 'http://zhengrongrong.top/static/img/avatar.jpg';
+
+var canvas = new fabric.Canvas('c');
+
+// Note the use of the `originX` and `originY` properties(属性), which we set to 'left' and 'top', respectively(分别). This makes the math in the `clipTo` functions a little bit more straight-forward(更直截了当一点).
+/*var clipPoly = new fabric.Polygon([ // 梯形框
+  {x: 180, y: 10}, 
+  {x: 300, y: 50},
+  {x: 300, y: 180}, 
+  {x: 180, y: 220}
+], {
+  originX: 'left',
+  originY: 'top',
+  left: 180,
+  top: 10,
+  width: 200,
+  height: 200,
+  fill: '#eee',*/
+  /* use transparent for no fill */
+  /*strokeWidth: 2,
+  stroke: '#999',
+  selectable: false
+});
+// We give these `Rect` objects a name property so the `clipTo` functions can
+// find the one by which they want to be clipped.
+clipPoly.set({
+  clipFor: 'pug'
+});
+canvas.add(clipPoly);*/
+
+/*var clipRect2 = new fabric.Rect({ // 方形框
+  originX: 'left',
+  originY: 'top',
+  left: 10,
+  top: 10,
+  width: 150,
+  height: 150,
+  fill: '#DDD',
+  strokeWidth: 0,
+  selectable: false
+});
+// We give these `Rect` objects a name property so the `clipTo` functions can
+// find the one by which they want to be clipped.
+clipRect2.set({
+  clipFor: 'logo'
+});
+canvas.add(clipRect2);*/
+
+
+var clipRect2 = new fabric.Polygon([ // 多边形框
+    { x: 10, y: 10 },
+    { x: 50, y: 30 },
+    { x: 40, y: 70 },
+    { x: 60, y: 50 },
+    { x: 300, y: 100 },
+    { x: 100, y: 150 },
+    { x: 40, y: 100 }
+  ], {
+    // left: 10,
+    // top: 10,
+    // width: 150,
+    // height: 150,
+    fill: '#DDD',
+    strokeWidth: 0,
+    stroke: '#999',
+    selectable: false
+});
+clipRect2.set({
+  clipFor: 'logo'
+});
+canvas.add(clipRect2);
+
+function findByClipName(name) {
+  var obj = canvas.getObjects().filter(function(item, idx) {
+      return item.clipFor === name;
+  })
+  return obj[0]
+
+  /*return _(canvas.getObjects()).where({
+    clipFor: name
+  }).first()*/
+}
+
+// Since the `angle` property of the Image object is stored 
+// in degrees, we'll use this to convert it to radians.
+function degToRad(degrees) {
+  return degrees * (Math.PI / 180);
+}
+
+var clipByName = function(ctx) {
+  //  You might need to call `setCoords` on an object after centering, to update controls area (您可能需要在对象centering之后调用对象的setCoords来更新控件区域)
+  this.setCoords();
+  var clipObj = findByClipName(this.clipName);
+  var scaleXTo1 = (1 / this.scaleX);
+  var scaleYTo1 = (1 / this.scaleY);
+  ctx.save();
+
+  var ctxWidth = clipObj.width - clipObj.strokeWidth;
+  var ctxHeight = clipObj.height - clipObj.strokeWidth;
+  var ctxLeft = -(this.width / 2) + clipObj.strokeWidth;
+  var ctxTop = -(this.height / 2) + clipObj.strokeWidth;
+
+  ctx.translate(ctxLeft, ctxTop);
+  ctx.scale(scaleXTo1, scaleYTo1);
+  ctx.rotate(degToRad(this.angle * -1));
+
+  ctx.beginPath();
+
+  // Polygon多边形
+  // instanceof --> clipObj在不在 fabric.Polygon 构造函数中, 返回布尔值
+  var isPolygon = clipObj instanceof fabric.Polygon; 
+  // polygon cliping area
+  if (isPolygon) {
+    ctx.translate(
+      /*ctxLeft + this.width / 2*/ - clipObj.left - ctxWidth / 2 - clipObj.strokeWidth, 
+      /*ctxTop + this.height / 2*/ - clipObj.top - ctxHeight / 2 - clipObj.strokeWidth
+    );
+    // prepare(准备) points of polygon
+    var points = [];
+    for (i in clipObj.points)
+      points.push({
+        x: (clipObj.left + clipObj.width / 2) + clipObj.points[i].x - this.oCoords.tl.x,
+        y: (clipObj.top + clipObj.height / 2) + clipObj.points[i].y - this.oCoords.tl.y
+      });
+
+    ctx.moveTo(points[0].x, points[0].y);
+    for (i = 1; i < points.length; ++i) {
+      ctx.lineTo(points[i].x, points[i].y);
+    }
+    ctx.lineTo(points[0].x, points[0].y);
+  }
+  // rectangle cliping area
+  else {
+    ctx.rect(
+      clipObj.left - this.oCoords.tl.x,
+      clipObj.top - this.oCoords.tl.y,
+      clipObj.width,
+      clipObj.height
+    );
+  }
+
+  ctx.closePath();
+
+  ctx.restore();
+}
+
+/*var pugImg = new Image();
+pugImg.onload = function(img) {
+  var pug = new fabric.Image(pugImg, {
+    angle: 45,
+    width: 500,
+    height: 500,
+    left: 230,
+    top: 50,
+    scaleX: 0.3,
+    scaleY: 0.3,
+    clipName: 'pug',
+    clipTo: function(ctx) {
+      return clipByName.bind(pug)(ctx)
+      // return _.bind(clipByName, pug)(ctx)
+    }
+  });
+  canvas.add(pug);
+};
+pugImg.src = img02URL;*/
+
+var logoImg = new Image();
+logoImg.onload = function(img) {
+  var logo = new fabric.Image(logoImg, {
+    originX: 'center',
+    originY: 'center',
+    angle: 0,
+    // width: 550,
+    // height: 190,
+    left: clipRect2.width / 2,
+    top: clipRect2.height / 2,
+    scaleX: 1,
+    scaleY: 1,
+    clipName: 'logo',
+    clipTo: function(ctx) {
+      return clipByName.bind(logo)(ctx)
+      // return _.bind(clipByName, logo)(ctx)
+    }
+  });
+  canvas.add(logo);
+};
+logoImg.src = img01URL;
+</script>
+
+</body>
+</html

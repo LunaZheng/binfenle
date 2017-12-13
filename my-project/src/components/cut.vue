@@ -108,7 +108,7 @@
           <li class="btns">
             <div class="btn-cut" @click="imgToClip">确定</div>
             <div class="btn-remove" @click="resetImg">重置</div>
-            <div class="btn-save" @click="clipSave">保存</div>
+            <div class="btn-save" @click="toSave">保存</div>
           </li>
         </ul>
       </div>
@@ -126,6 +126,7 @@ export default {
       curWhiteRect: '',
       cutImg: '',
       isShowClipBox: true,
+      isClip: false,
       isSave: true,
       originImg: '',
       imgData: '',
@@ -142,7 +143,7 @@ export default {
         clipTo: '',
         filters: '',
       },
-      cutGroup: []
+      cutGroup: [],
     }
   },
   computed: {
@@ -169,7 +170,7 @@ export default {
       $('.filters label').siblings().removeClass("on")
       var cutImg = fabric.util.object.clone(vm.cutImgData.cutImg)
       var originRatio = cutImg.height / cutImg.width
-      var w
+      /*var w
       var h
       if(originRatio >= 1) {
         w = cutImg.width - cutImg.strokeWidth,
@@ -177,7 +178,7 @@ export default {
       } else {
         h = cutImg.height - cutImg.strokeWidth
         w = h / originRatio
-      }
+      }*/
       cutImg.set({
         originX: 'center',
         originY: 'center',
@@ -449,7 +450,7 @@ export default {
         if(isTrue === true) {
           vm.clipSave()
         } else {
-          vm.cutImgData.isCutImg = false
+          vm.cutImgData.isCutImg = true
         }
       }
     },
@@ -639,53 +640,29 @@ export default {
         var t = $('.clip-box').css('top').replace('px', '')*1
         var w = $('.clip-box').css('width').replace('px', '')*1
         var h = $('.clip-box').css('height').replace('px', '')*1
-        var imgL = vm.cutImg.aCoords.tl.x
+        /*var imgL = vm.cutImg.aCoords.tl.x
         var imgT = vm.cutImg.aCoords.tl.y
         var imgW = vm.cutImg.aCoords.br.x - imgL
         var imgH = vm.cutImg.aCoords.br.y - imgT
         var moveT = t - imgT
         var moveL = l - imgL
-        var clipRecord = vm.cutImg.clipRecord
+        var clipRecord = vm.cutImg.clipRecord*/
 
-        console.log(vm.cutImg.get('left'))
-        console.log(vm.cutImg.get('top'))
         vm.cutImg.set({
-          // originX: 'center',
-          // originY: 'center',
-          // left: imgL,
-          // top: imgT,
           // 'selectable': false,
           'clipTo': function(ctx) {
             var clipRect2 = new fabric.Rect({ // 方形框
-              // originX: 'left',
-              // originY: 'top',
               originX: 'center',
               originY: 'center',
               left: l,
               top: t,
               width: w,
               height: h,
-              fill: '#ddd',
-              strokeWidth: 0,
-              // selectable: false
             })
             vm.cutImg.clipRecord = vm.clipByName(ctx, vm.cutImg, clipRect2)
-
-            // ctx.rect(-imgW/2 + moveL, -imgH/2 + moveT, w, h)
-            // ctx.rotate(clipRecord.rotate)
-            // ctx.scale(clipRecord.scale.x, clipRecord.scale.y)
-
-            vm.cutImg.clipRect = clipRect2
+            vm.curCutCanvas.remove(clipRect2)
           }
         })
-        /*vm.cutImg.clipRect = {
-          'left': -imgW/2 + moveL,
-          'top': -imgH/2 + moveT,
-          'width': w,
-          'height': h,
-          'myAngle': vm.cutImg.myAngle * (Math.PI / 180),
-          'myScale': vm.cutImg.myScale
-        }*/
         vm.curCutCanvas.renderAll()
 
         var objs = vm.curCutCanvas.getObjects()
@@ -693,9 +670,7 @@ export default {
           vm.cutGroup.push(item)
         })
 
-        /*var group = new fabric.Group(vm.cutGroup)
-        vm.curCutCanvas.clear()
-        vm.curCutCanvas.add(group)*/
+        vm.isClip = true
         vm.isShowClipBox = !vm.isShowClipBox
       }
     },
@@ -722,36 +697,75 @@ export default {
     },
     clipSave() {
       var vm = this
+      vm.curCutCanvas.add(vm.cutImg)
+      vm.curCutCanvas.renderAll()
+
+      var ctxL = vm.cutImg.clipRecord.left
+      var ctxT = vm.cutImg.clipRecord.top
+      var w = vm.cutImg.clipRecord.width
+      var h = vm.cutImg.clipRecord.height
+      var a = vm.cutImg.clipRecord.rotate
+      var translateX = vm.cutImg.clipRecord.translate.x
+      var translateY = vm.cutImg.clipRecord.translate.y
+      var scaleX = vm.cutImg.clipRecord.scale.x
+      var scaleY = vm.cutImg.clipRecord.scale.y
+      // console.log(ctxL, ctxT, w, h, a)
+      // console.log(translateX, translateY, scaleX, scaleY)
+
       var group = new fabric.Group(vm.cutGroup)
       vm.curCutCanvas.clear()
-      // vm.curCutCanvas.add(group)
-      vm.curCutCanvas.add(vm.cutImg)
-      /*vm.cutImg.set({
-        originX: 'center',
-        originY: 'center',
-        left: vm.cutImg.clipRecord.left + 90,
-        top: vm.cutImg.clipRecord.top - 40,
-      })*/
-      console.log(vm.cutImg)
+      vm.curCutCanvas.add(group)
 
-      /*group.item(0).set({
+      /*// 在 group 后,剪切的 left 和 top 会改变 ???????
+      console.log(vm.cutImg.clipRecord) */
+
+      group.item(0).set({
         originX: 'center',
         originY: 'center',
-        left: 43,
-        top: 54,
-        stroke: '#fff',
-        strokeWidth: 6,
+        'clipTo': function(ctx) {
+          group.item(0).setCoords() 
+          ctx.save()
+          ctx.translate(translateX, translateY)
+          ctx.scale(scaleX, scaleY)
+          ctx.rotate(vm.degToRad(a * -1))
+          ctx.beginPath()
+          ctx.rect(ctxL, ctxT, w, h)
+          ctx.closePath()
+          ctx.restore()
+
+          // 调整莫名其妙改变的 left 和 top 值
+          group.item(0).clipRecord.left = ctxL
+          group.item(0).clipRecord.top = ctxT
+        }
       })
-      vm.curCutCanvas.add(group.item(0))*/
       vm.curCutCanvas.renderAll()
+
       /*// convertCanvasToImage 返回<img>base64
       var png = (vm.convertCanvasToImage(vm.curCutCanvas))
       console.log(png.src)
       $('.cut-bok').append(png)*/
 
-      /*this.$emit('clip-save', group)
+      this.$emit('clip-save', group)
       vm.isSave = true
-      vm.cutImgData.isCutImg = false*/
+      vm.cutImgData.isCutImg = false
+    },
+    toSave() {
+      var vm = this
+      if(vm.isClip) {
+        vm.clipSave()
+      } else {
+        var isTrue = confirm('是否确定裁剪')
+        if(isTrue === true) {
+          vm.imgToClip()
+          vm.clipSave()
+        } else {
+          vm.isSave = false
+          vm.cutImgData.isCutImg = true
+          return
+        }
+      }
+
+      
     }
   },
   mounted() {

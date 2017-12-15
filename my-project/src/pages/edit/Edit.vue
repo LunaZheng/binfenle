@@ -33,10 +33,10 @@
     <div class="edit-content">
       <div class="edit-top-bor">
         <ul class="edit-left">
-          <li>
+          <li @click="undo">
             <a href="javascript:"><i class="icon-undo"></i>撤销</a>
           </li>
-          <li>
+          <li @click="redo">
             <a href="javascript:"><i class="icon-redo"></i>恢复</a>
           </li>
           <li>
@@ -166,7 +166,7 @@
             <div class="right">
               <span class="img-edit-scale">
                 <label>大小</label>
-                <input type="range" min="1" max="1500" value="500" class="img-scale" v-model="fontEditData.scale" @input="curText && changeSelect('scale', curText, curObj, $event)">
+                <input type="range" min="1" max="1500" value="500" class="img-scale" v-model="fontEditData.scale" @input="curText && changeSelect('scale', curText, curObj, $event)" @mouseup="updateModifications(true)">
               </span>
               <span class="img-edit-opacity">
                 <label>透明</label>
@@ -189,7 +189,7 @@
           <li>
             <span class="img-edit-scale">
               <label>大小</label>
-              <input type="range" min="1" max="1500" value="500" class="img-scale" v-model="imgEditData.scale" @input="curImg && changeSelect('scale', curImg, curObj, $event)">
+              <input type="range" min="1" max="1500" value="500" class="img-scale" v-model="imgEditData.scale" @input="curImg && changeSelect('scale', curImg, curObj, $event)" @mouseup="updateModifications(true)">
             </span>
             <span class="img-edit-opacity">
               <label>透明</label>
@@ -258,8 +258,8 @@
           
         </div>
         <div class="pic-box">
-          <i class="btn icon-prev"></i>
-          <i class="btn icon-next"></i>
+          <i class="btn icon-prev" @click="prevPic"></i>
+          <i class="btn icon-next" @click="nextPic"></i>
           <div class="img-list">
             <ul id="ul1">
               <li v-if="!isShowPage" v-for="(img, idx) in filePicData">
@@ -306,8 +306,8 @@ export default {
   },
   data () {
     return {
-      curObj: '',
-      curText: '',
+      curObj: '', // 当前canvas对象
+      curText: '', // 当前文字对象
       curShowListIdx: -1,
       curChangeIconIdx: -1,
       curDragImg: '',
@@ -450,24 +450,6 @@ export default {
         opacity: 1000,
         scale: 500
       },
-      /*borderEditData: {
-        left: 10,
-        top: -16,
-        angle: 0,
-        opacity: 1000,
-        shadow: {
-          color: '#cccccc',
-          blur: 5
-        },
-        fill: 'rgba(0,0,0,0)',
-        stroke: '#111111', // 描边
-        strokeWidth: 0, // 描边宽度
-        strokeDashArray: [5, 5],
-        flipX: false,
-        flipY: false,
-        padding: 0,
-        scale: 500
-      },*/
       canvasOut: '',
       layoutData: [ // 布局初始样式
       ],
@@ -629,7 +611,10 @@ export default {
             img: '/static/img/edit/layout03.png'
           }]
         }
-      ]
+      ],
+      // 撤销
+      state: [],
+      mods: 0,
     }
   },
   watch: {
@@ -700,10 +685,12 @@ export default {
             // fill: '#fff',
             stroke: '#fff',
             strokeWidth: item.space,
+            selectable: false,
           })
           vm.curObj.add(rect)
+          vm.updateModifications(true) // add记录 添加框
           rectObjs.push(rect)
-          rect.selectable = false
+          // rect.selectable = false
           vm.curObj.renderAll()
 
           var imgElement = new Image()
@@ -714,6 +701,7 @@ export default {
             angle: item.angle,
             width: item.width,
             height: item.height,
+            selectable: false,
             // stroke: item.stroke,
             // strokeWidth: item.strokeWidth,
             // stroke: '#f00',
@@ -721,7 +709,7 @@ export default {
           })
           vm.curObj.add(imgInstance)
           objs.push(imgInstance)
-          imgInstance.selectable = false
+          // imgInstance.selectable = false
           /*var group = new fabric.Group([rect, imgInstance], {
             name: 'canvasIn' + idx,
             // stroke: '#ff7800',
@@ -734,6 +722,7 @@ export default {
         })　　
         vm.canvasInObj = objs
         vm.canvasInRectObj = rectObjs
+        vm.updateModifications(true) // add记录 添加框
       },
       deep: true　　
     },
@@ -875,6 +864,7 @@ export default {
     },
     addtext(data, obj) {
       var vm = this
+      vm.updateModifications(true) // add记录  初始
       var text = new fabric.Text(data.world, { 
         originX: 'center',
         originY: 'center',
@@ -918,8 +908,8 @@ export default {
         offsetY: vm.fontEditData.shadow.blur, 
         blur: vm.fontEditData.shadow.blur
       })
-      console.log(text)
       obj.add(text)
+      vm.updateModifications(true) // add记录
       obj.renderAll()
       vm.isAddtext = false
     },
@@ -1332,6 +1322,7 @@ export default {
             }
           })*/
           curObj.add(rect)
+          vm.updateModifications(true) // add记录
           vm.curBorder = rect
           break
         case '方框2':
@@ -1351,6 +1342,7 @@ export default {
             strokeDashArray: [5, 5],
           })
           curObj.add(rect)
+          vm.updateModifications(true) // add记录
           vm.curBorder = rect
           break
         case '方框3':
@@ -1370,6 +1362,7 @@ export default {
             strokeDashArray: [2, 4, 6],
           })
           curObj.add(rect)
+          vm.updateModifications(true) // add记录
           vm.curBorder = rect
           break
         case '圆1':
@@ -1388,6 +1381,7 @@ export default {
             // strokeDashArray: [2, 4, 6],
           })
           curObj.add(circle)
+          vm.updateModifications(true) // add记录
           vm.curBorder = circle
           break
         case '圆2':
@@ -1406,6 +1400,7 @@ export default {
             strokeDashArray: [2, 4, 6],
           })
           curObj.add(circle)
+          vm.updateModifications(true) // add记录
           vm.curBorder = circle
           break
         case '椭圆1':
@@ -1424,6 +1419,7 @@ export default {
             strokeWidth: data.width,
           })
           curObj.add(circle)
+          vm.updateModifications(true) // add记录
           vm.curBorder = circle
           break
         case '椭圆2':
@@ -1443,6 +1439,7 @@ export default {
             strokeDashArray: [2, 4, 6],
           })
           curObj.add(circle)
+          vm.updateModifications(true) // add记录
           vm.curBorder = circle
           break
         case '三角形':
@@ -1462,6 +1459,7 @@ export default {
             // strokeDashArray: [2, 4, 6]
           })
           curObj.add(triangle)
+          vm.updateModifications(true) // add记录
           vm.curBorder = triangle
           break
         case '五角形':
@@ -1617,6 +1615,7 @@ export default {
             'top': clipPoly.top + clipPoly.height / 2 + clipPoly.strokeWidth * 0.5,
           })
           vm.curObj.add(pug)
+          vm.updateModifications(true) // add记录
           vm.canvasInItemObjs.push(pug)
           vm.curObj.renderAll()
           vm.curObj.bringToFront(pug); // 一路向上
@@ -1674,11 +1673,33 @@ export default {
         obj.backgroundImage.width = obj.width;
         obj.backgroundImage.height = obj.height
         obj.add(img).renderAll();
+        if(bgImg != '/static/img/edit/bg.png') {
+          vm.updateModifications(true) // add记录
+        }
         vm.curBgImg = img
         obj.sendToBack(img)
         // obj.sendBackwards(img)
         img.selectable = false
       })
+    },
+    prevPic(e) {
+      var vm = this
+      var picBox = $(e.target.closest('.pic-box'))
+      var ul = $(picBox.children()[2].children)
+      var pics = ul.children()
+      if(pics.length > 0) {
+        var ulLeft = ul.css('left').replace('px', '')*1
+        var moveLeft = $(pics[0]).width()*1 + 10
+        ul.css('left', -(ulLeft + moveLeft) + 'px')
+        console.log(moveLeft)
+      } else {
+        console.log('图片为空')
+      }
+      // console.log(vm.isShowPage)
+    },
+    nextPic(e) {
+      var vm = this
+      console.log('nextPic')
     },
     getClipSave(param) {  // param-->子组件传过来的参数
       var vm = this
@@ -1697,8 +1718,42 @@ export default {
       })
       vm.removeObj(vm.cutImgData.cutImg)
       vm.curObj.add(param)
+      vm.updateModifications(true) // add记录
+
+      vm.canvasInItemObjs.push(param)
       vm.curObj.renderAll()
-    }
+    },
+    // 撤销 恢复 处理
+    updateModifications(savehistory) { // 每当画布更新存储history
+      var vm = this
+      if (savehistory === true) {
+        var myjson = JSON.stringify(vm.curObj)
+        vm.state.push(myjson)
+        console.log('state数量' + vm.state.length)
+      }
+    },
+    undo() { // 撤销
+      var vm = this
+      if (vm.mods < vm.state.length) {
+        vm.curObj.clear().renderAll()
+        vm.curObj.loadFromJSON(vm.state[vm.state.length - 1 - vm.mods - 1])
+        console.log('撤销' + (vm.state.length - 1 - vm.mods - 1))
+        vm.curObj.renderAll()
+        vm.mods += 1
+        // console.log('撤销' + vm.mods)
+      }
+    },
+    redo() { // 恢复
+      var vm = this
+      if (vm.mods > 0) {
+        vm.curObj.clear().renderAll()
+        vm.curObj.loadFromJSON(vm.state[vm.state.length - 1 - vm.mods + 1])
+        console.log('恢复' + (vm.state.length - 1 - vm.mods + 1))
+        vm.curObj.renderAll()
+        vm.mods -= 1
+        // console.log('恢复' + vm.mods)
+      }
+    },
   },
   mounted() {
     var vm = this
@@ -1713,6 +1768,7 @@ export default {
               var img3 = img.set({ left: -250, top: -150 })
               canvas.add(img3)
             })*/
+      
         
       vm.curObj.on('after:render', function(options) {
         /*var p = canvas.getPointer(options.e)
@@ -1760,7 +1816,7 @@ export default {
           vm.isEditBorder = false
         }
 
-        
+
         // 图片编辑框定位
         /*if(vm.isAddimg && vm.curCanvasInIdx > -1) {
           var canvasIn = vm.canvasInObj[vm.curCanvasInIdx]
@@ -1770,6 +1826,16 @@ export default {
           })
         }*/
       })
+
+      vm.curObj.on('object:modified', function () { // 修改
+        console.log('modified')
+        vm.updateModifications(true)
+      })
+      /*vm.curObj.on('object:added', function () { // 添加
+        console.log('added')
+        vm.updateModifications(true)
+      })*/
+
       /*if(!vm.isAddtext) {
         vm.curObj.discardActiveObject()
         vm.curObj.renderAll()
@@ -2181,6 +2247,8 @@ export default {
         #ul1
           height 105px
           white-space nowrap
+          position relative
+          left 0px
           li
             display inline-block
             margin 0 10px 0 0 

@@ -1097,11 +1097,11 @@ var state = [];
 var mods = 0;
 canvas2.on(
   'object:modified', function () {
-    console.log('object:modified')
+    console.log('modified')
     updateModifications(true);
   },
   'object:added', function () {
-    console.log('object:added')
+    console.log('added')
     updateModifications(true);
   }
 );
@@ -1110,6 +1110,7 @@ function updateModifications(savehistory) {
     if (savehistory === true) {
         myjson = JSON.stringify(canvas2);
         state.push(myjson);
+        console.log('state数量' + state.length)
     }
 }
 
@@ -1120,7 +1121,7 @@ $('.edit-left').on('click', 'a', function(e) {
         canvas2.clear().renderAll();
         canvas2.loadFromJSON(state[state.length - 1 - mods - 1]);
         canvas2.renderAll();
-        //console.log("geladen " + (state.length-1-mods-1));
+        console.log("geladen " + (state.length-1-mods-1));
         //console.log("state " + state.length);
         mods += 1;
         //console.log("mods " + mods);

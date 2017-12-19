@@ -33,10 +33,10 @@
     <div class="edit-content">
       <div class="edit-top-bor">
         <ul class="edit-left">
-          <li class="undo" @click="undo">
+          <li @click="undo">
             <a href="javascript:"><i class="icon-undo"></i>撤销</a>
           </li>
-          <li class="redo" @click="redo">
+          <li @click="redo">
             <a href="javascript:"><i class="icon-redo"></i>恢复</a>
           </li>
           <li>
@@ -617,82 +617,7 @@ export default {
       mods: 0,
     }
   },
-  computed: {
-    curState() { // 撤销/恢复当前状态值
-      var vm = this
-      return vm.state.length - 1 - vm.mods - 1
-    }
-  },
   watch: {
-    curState(newVal) { // 撤销/恢复样式变化
-      var vm = this
-      if(newVal <= 1) {
-        $('li.undo a').css({
-          'color': '#aaa',
-          'cursor': 'not-allowed'
-        })
-        $('li.undo i').css({
-          'color': '#aaa',
-          'cursor': 'not-allowed'
-        })
-        $('li.undo').hover(function() {
-          $('li.undo a').css('color', '#aaa')
-          $('li.undo i').css('color', '#aaa')
-        }, function() {
-          $('li.undo a').css('color', '#aaa')
-          $('li.undo i').css('color', '#aaa')
-        })
-      } else {
-        $('li.undo a').css({
-          'color': '#333',
-          'cursor': 'pointer'
-        })
-        $('li.undo i').css({
-          'color': '#aaa',
-          'cursor': 'pointer'
-        })
-        $('li.undo').hover(function() {
-          $('li.undo a').css('color', '#3aaa92')
-          $('li.undo i').css('color', '#3aaa92')
-        }, function() {
-          $('li.undo a').css('color', '#333')
-          $('li.undo i').css('color', '#aaa')
-        })
-      }
-      if(newVal === (vm.state.length - 2)) {
-        $('li.redo a').css({
-          'color': '#aaa',
-          'cursor': 'not-allowed'
-        })
-        $('li.redo i').css({
-          'color': '#aaa',
-          'cursor': 'not-allowed'
-        })
-        $('li.redo').hover(function() {
-          $('li.redo a').css('color', '#aaa')
-          $('li.redo i').css('color', '#aaa')
-        }, function() {
-          $('li.redo a').css('color', '#aaa')
-          $('li.redo i').css('color', '#aaa')
-        })
-      } else {
-        $('li.redo a').css({
-          'color': '#333',
-          'cursor': 'pointer'
-        })
-        $('li.redo i').css({
-          'color': '#aaa',
-          'cursor': 'pointer'
-        })
-        $('li.redo').hover(function() {
-          $('li.redo a').css('color', '#3aaa92')
-          $('li.redo i').css('color', '#3aaa92')
-        }, function() {
-          $('li.redo a').css('color', '#333')
-          $('li.redo i').css('color', '#aaa')
-        })
-      }
-    },
     isAddtext(newVal) {
       var vm = this
       if(!newVal) {
@@ -763,7 +688,7 @@ export default {
             selectable: false,
           })
           vm.curObj.add(rect)
-          // vm.updateModifications(true) // add记录 添加框
+          vm.updateModifications(true) // add记录 添加框
           rectObjs.push(rect)
           // rect.selectable = false
           vm.curObj.renderAll()
@@ -797,9 +722,7 @@ export default {
         })　　
         vm.canvasInObj = objs
         vm.canvasInRectObj = rectObjs
-        /*if(newVal) {
-          vm.updateModifications(true) // add记录 添加框
-        }*/
+        vm.updateModifications(true) // add记录 添加框
       },
       deep: true　　
     },
@@ -1823,45 +1746,46 @@ export default {
     updateModifications(savehistory) { // 每当画布更新存储history
       var vm = this
       if (savehistory === true) {
-        var myjson = JSON.stringify(vm.curObj)
-        /*myjson.replace('"visible":true,', '"visible":true,"selectable":false,')
-        console.log(myjson)*/
-        vm.state.push(myjson)
+        var myObjs = vm.curObj.getObjects()
+        vm.state.push(myObjs)
         console.log('state数量' + vm.state.length)
       }
     },
     undo() { // 撤销
       var vm = this
-      if (vm.curState <= 1) {
+      if (vm.state.length - 1 - vm.mods - 1 <= 1) {
         return
       }
       if (vm.mods < vm.state.length) {
-        vm.curObj.clear().renderAll()
-        var arr = []
-        var arrState = JSON.parse(vm.state[vm.curState])
-        var backgroundImage = arrState.backgroundImage
-        arrState.objects.forEach(function(item, idx) {
-          if(idx >= 3) {
-            arr.push(JSON.stringify(item))
-            vm.curObj.loadFromJSON('{"objects":[' + arr.join(',') + '],"backgroundImage":' + JSON.stringify(backgroundImage) + '}')
-          }
-          if(idx >= 2) {
-            vm.curObj.loadFromJSON('{"objects":[],"backgroundImage":' + JSON.stringify(backgroundImage) + '}')
-          }
+        // vm.curObj.clear().renderAll()
+        // vm.curObj.loadFromJSON(vm.state[vm.state.length - 1 - vm.mods - 1])
+        vm.state[vm.state.length - 1 - vm.mods - 1].forEach(function(item, idx) {
+          console.log(item)
+          vm.curObj.add(item)
         })
-        // console.log('撤销' + (vm.curState))
+        console.log('撤销' + (vm.state.length - 1 - vm.mods - 1))
+        // vm.curObj.remove(vm.curObj.getObjects()[0])
         vm.curObj.renderAll()
         vm.mods += 1
+        // console.log('撤销' + vm.mods)
       }
+      /*if(vm.state.length - 1 - vm.mods - 1 === 1) {
+        var objs = vm.curObj.getObjects()
+        console.log(objs)
+        objs.forEach(function(item, idx) {
+          console.log(item)
+        })
+      }*/
     },
     redo() { // 恢复
       var vm = this
       if (vm.mods > 0) {
         vm.curObj.clear().renderAll()
-        vm.curObj.loadFromJSON(vm.state[vm.curState + 2])
-        // console.log('恢复' + (vm.curState + 2))
+        vm.curObj.loadFromJSON(vm.state[vm.state.length - 1 - vm.mods + 1])
+        console.log('恢复' + (vm.state.length - 1 - vm.mods + 1))
         vm.curObj.renderAll()
         vm.mods -= 1
+        // console.log('恢复' + vm.mods)
       }
     },
   },
@@ -1896,7 +1820,6 @@ export default {
             console.log('在canvasIn外')
           }
         })*/
-        // console.log(vm.curObj.getActiveObject()) // src: "http://localhost:8090/static/img/edit/bg.png"
 
         var gobj = vm.curObj.getActiveObject(); //获取当前选中对象
         if(gobj) {

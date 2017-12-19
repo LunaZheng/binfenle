@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>try</title>
+</head>
+<body>
+<style>
+  * {margin: 0; padding: 0; box-sizing: border-box; color: inherit; font: inherit; 
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -o-user-select: none;
+    user-select: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  ul, li {list-style: none;}
+  a {text-decoration: none;}
+  .fl {float: left;}
+  .fr {float: right;}
+  .wrap {width: 1200px; margin: 0 auto;}
+  .clear:after {content: ''; display: inline-block; clear: both;}
+
+  html,body {height: 100%; overflow: hidden;}
+  /*body {background: #fff;display: flex;
+  justify-content: center;
+  align-items: center;}*/
+  canvas {vertical-align: top; border: 1px solid red; position: absolute; left: 200px; top: 20px;}
+  img {width: 100px;}
+</style>
+
+<input type="button" value="undo" onclick="undo()">
+<input type="button" value="redo" onclick="redo()">
+<canvas id="c"></canvas>
+
+<script src='./fabric.js'></script>
+<script>
+var canvas = new fabric.Canvas('c');
+canvas.setWidth(500)
+canvas.setHeight(500)
+
+/*var Point = fabric.util.createClass({ // 构造类
+  initialize: function(x, y) {
+    this.x = x || 0;
+    this.y = y || 0;
+  },
+  toString: function() {
+    return this.x + '/' + this.y;
+  }
+})
+var point = new Point(10, 20);
+console.log(point.x) // 10
+console.log(point.y) // 20
+console.log(point.toString()) // "10/20"*/
+
+
+/*var ColoredPoint = fabric.util.createClass(Point, { // 继承类
+  initialize: function(x, y, color) {
+    this.callSuper('initialize', x, y);
+    this.color = color || '#000';
+  },
+  toString: function() {
+    return this.callSuper('toString') + ' (color: ' + this.color + ')';
+  }
+});
+var redPoint = new ColoredPoint(15, 33, '#f55');
+console.log(redPoint.x) // 15
+console.log(redPoint.y) // 33
+console.log(redPoint.color) // "#f55"
+console.log(redPoint.toString()) // "15/35 (color: #f55)"*/
+
+var imgElement = new Image();
+imgElement.src = './test.png';
+imgElement.onload = function() {
+
+  var LabeledRect = fabric.util.createClass(fabric.Rect, { // 继承默认类
+    type: 'labeledRect',
+    initialize: function(options) { // 初始化
+      options || (options = { });
+
+      this.callSuper('initialize', options);
+      this.set('label', options.label || '');
+      this.set('bg', options.bg || '');
+    },
+    toObject: function() {
+      return fabric.util.object.extend(this.callSuper('toObject'), {
+        label: this.get('label'),
+        bg: this.get('bg'),
+      });
+    },
+    _render: function(ctx) {
+      this.callSuper('_render', ctx);
+      ctx.font = '20px Helvetica';
+      ctx.fillStyle = '#333';
+      // 在画布上定位图像： ctx.drawImage(img,x,y)
+      // 在画布上定位图像，并规定图像的宽度和高度： ctx.drawImage(img,x,y,width,height);
+      // 剪切图像，并在画布上定位被剪切的部分： ctx.drawImage(img,sx,sy,swidth,sheight,x,y,width,height)
+      ctx.drawImage(this.bg, -this.width/2 + this.strokeWidth / 2, -this.height/2 + this.strokeWidth / 2, this.width - this.strokeWidth, this.height - this.strokeWidth);
+
+      // 创建渐变
+      var gradient = ctx.createLinearGradient(0,0, this.width/2,0);
+      gradient.addColorStop("0","magenta");
+      gradient.addColorStop("0.5","blue");
+      gradient.addColorStop("1.0","red");
+      // 用渐变填色
+      ctx.fillStyle = gradient;
+      ctx.fillText(this.label, -this.width/2, -this.height/2 + 20);
+    }
+  })
+  
+  var labeledRect = new LabeledRect({
+    width: 100,
+    height: 100,
+    left: 100,
+    top: 100,
+    stroke: '#aaa',
+    strokeWidth: 6,
+    label: 'dvdfbfgbdrgtnfr',
+    bg: imgElement,
+    fill: '#faa'
+  });
+  canvas.add(labeledRect)
+
+
+  var json = JSON.stringify(canvas)
+  console.log(json)
+  canvas.clear().renderAll();
+  canvas.loadFromJSON(json)
+}
+
+
+
+
+</script>
+
+</body>
+</html>

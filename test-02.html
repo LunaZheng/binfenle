@@ -30,7 +30,8 @@
 </style>
 
 <canvas id="c"></canvas>
-<img src="http://designsoftware.ninja/printdemo/modules/blockadvertising/img/fixtures/advertising.jpg" id="my-image">
+<!-- <img src="http://designsoftware.ninja/printdemo/modules/blockadvertising/img/fixtures/advertising.jpg" id="my-image"> -->
+<img src="./test.png" id="my-image">
 
 <script src='./fabric.js'></script>
 <script>
@@ -70,14 +71,14 @@ var triangle = new fabric.Triangle({
 canvas.add(circle, triangle);*/
 
 // 图片
-var imgElement = document.getElementById('my-image');
-/*var imgElement = new Image();
-imgElement.src = '/static/img/edit/dragTip.png'*/
+// var imgElement = document.getElementById('my-image');
+var imgElement = new Image();
+imgElement.src = './test.png'
 var imgInstance = new fabric.Image(imgElement, {
   left: 80,
   top: 0,
   angle: 50,
-  opacity: 0.85
+  opacity: 0.85,
 });
 canvas.add(imgInstance);
 

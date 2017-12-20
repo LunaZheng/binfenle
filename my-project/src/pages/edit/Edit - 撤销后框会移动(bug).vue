@@ -308,18 +308,18 @@ export default {
     return {
       curObj: '', // 当前canvas对象
       curText: '', // 当前文字对象
-      curShowListIdx: -1, // 当前左侧列展开的项 idx
-      curChangeIconIdx: -1, // 当前左侧列 icon 触发的 idx
-      curDragImg: '', // 当前被拖拽的图片 DOM
+      curShowListIdx: -1,
+      curChangeIconIdx: -1,
+      curDragImg: '',
       // curCanvasInIdx: -1,
-      filePicData: [], // '添加照片'的file数据
-      isAddtext: false, // 是否添加文字
-      isEditBorder: false, // 是否编辑文字的框
-      curBgImg: '/static/img/edit/bg.png', // 当前背景图片路径
-      curBorder: '', // 当前文字的框对象
+      filePicData: [],
+      isAddtext: false,
+      isEditBorder: false,
+      curBgImg: '/static/img/edit/bg.png',
+      curBorder: '',
       isAddimg: false,
-      curImg: '', // 当前图片对象
-      cutImgData: { // 剪切图片的数据
+      curImg: '',
+      cutImgData: {
         isCutImg: false,
         cutImg: '',
       },
@@ -450,11 +450,12 @@ export default {
         opacity: 1000,
         scale: 500
       },
+      canvasOut: '',
       layoutData: [ // 布局初始样式
       ],
-      canvasInObj: [], // 添加照片框的背景图片对象
-      canvasInRectObj: [], // 添加照片框对象
-      canvasInItemObjs: [], // 当前框对象中的内容(对象)
+      canvasInObj: [],
+      canvasInRectObj: [],
+      canvasInItemObjs: [],
       filePageData: [ // 页面内容
         {
           src: '/static/img/edit/bg.png',
@@ -611,7 +612,7 @@ export default {
           }]
         }
       ],
-      // 撤销 恢复 状态值
+      // 撤销
       state: [],
       mods: 0,
     }
@@ -625,9 +626,9 @@ export default {
   watch: {
     curState(newVal) { // 撤销/恢复样式变化
       var vm = this
-      // if(newVal <= 1) { // layoutData 2个updateModifications
-      // if(newVal <= 0) { // layoutData 1个updateModifications
-      if(newVal <= -1) { // layoutData 0个updateModifications
+      console.log(newVal)
+      // if(newVal <= 1) {
+      if(newVal <= -1) {
         $('li.undo a').css({
           'color': '#aaa',
           'cursor': 'not-allowed'
@@ -798,20 +799,9 @@ export default {
         })　　
         vm.canvasInObj = objs
         vm.canvasInRectObj = rectObjs
-
         /*if(newVal) {
           vm.updateModifications(true) // add记录 添加框
         }*/
-
-
-        储存框
-
-
-
-        /*var json = JSON.stringify(vm.canvasInObj)
-        console.log(json)
-        vm.curObj.clear().renderAll()
-        vm.curObj.loadFromJSON('{"objects":' + json + '}')*/
       },
       deep: true　　
     },
@@ -1844,10 +1834,8 @@ export default {
     },
     undo() { // 撤销
       var vm = this
-      console.log(vm.canvasInObj)
-      // if (vm.curState <= 1) { // layoutData 2个updateModifications
-      // if (vm.curState <= 0) { // layoutData 1个updateModifications
-      if (vm.curState <= -1) { // layoutData 0个updateModifications
+      // if (vm.curState <= 1) {
+      if (vm.curState <= -1) {
         return
       }
       if (vm.mods < vm.state.length) {
@@ -1856,12 +1844,13 @@ export default {
         var arrState = JSON.parse(vm.state[vm.curState])
         var backgroundImage = arrState.backgroundImage
         arrState.objects.forEach(function(item, idx) {
-          // 不load 框
-          if(idx >= 3) {
+          // if(idx >= 3) {
+          if(idx >= 1) {
             arr.push(JSON.stringify(item))
             vm.curObj.loadFromJSON('{"objects":[' + arr.join(',') + '],"backgroundImage":' + JSON.stringify(backgroundImage) + '}')
           }
-          if(idx >= 2) {
+          // if(idx >= 2) {
+          if(idx >= 0) {
             vm.curObj.loadFromJSON('{"objects":[],"backgroundImage":' + JSON.stringify(backgroundImage) + '}')
           }
         })
@@ -1874,20 +1863,7 @@ export default {
       var vm = this
       if (vm.mods > 0) {
         vm.curObj.clear().renderAll()
-        var arr = []
-        var arrState = JSON.parse(vm.state[vm.curState + 2])
-        var backgroundImage = arrState.backgroundImage
-        arrState.objects.forEach(function(item, idx) {
-          // 不load 框
-          if(idx >= 3) {
-            arr.push(JSON.stringify(item))
-            vm.curObj.loadFromJSON('{"objects":[' + arr.join(',') + '],"backgroundImage":' + JSON.stringify(backgroundImage) + '}')
-          }
-          if(idx >= 2) {
-            vm.curObj.loadFromJSON('{"objects":[],"backgroundImage":' + JSON.stringify(backgroundImage) + '}')
-          }
-        })
-        // vm.curObj.loadFromJSON(vm.state[vm.curState + 2])
+        vm.curObj.loadFromJSON(vm.state[vm.curState + 2])
         // console.log('恢复' + (vm.curState + 2))
         vm.curObj.renderAll()
         vm.mods -= 1
@@ -2126,12 +2102,12 @@ export default {
           margin 0 10px 0 2px
           &.undo
             a
-              color #aaa
               cursor not-allowed
+              color #aaa
           &.redo
             a
-              color #aaa
               cursor not-allowed
+              color #aaa
           i
             margin 0 10px
             color #aaa

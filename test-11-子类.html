@@ -74,7 +74,8 @@ imgElement.src = './test.png';
 imgElement.onload = function() {
 
   var LabeledRect = fabric.util.createClass(fabric.Rect, { // 继承默认类
-    type: 'labeledRect',
+    type: 'path',
+    // type: 'labeledRect',
     initialize: function(options) { // 初始化
       options || (options = { });
 
@@ -121,11 +122,24 @@ imgElement.onload = function() {
   });
   canvas.add(labeledRect)
 
+  /*var json = JSON.stringify(canvas)
+  console.log(json)*/
 
-  var json = JSON.stringify(canvas)
-  console.log(json)
-  canvas.clear().renderAll();
-  canvas.loadFromJSON(json)
+  console.log(canvas.item(0))
+  canvas.item(0).sourcePath = './img.svg';
+  console.log(JSON.stringify(canvas.toDatalessJSON()));
+  // canvas.clear().renderAll();
+
+  // var json = '{"objects":[{"type":"path","left":143,"top":143,"width":175,"height":151,"fill":"#231F20","overlayFill":null,"stroke":null,"strokeWidth":1,"strokeDashArray":null,"scaleX":1,"scaleY":1,"angle":-19,"flipX":false,"flipY":false,"opacity":1,"selectable":true,"hasControls":true,"hasBorders":true,"hasRotatingPoint":false,"transparentCorners":true,"perPixelTargetFind":false,"path":"./img.svg"}],"background":"rgba(0, 0, 0, 0)"}';
+
+  var json  = '{"objects":[{"type":"path","originX":"left","originY":"top","left":100,"top":100,"width":100,"height":100,"fill":"#faa","stroke":"#aaa","strokeWidth":6,"strokeDashArray":null,"strokeLineCap":"butt","strokeLineJoin":"miter","strokeMiterLimit":10,"scaleX":1,"scaleY":1,"angle":0,"flipX":false,"flipY":false,"opacity":1,"shadow":null,"visible":true,"clipTo":null,"backgroundColor":"","fillRule":"nonzero","globalCompositeOperation":"source-over","transformMatrix":null,"skewX":0,"skewY":0,"rx":0,"ry":0,"label":"dvdfbfgbdrgtnfr","bg":{}},"path":"./img.svg"}]}'
+
+  /*fabric.loadSVGFromString(json, function(objects, options) {
+    var obj = fabric.util.groupSVGElements(objects, options);
+    canvas.add(obj).renderAll();
+  });*/
+
+  // canvas.loadFromDatalessJSON(json)
 }
 
 

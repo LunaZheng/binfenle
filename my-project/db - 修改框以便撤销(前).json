@@ -1,0 +1,406 @@
+{
+  "getNewsList": [
+    {
+      "id": 1,
+      "title": "新闻条目1新闻条目1新闻条目1新闻条目1",
+      "url": "http://starcraft.com"
+    },
+    {
+      "id": 2,
+      "title": "新闻条目2新闻条目2新闻条目2新闻条目2",
+      "url": "http://warcraft.com"
+    },
+    {
+      "id": 3,
+      "title": "新闻条3新闻条3新闻条3",
+      "url": "http://overwatch.com"
+    },
+    {
+      "id": 4,
+      "title": "新闻条4广告发布",
+      "url": "http://hearstone.com"
+    },
+    {
+      "id": 5
+    }
+  ],
+  "layoutData": [
+    {
+      "id": 0,
+      "canvasBox": [
+        {
+          "top": 162,
+          "left": 76,
+          "shape": "rect",
+          "width": 135,
+          "height": 183,
+          "angle": 0,
+          "borderRadius": 0,
+          "strokeWidth": 0,
+          "stroke": "#ffffff",
+          "space": 6
+        }
+      ]
+    },
+    {
+      "id": 1,
+      "canvasBox": [
+        {
+          "top": 162,
+          "left": 76,
+          "shape": "rect",
+          "width": 260,
+          "height": 183,
+          "angle": 0,
+          "borderRadius": 0,
+          "strokeWidth": 0,
+          "stroke": "#ffffff",
+          "space": 6
+        },
+        {
+          "top": 162,
+          "left": 342,
+          "shape": "rect",
+          "width": 145,
+          "height": 183,
+          "angle": 0,
+          "borderRadius": 0,
+          "strokeWidth": 0,
+          "stroke": "#ffffff",
+          "space": 6
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "canvasBox": [
+        {
+          
+          "top": 162,
+          "left": 76,
+          "shape": "rect",
+          "width": 140,
+          "height": 183,
+          "angle": 0,
+          "borderRadius": 0,
+          "strokeWidth": 0,
+          "stroke": "#ffffff",
+          "space": 6
+        },
+        {
+          
+          "top": 162,
+          "left": 222,
+          "shape": "rect",
+          "width": 140,
+          "height": 183,
+          "angle": 0,
+          "borderRadius": 0,
+          "strokeWidth": 0,
+          "stroke": "#ffffff",
+          "space": 6
+        },
+        {
+          
+          "top": 162,
+          "left": 368,
+          "shape": "rect",
+          "width": 140,
+          "height": 183,
+          "angle": 0,
+          "borderRadius": 0,
+          "strokeWidth": 0,
+          "stroke": "#ffffff",
+          "space": 6
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "canvasBox": [
+        {
+          
+          "top": 162,
+          "left": 76,
+          "shape": "rect",
+          "width": 140,
+          "height": 183,
+          "angle": 0,
+          "borderRadius": 0,
+          "strokeWidth": 0,
+          "stroke": "#ffffff",
+          "space": 6
+        },
+        {
+          
+          "top": 162,
+          "left": 222,
+          "shape": "rect",
+          "width": 146,
+          "height": 89,
+          "angle": 0,
+          "borderRadius": 0,
+          "strokeWidth": 0,
+          "stroke": "#ffffff",
+          "space": 6
+        },
+        {
+          
+          "top": 257,
+          "left": 222,
+          "shape": "rect",
+          "width": 70,
+          "height": 88,
+          "angle": 0,
+          "borderRadius": 0,
+          "strokeWidth": 0,
+          "stroke": "#ffffff",
+          "space": 6
+        },
+        {
+          
+          "top": 257,
+          "left": 298,
+          "shape": "rect",
+          "width": 70,
+          "height": 88,
+          "angle": 0,
+          "borderRadius": 0,
+          "strokeWidth": 0,
+          "stroke": "#ffffff",
+          "space": 6
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "canvasBox": [
+        {
+          
+          "top": 162,
+          "left": 76,
+          "shape": "rect",
+          "width": 140,
+          "height": 183,
+          "angle": 0,
+          "borderRadius": 0,
+          "strokeWidth": 0,
+          "stroke": "#ffffff",
+          "space": 6
+        },
+        {
+          
+          "top": 162,
+          "left": 222,
+          "shape": "rect",
+          "width": 100,
+          "height": 57,
+          "angle": 0,
+          "borderRadius": 0,
+          "strokeWidth": 0,
+          "stroke": "#ffffff",
+          "space": 6
+        },
+        {
+          
+          "top": 225,
+          "left": 222,
+          "shape": "rect",
+          "width": 100,
+          "height": 57,
+          "angle": 0,
+          "borderRadius": 0,
+          "strokeWidth": 0,
+          "stroke": "#ffffff",
+          "space": 6
+        },
+        {
+          
+          "top": 288,
+          "left": 222,
+          "shape": "rect",
+          "width": 100,
+          "height": 57,
+          "angle": 0,
+          "borderRadius": 0,
+          "strokeWidth": 0,
+          "stroke": "#ffffff",
+          "space": 6
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "canvasBox": [
+        {
+          
+          "top": 162,
+          "left": 35,
+          "shape": "rect",
+          "width": 120,
+          "height": 183,
+          "angle": 0,
+          "borderRadius": 0,
+          "strokeWidth": 0,
+          "stroke": "#ffffff",
+          "space": 6
+        },
+        {
+          
+          "top": 162,
+          "left": 161,
+          "shape": "rect",
+          "width": 120,
+          "height": 183,
+          "angle": 0,
+          "borderRadius": 0,
+          "strokeWidth": 0,
+          "stroke": "#ffffff",
+          "space": 6
+        },
+        {
+          
+          "top": 162,
+          "left": 287,
+          "shape": "rect",
+          "width": 120,
+          "height": 183,
+          "angle": 0,
+          "borderRadius": 0,
+          "strokeWidth": 0,
+          "stroke": "#ffffff",
+          "space": 6
+        },
+        {
+          
+          "top": 162,
+          "left": 413,
+          "shape": "rect",
+          "width": 120,
+          "height": 183,
+          "angle": 0,
+          "borderRadius": 0,
+          "strokeWidth": 0,
+          "stroke": "#ffffff",
+          "space": 6
+        },
+        {
+          
+          "top": 162,
+          "left": 539,
+          "shape": "rect",
+          "width": 120,
+          "height": 183,
+          "angle": 0,
+          "borderRadius": 0,
+          "strokeWidth": 0,
+          "stroke": "#ffffff",
+          "space": 6
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "canvasBox": [
+        {
+          "top": 162,
+          "left": 76,
+          "shape": "rect",
+          "width": 135,
+          "height": 183,
+          "angle": 0,
+          "borderRadius": 0,
+          "strokeWidth": 0,
+          "stroke": "#ffffff",
+          "space": 6
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "canvasBox": [
+        {
+          "top": 162,
+          "left": 76,
+          "shape": "rect",
+          "width": 260,
+          "height": 183,
+          "angle": 0,
+          "borderRadius": 0,
+          "strokeWidth": 0,
+          "stroke": "#ffffff",
+          "space": 6
+        },
+        {
+          "top": 162,
+          "left": 342,
+          "shape": "rect",
+          "width": 145,
+          "height": 183,
+          "angle": 0,
+          "borderRadius": 0,
+          "strokeWidth": 0,
+          "stroke": "#ffffff",
+          "space": 6
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "canvasBox": [
+        {
+          
+          "top": 162,
+          "left": 76,
+          "shape": "rect",
+          "width": 140,
+          "height": 183,
+          "angle": 0,
+          "borderRadius": 0,
+          "strokeWidth": 0,
+          "stroke": "#ffffff",
+          "space": 6
+        },
+        {
+          
+          "top": 162,
+          "left": 222,
+          "shape": "rect",
+          "width": 140,
+          "height": 183,
+          "angle": 0,
+          "borderRadius": 0,
+          "strokeWidth": 0,
+          "stroke": "#ffffff",
+          "space": 6
+        },
+        {
+          
+          "top": 162,
+          "left": 368,
+          "shape": "rect",
+          "width": 140,
+          "height": 183,
+          "angle": 0,
+          "borderRadius": 0,
+          "strokeWidth": 0,
+          "stroke": "#ffffff",
+          "space": 6
+        }
+      ]
+    }
+  ],
+  "login": {
+    "username": "yudongdong",
+    "userId": 123123
+  },
+  "getPrice": {
+    "amount": 678
+  },
+  "createOrder": {
+    "orderId": "6djk979"
+  },
+  "getOrderList": {
+    "id": 0
+  }
+}

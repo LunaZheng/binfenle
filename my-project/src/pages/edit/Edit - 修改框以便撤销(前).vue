@@ -452,8 +452,8 @@ export default {
       },
       layoutData: [ // 布局初始样式
       ],
-      // canvasInObj: [], // 添加照片框的背景图片对象
-      // canvasInRectObj: [], // 添加照片框对象
+      canvasInObj: [], // 添加照片框的背景图片对象
+      canvasInRectObj: [], // 添加照片框对象
       canvasInItemObjs: [], // 当前框对象中的内容(对象)
       filePageData: [ // 页面内容
         {
@@ -614,7 +614,6 @@ export default {
       // 撤销 恢复 状态值
       state: [],
       mods: 0,
-      rectGroup: [],
     }
   },
   computed: {
@@ -627,8 +626,8 @@ export default {
     curState(newVal) { // 撤销/恢复样式变化
       var vm = this
       // if(newVal <= 1) { // layoutData 2个updateModifications
-      if(newVal <= 0) { // layoutData 1个updateModifications
-      // if(newVal <= -1) { // layoutData 0个updateModifications
+      // if(newVal <= 0) { // layoutData 1个updateModifications
+      if(newVal <= -1) { // layoutData 0个updateModifications
         $('li.undo a').css({
           'color': '#aaa',
           'cursor': 'not-allowed'
@@ -747,9 +746,8 @@ export default {
     layoutData: {　　　　
       handler(newVal, oldVal) {
         var vm = this
-        // var objs = []
-        // var rectObjs= []
-        var rectGroup = []
+        var objs = []
+        var rectObjs= []
         newVal.forEach(function(item, idx) {
           var rect = new fabric.Rect({
             width: item.width + item.space,
@@ -765,11 +763,9 @@ export default {
             strokeWidth: item.space,
             selectable: false,
           })
-          // vm.curObj.add(rect)
+          vm.curObj.add(rect)
           // vm.updateModifications(true) // add记录 添加框
-          // rectObjs.push(rect)
-
-          rectGroup.push(rect)
+          rectObjs.push(rect)
           // rect.selectable = false
           vm.curObj.renderAll()
 
@@ -787,26 +783,35 @@ export default {
             // stroke: '#f00',
             // strokeWidth: 1,
           })
-          // vm.curObj.add(imgInstance)
-          // objs.push(imgInstance)
-
-          rectGroup.push(imgInstance)
-
+          vm.curObj.add(imgInstance)
+          objs.push(imgInstance)
+          // imgInstance.selectable = false
+          /*var group = new fabric.Group([rect, imgInstance], {
+            name: 'canvasIn' + idx,
+            // stroke: '#ff7800',
+            // strokeWidth: 6*0.5,
+          })
+          vm.curObj.add(group)
+          objs.push(group)
+          group.selectable = false*/
           vm.curObj.renderAll()
         })　　
-        // vm.canvasInObj = objs
-        // vm.canvasInRectObj = rectObjs
+        vm.canvasInObj = objs
+        vm.canvasInRectObj = rectObjs
 
-        var group = new fabric.Group(rectGroup)
-        group.selectable = false
-        vm.rectGroup = group
-        // console.log(vm.rectGroup.item(0))
-        vm.curObj.add(group)
-        // vm.updateModifications(true) // add记录 添加框
-
-        if(newVal) {
+        /*if(newVal) {
           vm.updateModifications(true) // add记录 添加框
-        }
+        }*/
+
+
+        // 储存框
+
+
+
+        /*var json = JSON.stringify(vm.canvasInObj)
+        console.log(json)
+        vm.curObj.clear().renderAll()
+        vm.curObj.loadFromJSON('{"objects":' + json + '}')*/
       },
       deep: true　　
     },
@@ -814,7 +819,7 @@ export default {
       var vm = this
       vm.curObj.remove(oldVal)
     },
-    /*canvasInObj(newVal, oldVal) {
+    canvasInObj(newVal, oldVal) {
       var vm = this
       if(oldVal) {
         vm.canvasInItemObjs.forEach(function(item, idx) {
@@ -831,15 +836,6 @@ export default {
         oldVal.forEach(function(item, idx) {
           vm.curObj.remove(item)
         })　　
-      }
-    },*/
-    rectGroup(newVal, oldVal) {
-      var vm = this
-      if(oldVal) {
-        vm.canvasInItemObjs.forEach(function(item, idx) {
-          vm.curObj.remove(item)
-        })
-        vm.curObj.remove(oldVal)
       }
     },
     /*curCanvasInIdx(newVal, oldVal) {
@@ -1690,9 +1686,7 @@ export default {
       if(idx < 0) {
         return
       }
-      // var clipPoly = vm.canvasInObj[idx]
-      var clipPoly = vm.layoutData[idx]
-      // var clipPoly = vm.rectGroup.item(idx)
+      var clipPoly = vm.canvasInObj[idx]
       var pugImg = new Image()
       pugImg.onload = function (img) {    
           var scaleNum = 1
@@ -1753,8 +1747,7 @@ export default {
       var vm = this
       var x = e.offsetX
       var y = e.offsetY
-
-      vm.layoutData.forEach(function(item, idx) {
+      vm.canvasInObj.forEach(function(item, idx) {
         var l = item.left
         var t = item.top
         var r = l + item.width
@@ -1788,7 +1781,6 @@ export default {
         obj.backgroundImage.width = obj.width;
         obj.backgroundImage.height = obj.height
         obj.add(img).renderAll();
-        // vm.updateModifications(true) // add记录
         if(bgImg != '/static/img/edit/bg.png') {
           vm.updateModifications(true) // add记录
         }
@@ -1848,59 +1840,32 @@ export default {
         console.log(myjson)*/
         vm.state.push(myjson)
         console.log('state数量' + vm.state.length)
-        // console.log(vm.state[0])
-        // vm.curObj.loadFromJSON(vm.state[0])
       }
     },
     undo() { // 撤销
       var vm = this
-      // console.log(vm.canvasInObj)
+      console.log(vm.canvasInObj)
       // if (vm.curState <= 1) { // layoutData 2个updateModifications
-      if (vm.curState <= 0) { // layoutData 1个updateModifications
-      // if (vm.curState <= -1) { // layoutData 0个updateModifications
+      // if (vm.curState <= 0) { // layoutData 1个updateModifications
+      if (vm.curState <= -1) { // layoutData 0个updateModifications
         return
       }
       if (vm.mods < vm.state.length) {
         vm.curObj.clear().renderAll()
-        vm.curObj.loadFromJSON(vm.state[vm.curState])
-        /*var arr = []
+        var arr = []
         var arrState = JSON.parse(vm.state[vm.curState])
-        var bgSrc = vm.curBgImg.getSrc()
-        var backgroundImage = arrState.backgroundImage ? arrState.backgroundImage : JSON.parse('{"type":"image","originX":"left","originY":"top","left":0,"top":0,"width":720,"height":420,"fill":"rgb(0,0,0)","stroke":null,"strokeWidth":0,"strokeDashArray":null,"strokeLineCap":"butt","strokeLineJoin":"miter","strokeMiterLimit":10,"scaleX":1,"scaleY":1,"angle":0,"flipX":false,"flipY":false,"opacity":1,"shadow":null,"visible":true,"clipTo":null,"backgroundColor":"","fillRule":"nonzero","globalCompositeOperation":"source-over","transformMatrix":null,"skewX":0,"skewY":0,"crossOrigin":"","alignX":"none","alignY":"none","meetOrSlice":"meet","src":"' + bgSrc + '","filters":[],"resizeFilters":[]}')
+        var backgroundImage = arrState.backgroundImage
         arrState.objects.forEach(function(item, idx) {
           // 不load 框
-          // if(idx >= 3) {
-          if(idx >= 2) {
+          if(idx >= 3) {
             arr.push(JSON.stringify(item))
             vm.curObj.loadFromJSON('{"objects":[' + arr.join(',') + '],"backgroundImage":' + JSON.stringify(backgroundImage) + '}')
-          } else if(idx === 1) {
-            vm.curObj.loadFromJSON('{"objects":[],"backgroundImage":' + JSON.stringify(backgroundImage) + '}')
           }
-
-          if(vm.curState === 0) {
-            vm.curObj.loadFromJSON('{"objects":[],"backgroundImage":' + JSON.stringify(backgroundImage) + '}')
-          } else {
-            
-          }
-        })*/
-        
-        /*arrState.objects.forEach(function(item, idx) {
-          // 不load 框
-          // if(idx >= 3) {
           if(idx >= 2) {
-            arr.push(JSON.stringify(item))
-            vm.curObj.loadFromJSON('{"objects":[' + arr.join(',') + '],"backgroundImage":' + JSON.stringify(backgroundImage) + '}')
-          } else
-          // if(idx >= 2) {
-          if(idx >= 1) {
-          console.log(idx)
-            vm.curObj.loadFromJSON('{"objects":[],"backgroundImage":' + JSON.stringify(backgroundImage) + '}')
-          } else if(idx >= 0) {
-          console.log(idx)
             vm.curObj.loadFromJSON('{"objects":[],"backgroundImage":' + JSON.stringify(backgroundImage) + '}')
           }
-        })*/
-        console.log('撤销' + (vm.curState))
+        })
+        // console.log('撤销' + (vm.curState))
         vm.curObj.renderAll()
         vm.mods += 1
       }
@@ -1909,7 +1874,7 @@ export default {
       var vm = this
       if (vm.mods > 0) {
         vm.curObj.clear().renderAll()
-        /*var arr = []
+        var arr = []
         var arrState = JSON.parse(vm.state[vm.curState + 2])
         var backgroundImage = arrState.backgroundImage
         arrState.objects.forEach(function(item, idx) {
@@ -1921,8 +1886,8 @@ export default {
           if(idx >= 2) {
             vm.curObj.loadFromJSON('{"objects":[],"backgroundImage":' + JSON.stringify(backgroundImage) + '}')
           }
-        })*/
-        vm.curObj.loadFromJSON(vm.state[vm.curState + 2])
+        })
+        // vm.curObj.loadFromJSON(vm.state[vm.curState + 2])
         // console.log('恢复' + (vm.curState + 2))
         vm.curObj.renderAll()
         vm.mods -= 1

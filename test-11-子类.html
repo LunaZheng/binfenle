@@ -69,47 +69,61 @@ console.log(redPoint.y) // 33
 console.log(redPoint.color) // "#f55"
 console.log(redPoint.toString()) // "15/35 (color: #f55)"*/
 
+
+fabric.LabeledRect = fabric.util.createClass(fabric.Rect, { // 继承默认类
+  // type: 'rect',
+  type: 'labeledRect',
+  initialize: function(options) { // 初始化
+    console.log(options)
+    options || (options = { });
+
+    this.callSuper('initialize', options);
+    this.set('label', options.label || '');
+    this.set('bg', options.bg || '');
+  },
+  toObject: function() {
+    return fabric.util.object.extend(this.callSuper('toObject'), {
+      label: this.get('label'),
+      bg: this.get('bg'),
+    });
+  },
+  _render: function(ctx) {
+    this.callSuper('_render', ctx);
+    ctx.font = '20px Helvetica';
+    ctx.fillStyle = '#333';
+    // 在画布上定位图像： ctx.drawImage(img,x,y)
+    // 在画布上定位图像，并规定图像的宽度和高度： ctx.drawImage(img,x,y,width,height);
+    // 剪切图像，并在画布上定位被剪切的部分： ctx.drawImage(img,sx,sy,swidth,sheight,x,y,width,height)
+    ctx.drawImage(this.bg, -this.width/2 + this.strokeWidth / 2, -this.height/2 + this.strokeWidth / 2, this.width - this.strokeWidth, this.height - this.strokeWidth);
+
+    // 创建渐变
+    var gradient = ctx.createLinearGradient(0,0, this.width/2,0);
+    gradient.addColorStop("0","magenta");
+    gradient.addColorStop("0.5","blue");
+    gradient.addColorStop("1.0","red");
+    // 用渐变填色
+    ctx.fillStyle = gradient;
+    ctx.fillText(this.label, -this.width/2, -this.height/2 + 20);
+  }
+})
+
+fabric.LabeledRect.fromObject = function(object, callback) {
+  console.log(object)
+  // fabric.util.loadImage(object.src, function(img) {
+  fabric.util.loadImage(object.src, function(img) {
+    callback && callback(new fabric.LabeledRect(img, object));
+  });
+};
+
+// 指定LabeledRect是一个异步的“类”，意思是它的fromObject不返回一个实例，而是传递给一个回调
+fabric.LabeledRect.async = true;
+
+
 var imgElement = new Image();
 imgElement.src = './test.png';
+
 imgElement.onload = function() {
-
-  var LabeledRect = fabric.util.createClass(fabric.Rect, { // 继承默认类
-    type: 'path',
-    // type: 'labeledRect',
-    initialize: function(options) { // 初始化
-      options || (options = { });
-
-      this.callSuper('initialize', options);
-      this.set('label', options.label || '');
-      this.set('bg', options.bg || '');
-    },
-    toObject: function() {
-      return fabric.util.object.extend(this.callSuper('toObject'), {
-        label: this.get('label'),
-        bg: this.get('bg'),
-      });
-    },
-    _render: function(ctx) {
-      this.callSuper('_render', ctx);
-      ctx.font = '20px Helvetica';
-      ctx.fillStyle = '#333';
-      // 在画布上定位图像： ctx.drawImage(img,x,y)
-      // 在画布上定位图像，并规定图像的宽度和高度： ctx.drawImage(img,x,y,width,height);
-      // 剪切图像，并在画布上定位被剪切的部分： ctx.drawImage(img,sx,sy,swidth,sheight,x,y,width,height)
-      ctx.drawImage(this.bg, -this.width/2 + this.strokeWidth / 2, -this.height/2 + this.strokeWidth / 2, this.width - this.strokeWidth, this.height - this.strokeWidth);
-
-      // 创建渐变
-      var gradient = ctx.createLinearGradient(0,0, this.width/2,0);
-      gradient.addColorStop("0","magenta");
-      gradient.addColorStop("0.5","blue");
-      gradient.addColorStop("1.0","red");
-      // 用渐变填色
-      ctx.fillStyle = gradient;
-      ctx.fillText(this.label, -this.width/2, -this.height/2 + 20);
-    }
-  })
-  
-  var labeledRect = new LabeledRect({
+  var labeledRect = new fabric.LabeledRect({
     width: 100,
     height: 100,
     left: 100,
@@ -118,14 +132,23 @@ imgElement.onload = function() {
     strokeWidth: 6,
     label: 'dvdfbfgbdrgtnfr',
     bg: imgElement,
-    fill: '#faa'
+    fill: 'transparent'
   });
   canvas.add(labeledRect)
 
-  /*var json = JSON.stringify(canvas)
-  console.log(json)*/
 
-  console.log(canvas.item(0))
+  var json = JSON.stringify(canvas)
+  canvas.clear();
+  canvas.loadFromJSON(json, function() {
+
+    // making sure to render canvas at the end
+    canvas.renderAll();
+
+    // and checking if object's "name" is preserved
+    console.log(canvas.item(0).type);
+  })
+
+  /*console.log(canvas.item(0))
   canvas.item(0).sourcePath = './img.svg';
   console.log(JSON.stringify(canvas.toDatalessJSON()));
   // canvas.clear().renderAll();
@@ -133,7 +156,7 @@ imgElement.onload = function() {
   // var json = '{"objects":[{"type":"path","left":143,"top":143,"width":175,"height":151,"fill":"#231F20","overlayFill":null,"stroke":null,"strokeWidth":1,"strokeDashArray":null,"scaleX":1,"scaleY":1,"angle":-19,"flipX":false,"flipY":false,"opacity":1,"selectable":true,"hasControls":true,"hasBorders":true,"hasRotatingPoint":false,"transparentCorners":true,"perPixelTargetFind":false,"path":"./img.svg"}],"background":"rgba(0, 0, 0, 0)"}';
 
   var json  = '{"objects":[{"type":"path","originX":"left","originY":"top","left":100,"top":100,"width":100,"height":100,"fill":"#faa","stroke":"#aaa","strokeWidth":6,"strokeDashArray":null,"strokeLineCap":"butt","strokeLineJoin":"miter","strokeMiterLimit":10,"scaleX":1,"scaleY":1,"angle":0,"flipX":false,"flipY":false,"opacity":1,"shadow":null,"visible":true,"clipTo":null,"backgroundColor":"","fillRule":"nonzero","globalCompositeOperation":"source-over","transformMatrix":null,"skewX":0,"skewY":0,"rx":0,"ry":0,"label":"dvdfbfgbdrgtnfr","bg":{}},"path":"./img.svg"}]}'
-
+*/
   /*fabric.loadSVGFromString(json, function(objects, options) {
     var obj = fabric.util.groupSVGElements(objects, options);
     canvas.add(obj).renderAll();

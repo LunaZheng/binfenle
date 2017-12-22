@@ -30,7 +30,7 @@
 </style>
 
 <canvas id="c"></canvas>
-<img src="http://designsoftware.ninja/printdemo/modules/blockadvertising/img/fixtures/advertising.jpg" id="my-image">
+<!-- <img src="http://designsoftware.ninja/printdemo/modules/blockadvertising/img/fixtures/advertising.jpg" id="my-image"> -->
 
 <script src='./fabric.js'></script>
 <script>
@@ -117,6 +117,12 @@ group2.add(new fabric.Rect({
   originX: 'center',
   originY: 'center'
 }));
+
+/*
+// 加载group的json数据
+var json = JSON.stringify(canvas);
+canvas.clear()
+canvas.loadFromJSON(json)*/
 
 
 // 创建一个已经存在于画布上的对象的组，则需要首先克隆它们
